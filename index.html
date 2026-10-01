@@ -1,0 +1,352 @@
+<title>영단어 암기 트레이너</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap">
+<style>
+/* Layout: one narrow study column; a big index card in the middle, answers stacked under it */
+:root{
+  --bg:#F3F5F9; --surface:#FFFFFF; --ink:#16202F; --muted:#5D6779; --line:#DCE1EA;
+  --accent:#2F5BEA; --accent-soft:#E6ECFD; --ok:#16884A; --ok-soft:#E3F5EA; --bad:#C93838; --bad-soft:#FBE7E7;
+  --hl:#FFE45C;
+  --f-body:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --f-word:"Literata",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#10151F; --surface:#18202D; --ink:#E8ECF3; --muted:#9AA4B6; --line:#2A3446;
+  --accent:#7D9BFF; --accent-soft:#232F4F; --ok:#4CC787; --ok-soft:#17382A; --bad:#FF7A7A; --bad-soft:#3E1F23; --hl:#8A7716; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10151F; --surface:#18202D; --ink:#E8ECF3; --muted:#9AA4B6; --line:#2A3446;
+  --accent:#7D9BFF; --accent-soft:#232F4F; --ok:#4CC787; --ok-soft:#17382A; --bad:#FF7A7A; --bad-soft:#3E1F23; --hl:#8A7716; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;padding:24px 16px 48px}
+main{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1{font-size:1.6rem;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font-size:1.05rem;margin:0}
+p{margin:0}
+.muted{color:var(--muted);font-size:.9rem}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 16px;font-weight:500}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+:root[data-theme="dark"] .btn.primary{color:#0D1322}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.primary{color:#0D1322}}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.link{background:none;border:0;color:var(--muted);padding:6px 0;font-size:.9rem}
+.stat{display:flex;gap:24px;flex-wrap:wrap}
+.stat b{font-size:1.6rem;font-variant-numeric:tabular-nums;display:block;line-height:1.2}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.steps{margin:0;padding-left:1.2em;color:var(--muted);font-size:.92rem;display:grid;gap:4px}
+.steps b{color:var(--ink)}
+.sets{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.set{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:6px}
+.set:hover{border-color:var(--accent)}
+.set .n{font-weight:700}
+.set .w{font-family:var(--f-word);font-size:.85rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meter{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.meter>i{display:block;height:100%;background:var(--ok);border-radius:3px;transition:width .3s}
+.meter.big{height:8px}.meter.big>i{background:var(--accent)}
+.toggles{display:flex;gap:16px;flex-wrap:wrap;font-size:.9rem}
+.toggles label{display:flex;gap:6px;align-items:center;cursor:pointer}
+/* study card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px 20px;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;box-shadow:0 1px 0 var(--line)}
+.dir{font-size:.75rem;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.prompt{font-size:1.7rem;font-weight:700;text-wrap:balance;overflow-wrap:anywhere}
+.prompt.en{font-family:var(--f-word);font-size:2.1rem}
+.hint{font-family:var(--f-word);color:var(--muted);letter-spacing:.06em}
+.type{display:flex;gap:8px}
+.type input{flex:1;min-width:0;font:inherit;font-family:var(--f-word);font-size:1.25rem;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.type input.ok{border-color:var(--ok);background:var(--ok-soft)}
+.type input.bad{border-color:var(--bad);background:var(--bad-soft)}
+.fb{border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.fb.bad{background:var(--bad-soft);border:1px solid var(--bad)}
+.fb.ok{background:var(--ok-soft);border:1px solid var(--ok)}
+.fb .ans{font-family:var(--f-word);font-size:1.3rem;font-weight:700}
+.mark{background:linear-gradient(transparent 55%,var(--hl) 55%);padding:0 2px}
+.speak{border:1px solid var(--line);background:var(--surface);border-radius:999px;width:34px;height:34px;display:inline-grid;place-items:center;flex:none;font-size:.9rem}
+/* preview & list */
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.item .en{font-family:var(--f-word);font-weight:700;font-size:1.1rem;overflow-wrap:anywhere}
+.item .ko{color:var(--muted);overflow-wrap:anywhere;min-width:0}
+.item .ko.hide{color:transparent;background:var(--line);border-radius:6px;cursor:pointer;user-select:none}
+.item .x{font-size:.8rem;color:var(--bad);font-variant-numeric:tabular-nums;white-space:nowrap}
+.item .txt{min-width:0;display:flex;flex-direction:column}
+.score{font-size:3rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.keys{font-size:.8rem;color:var(--muted);text-align:center}
+@media (max-width:480px){.prompt.en{font-size:1.7rem}.card{padding:22px 14px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<main id="app"></main>
+
+<script>
+const W=[
+["certain","특정한"],["intention","의도"],["profit","이익, 수익"],["political benefit","정치적 이점"],
+["disturb","방해하다"],["harm","해(를 끼치다)"],["B as well as A","A뿐만 아니라 B도"],["individual","개인"],
+["involved","관련된"],["state","상태"],["emergency","비상, 응급"],["measure","측정하다"],
+["struck","strike(강타하다)의 과거형"],["resident","주민"],["shelter","주거지"],["the news that 주어 동사","주어가 동사한다는 소식"],
+["be about to 동사원형","막 동사하려고 하다"],["be up to ~","~에 달려 있다"],["apparently","명백하게"],["displaced","난민의, 추방된"],
+["so 형용사 that 주어 동사","너무 형용사해서 주어가 동사하다"],["anxious","불안해하는"],["aftershock","여진"],["government","정부"],
+["viral","바이러스성의"],["significantly","상당히"],["farther","더 멀리"],["on average","평균적으로"],
+["explanation","설명"],["phenomenon","현상"],["previously","이전에는"],["daily life","일상생활"],
+["tend to 동사원형","동사하는 경향이 있다"],["effortlessly","노력하지 않고, 쉽게"],["likely","그럴듯한, ~할 공산이 있는"],["proof","증거"],
+["critically","비판적으로"],["examine","검토하다"],["moreover","더욱이, 게다가"],["be inclined to 동사원형","동사하는 경향이 있다"],
+["fit","들어맞다"],["process","과정"],["fall into ~","~에 빠지다"],["trap","덫"],
+["confirmation bias","확증 편향"],["that is","즉, 다시 말해"],["selectively","선택적으로"],["ignore","무시하다"],
+["election","선거"],["blindly","맹목적으로"],["describe","묘사하다, 설명하다"],["favored","선호하는"],
+["candidate","후보자"],["in a positive way","긍정적으로"],["unconsciously","무의식적으로"],["spot","발견하다"],
+["face value","액면가"],["judge","판단하다"],["judgment","판단"],["analyze","분석하다"],
+["evaluate","평가하다"],["affect","영향을 주다"],["article","글, 기사"],["suit","어울리다"],
+["look for ~","~를 찾다"],["oppose","반대하다"],["as well","(문장 끝에서) 또한, 역시"],["credibility","신뢰성"],
+["source","출처"],["intent","의도"],["whether 주어 동사","주어가 동사하는지 여부"],["reliable","믿을 만한"],
+["eliminate","제거하다"],["objectively","객관적으로"],["trust","신뢰하다"],["lead to ~","~에 이르다"],
+["pass through ~","~를 빠져나가다"],["unidentified","정체불명의"]
+];
+const ALT={judgment:["judgement"],analyze:["analyse"]};
+const SET=10, NSETS=Math.ceil(W.length/SET);
+const KEY="engword-trainer-v1";
+const $app=document.getElementById("app");
+let S=load();
+function load(){let s=null;try{s=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!s||!s.w)s={w:{}};if(!s.dir)s.dir="both";return s}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function st(i){return S.w[i]||(S.w[i]={m:0,x:0})}
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>s.toLowerCase().replace(/[ㄱ-힝]/g," ").replace(/[^a-z ]/g," ").replace(/\s+/g," ").trim();
+// 기본 음성은 품질이 낮은 경우가 많아서, 고품질 영어 음성을 이름으로 골라 쓴다
+let VOICE=null;
+const GOOD=[/premium/i,/enhanced/i,/natural/i,/Google US English/,/Samantha/,/Ava/,/Allison/,/Susan/,/Zoe/,/Microsoft (Aria|Jenny|Guy)/,/Google UK English/,/Daniel/,/Karen/];
+function pickVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^en[-_]/i.test(v.lang));
+  for(const re of GOOD){const v=vs.find(v=>re.test(v.name));if(v)return VOICE=v}
+  VOICE=vs.find(v=>/en[-_]US/i.test(v.lang))||vs[0]||null}catch(e){}}
+try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice}catch(e){}
+function sayNow(t){try{speechSynthesis.cancel();
+  const clean=t.replace(/[ㄱ-힝]+/g," ").replace(/[~()]/g," ").replace(/\s+/g," ").trim();
+  const u=new SpeechSynthesisUtterance(clean);u.lang=VOICE?VOICE.lang:"en-US";if(VOICE)u.voice=VOICE;u.rate=.95;speechSynthesis.speak(u)}catch(e){}}
+function hintOf(en){return en.split(" ").map(w=>/[a-zA-Z]/.test(w)?w[0]+"_".repeat(w.length-1):w).join("  ")}
+function enRight(input,i){const n=norm(input);if(!n)return false;
+  return W.some(([en,ko],k)=>(k===i||ko===W[i][1])&&(norm(en)===n||(ALT[en]||[]).includes(n)))}
+// 한글 뜻 채점: 띄어쓰기·문장부호 무시, 쉼표로 나뉜 뜻 중 하나만 맞아도 정답, 괄호 안은 써도 되고 안 써도 됨
+const normKo=s=>s.toLowerCase().replace(/[^가-힣a-z]/g,"");
+const stem=s=>s.replace(/(하다|다)$/,"");
+function koVariants(ko){const out=new Set();
+  ko.replace(/\(문장 끝에서\)/,"").split(",").forEach(p=>{[p.replace(/\([^)]*\)/g,""),p.replace(/[()]/g,"")].forEach(x=>{const n=normKo(x);if(n)out.add(n)})});
+  return[...out]}
+function koRight(input,i){const n=normKo(input);if(!n)return false;
+  return W.some(([en,ko],k)=>(k===i||en===W[i][0])&&koVariants(ko).some(v=>v===n||stem(v)===stem(n)))}
+function koHint(ko){const p=ko.replace(/\(문장 끝에서\)/,"").split(",")[0].trim();return p[0]+" "+"○".repeat(Math.max(0,normKo(p).length-1))}
+const setIdx=s=>Array.from({length:Math.min(SET,W.length-s*SET)},(_,k)=>s*SET+k);
+let key=null; // current keyboard handler
+document.addEventListener("keydown",e=>{if(key)key(e)});
+
+/* ---------- home ---------- */
+function home(){
+  key=null;
+  const mastered=W.filter((_,i)=>st(i).m).length;
+  const weak=W.map((_,i)=>i).filter(i=>st(i).x>0);
+  let sets="";
+  for(let s=0;s<NSETS;s++){const ids=setIdx(s),done=ids.filter(i=>st(i).m).length;
+    sets+=`<button class="set" data-set="${s}"><span class="n">세트 ${s+1}</span><span class="w">${esc(W[ids[0]][0].replace(/ [ㄱ-힝].*/,""))} …</span><span class="muted">${done}/${ids.length} 완료</span><span class="meter"><i style="width:${done/ids.length*100}%"></i></span></button>`}
+  $app.innerHTML=`
+  <div class="top"><h1>영단어 암기 트레이너</h1></div>
+  <div class="stat">
+    <div><b>${mastered}<span class="muted"> / ${W.length}</span></b><span class="muted">외운 단어</span></div>
+    <div><b>${weak.length}</b><span class="muted">틀린 적 있는 단어</span></div>
+  </div>
+  <div class="meter big"><i style="width:${mastered/W.length*100}%"></i></div>
+  <ol class="steps">
+    <li><b>세트별 학습</b>: 10개씩 훑어보고 바로 직접 써 보기. 단어마다 ${S.dir==="both"?"영어 보고 뜻 쓰기, 뜻 보고 영어 쓰기를 둘 다":"두 번"} 맞혀야 끝나요.</li>
+    <li><b>모의고사</b>: 전체 범위를 섞어서 시험처럼 풀어요.</li>
+    <li><b>오답 집중</b>: 많이 틀린 단어만 다시 돌려요. 시험 직전에 한 번 더.</li>
+  </ol>
+  <section class="panel">
+    <h2>1. 세트별 학습</h2>
+    <div class="sets">${sets}</div>
+  </section>
+  <section class="panel">
+    <h2>2. 모의고사</h2>
+    <div class="row">
+      <button class="btn primary" data-exam="20">20문제</button>
+      <button class="btn" data-exam="40">40문제</button>
+      <button class="btn" data-exam="${W.length}">전체 ${W.length}문제</button>
+    </div>
+  </section>
+  <section class="panel">
+    <h2>3. 오답 집중</h2>
+    <p class="muted">${weak.length?`틀린 횟수가 많은 단어부터 최대 15개를 다시 학습해요.`:`아직 틀린 단어가 없어요. 학습이나 모의고사를 먼저 풀어 보세요.`}</p>
+    <div class="row"><button class="btn" data-weak ${weak.length?"":"disabled"}>오답 학습 시작</button><button class="btn" data-list>전체 단어장</button></div>
+  </section>
+  <div class="toggles">
+    <label for="dirSel">문제 방향</label>
+    <select id="dirSel" class="btn" style="padding:6px 10px">
+      <option value="both" ${S.dir==="both"?"selected":""}>양방향 (영→뜻, 뜻→영)</option>
+      <option value="en" ${S.dir==="en"?"selected":""}>영어 보고 뜻 쓰기만</option>
+      <option value="ko" ${S.dir==="ko"?"selected":""}>뜻 보고 영어 쓰기만</option>
+    </select>
+    <button class="link" id="reset">기록 초기화</button>
+  </div>
+  <div id="confirm"></div>`;
+  $app.querySelectorAll("[data-set]").forEach(b=>b.onclick=()=>preview(setIdx(+b.dataset.set),`세트 ${+b.dataset.set+1}`));
+  $app.querySelectorAll("[data-exam]").forEach(b=>b.onclick=()=>exam(+b.dataset.exam));
+  const wb=$app.querySelector("[data-weak]");wb.onclick=()=>{const ids=weak.sort((a,b)=>st(b).x-st(a).x).slice(0,15);preview(ids,"오답 집중")};
+  $app.querySelector("[data-list]").onclick=list;
+  $app.querySelector("#dirSel").onchange=e=>{S.dir=e.target.value;save();home()};
+  $app.querySelector("#reset").onclick=()=>{$app.querySelector("#confirm").innerHTML=`<div class="panel"><p>모든 학습 기록을 지울까요?</p><div class="row"><button class="btn primary" id="yes">지우기</button><button class="btn" id="no">취소</button></div></div>`;
+    $app.querySelector("#yes").onclick=()=>{S.w={};save();home()};$app.querySelector("#no").onclick=home};
+}
+
+/* ---------- preview ---------- */
+function preview(ids,label){
+  let hide=false;
+  const draw=()=>{
+    $app.innerHTML=`
+    <div class="top"><button class="link" id="back">← 홈</button><span class="muted">${label} · ${ids.length}단어</span></div>
+    <h1>먼저 훑어보기</h1>
+    <p class="muted">소리 내서 한 번씩 읽어 보세요. 뜻을 가리고 스스로 떠올려 본 뒤 퀴즈로 넘어가면 더 오래 남아요.</p>
+    <div class="row"><button class="btn primary" id="go">퀴즈 시작 (Enter)</button><button class="btn" id="hide">${hide?"뜻 보이기":"뜻 가리기"}</button></div>
+    <div class="list">${ids.map(i=>`<div class="item"><button class="speak" data-say="${i}" aria-label="발음 듣기">▶</button><div class="txt"><span class="en">${esc(W[i][0])}</span><span class="ko ${hide?"hide":""}" data-i="${i}">${esc(W[i][1])}</span></div><span></span></div>`).join("")}</div>
+    <button class="btn primary" id="go2">퀴즈 시작</button>`;
+    $app.querySelector("#back").onclick=home;
+    $app.querySelector("#go").onclick=$app.querySelector("#go2").onclick=()=>drill(ids,label);
+    $app.querySelector("#hide").onclick=()=>{hide=!hide;draw()};
+    $app.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>sayNow(W[+b.dataset.say][0]));
+    $app.querySelectorAll(".ko.hide").forEach(k=>k.onclick=()=>k.classList.remove("hide"));
+  };
+  draw();window.scrollTo(0,0);
+  key=e=>{if(e.key==="Enter"){e.preventDefault();drill(ids,label)}};
+}
+
+/* ---------- question engine ---------- */
+// type 0: 영어 보고 뜻 쓰기, 1: 뜻 보고 영어 쓰기
+const STAGES={both:[0,1],en:[0,0],ko:[1,1]};
+function ask({i,type,top,onDone}){
+  const en=W[i][0],ko=W[i][1];
+  const promptEn=type===0;
+  let answered=false,hintUsed=false;
+  $app.innerHTML=`${top}
+  <div class="card">
+    <span class="dir">${promptEn?"영어 → 뜻 쓰기":"뜻 → 영어 쓰기"}</span>
+    <div class="prompt ${promptEn?"en":""}">${esc(promptEn?en:ko)}</div>
+    ${promptEn?`<button class="speak" id="sp" aria-label="발음 듣기">▶</button>`:""}
+    <div class="hint" id="hint"></div>
+  </div>
+  <div class="type"><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${promptEn?"뜻을 한글로":"영어로"} 입력" ${promptEn?"":'lang="en"'}><button class="btn primary" id="ok">확인</button></div>
+  <div class="row"><button class="link" id="hb">힌트 보기 (첫 글자)</button><button class="link" id="idk">모르겠어요</button></div>
+  <div id="fb"></div>
+  <p class="keys">Enter 확인 · 틀리면 Enter로 다음</p>`;
+  if(promptEn)$app.querySelector("#sp").onclick=()=>sayNow(en);
+  const inp=$app.querySelector("#ans");inp.focus();
+  const finish=ok=>{
+    answered=true;inp.disabled=true;inp.classList.add(ok?"ok":"bad");
+    const fb=$app.querySelector("#fb");
+    if(ok){
+      fb.innerHTML=`<div class="fb ok"><span><b>정답</b> · <span class="ans">${esc(en)}</span> = ${esc(ko)}</span></div>`;
+      key=null;setTimeout(()=>onDone(true,hintUsed),hintUsed?900:600);
+      return;
+    }
+    fb.innerHTML=`<div class="fb bad"><span class="muted">정답</span><span><span class="ans mark">${esc(en)}</span> &nbsp;${esc(ko)}</span>
+      <div class="row"><button class="btn primary" id="nx">다음 (Enter)</button><button class="speak" id="sp2" aria-label="발음 듣기">▶</button>${promptEn&&inp.value.trim()?`<button class="link" id="ovr">뜻은 맞게 썼어요</button>`:""}</div></div>`;
+    $app.querySelector("#sp2").onclick=()=>sayNow(en);
+    const next=()=>{key=null;onDone(false,hintUsed)};
+    $app.querySelector("#nx").onclick=next;
+    const ovr=$app.querySelector("#ovr");if(ovr)ovr.onclick=()=>{key=null;onDone(true,hintUsed)};
+    key=e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();next()}};
+  };
+  const submit=()=>{if(answered||!inp.value.trim())return;finish(promptEn?koRight(inp.value,i):enRight(inp.value,i))};
+  inp.addEventListener("keydown",e=>{if(e.key!=="Enter")return;e.stopPropagation();if(e.isComposing||e.keyCode===229)return;e.preventDefault();submit()});
+  $app.querySelector("#ok").onclick=submit;
+  $app.querySelector("#hb").onclick=()=>{hintUsed=true;$app.querySelector("#hint").textContent=promptEn?koHint(ko):hintOf(en);inp.focus()};
+  $app.querySelector("#idk").onclick=()=>{if(!answered)finish(false)};
+  key=null;
+}
+
+/* ---------- drill: spaced repetition inside a session ---------- */
+function drill(ids,label){
+  const stages=STAGES[S.dir]||STAGES.both,maxStage=stages.length;
+  let q=shuffle(ids).map(i=>({i,stage:0}));
+  let progress=0,total=ids.length*maxStage,wrongs=new Set();
+  const step=()=>{
+    if(!q.length)return drillDone(ids,label,wrongs);
+    const it=q.shift();
+    const top=`<div class="top"><button class="link" id="back">← 그만하기</button><span class="muted">${label} · 남은 단어 ${new Set([it,...q].map(x=>x.i)).size}</span></div>
+      <div class="meter big"><i style="width:${progress/total*100}%"></i></div>`;
+    ask({i:it.i,type:stages[it.stage],top,onDone:(ok,hint)=>{
+      if(ok&&!hint){it.stage++;progress++;
+        if(it.stage<maxStage)q.splice(Math.min(q.length,3+(Math.random()*4|0)),0,it);
+        else st(it.i).m=1;
+      }else{
+        if(!ok){st(it.i).x++;wrongs.add(it.i);if(it.stage>0){it.stage--;progress--}}
+        q.splice(Math.min(q.length,2),0,it);
+      }
+      save();step();
+    }});
+    $app.querySelector("#back").onclick=home;
+  };
+  step();
+}
+function drillDone(ids,label,wrongs){
+  key=e=>{if(e.key==="Enter"){e.preventDefault();home()}};
+  const nextSet=label.startsWith("세트")?+label.split(" ")[1]:null;
+  $app.innerHTML=`<h1>${label} 완료</h1>
+  <p class="muted">${ids.length}단어를 모두 직접 써서 맞혔어요. ${wrongs.size?`중간에 틀린 ${wrongs.size}개는 아래에 표시했어요.`:"한 번도 안 틀렸어요."}</p>
+  <div class="list">${ids.map(i=>`<div class="item"><button class="speak" data-say="${i}" aria-label="발음 듣기">▶</button><div class="txt"><span class="en">${esc(W[i][0])}</span><span class="ko">${esc(W[i][1])}</span></div><span class="x">${wrongs.has(i)?"틀림":""}</span></div>`).join("")}</div>
+  <div class="row">${nextSet!==null&&nextSet<NSETS?`<button class="btn primary" id="nx">세트 ${nextSet+1} 학습</button>`:""}<button class="btn ${nextSet!==null&&nextSet<NSETS?"":"primary"}" id="hm">홈 (Enter)</button><button class="btn" id="again">한 번 더</button></div>`;
+  $app.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>sayNow(W[+b.dataset.say][0]));
+  const nx=$app.querySelector("#nx");if(nx)nx.onclick=()=>preview(setIdx(nextSet),`세트 ${nextSet+1}`);
+  $app.querySelector("#hm").onclick=home;
+  $app.querySelector("#again").onclick=()=>drill(ids,label);
+  window.scrollTo(0,0);
+}
+
+/* ---------- exam ---------- */
+function exam(n){
+  const ids=shuffle(W.map((_,i)=>i)).slice(0,n);
+  const types=S.dir==="en"?[0]:S.dir==="ko"?[1]:[0,1];
+  let k=0,score=0;const wrong=[];
+  const step=()=>{
+    if(k>=ids.length)return examDone(ids.length,score,wrong);
+    const i=ids[k];
+    const top=`<div class="top"><button class="link" id="back">← 그만하기</button><span class="muted" style="font-variant-numeric:tabular-nums">모의고사 ${k+1} / ${ids.length} · 정답 ${score}</span></div>
+      <div class="meter big"><i style="width:${k/ids.length*100}%"></i></div>`;
+    ask({i,type:types[Math.random()*types.length|0],top,onDone:(ok,hint)=>{
+      if(ok&&!hint)score++;else{wrong.push(i);if(!ok){st(i).x++;st(i).m=0}}
+      save();k++;step();
+    }});
+    $app.querySelector("#back").onclick=home;
+  };
+  step();
+}
+function examDone(total,score,wrong){
+  key=e=>{if(e.key==="Enter"){e.preventDefault();wrong.length?preview(wrong,"모의고사 오답"):home()}};
+  const pct=Math.round(score/total*100);
+  $app.innerHTML=`<span class="muted">모의고사 결과</span>
+  <div class="row" style="align-items:baseline"><span class="score">${score}<span class="muted" style="font-size:1.4rem"> / ${total}</span></span><span class="muted">${pct}점</span></div>
+  <p>${pct>=90?"시험 준비 거의 끝났어요. 틀린 것만 한 번 더 보고 가세요.":pct>=70?"좋아요. 틀린 단어만 다시 돌리면 금방 올라가요.":"세트별 학습을 한 바퀴 더 돌리고 다시 풀어 보세요."}</p>
+  ${wrong.length?`<h2>틀린 단어 ${wrong.length}개</h2><div class="list">${wrong.map(i=>`<div class="item"><button class="speak" data-say="${i}" aria-label="발음 듣기">▶</button><div class="txt"><span class="en">${esc(W[i][0])}</span><span class="ko">${esc(W[i][1])}</span></div><span></span></div>`).join("")}</div>`:""}
+  <div class="row">${wrong.length?`<button class="btn primary" id="rw">틀린 것만 학습 (Enter)</button>`:""}<button class="btn" id="hm">홈</button></div>`;
+  $app.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>sayNow(W[+b.dataset.say][0]));
+  const rw=$app.querySelector("#rw");if(rw)rw.onclick=()=>preview(wrong,"모의고사 오답");
+  $app.querySelector("#hm").onclick=home;
+  window.scrollTo(0,0);
+}
+
+/* ---------- word list ---------- */
+function list(){
+  let hide=false;
+  const draw=()=>{
+    key=null;
+    $app.innerHTML=`<div class="top"><button class="link" id="back">← 홈</button><span class="muted">${W.length}단어</span></div>
+    <h1>전체 단어장</h1>
+    <p class="muted">뜻을 가린 뒤 하나씩 떠올려 보고, 칸을 눌러 확인하세요.</p>
+    <div class="row"><button class="btn" id="hide">${hide?"뜻 보이기":"뜻 가리기"}</button></div>
+    <div class="list">${W.map((w,i)=>`<div class="item"><button class="speak" data-say="${i}" aria-label="발음 듣기">▶</button><div class="txt"><span class="en">${esc(w[0])}</span><span class="ko ${hide?"hide":""}">${esc(w[1])}</span></div><span class="x">${st(i).x?`${st(i).x}번 틀림`:""}</span></div>`).join("")}</div>`;
+    $app.querySelector("#back").onclick=home;
+    $app.querySelector("#hide").onclick=()=>{hide=!hide;draw()};
+    $app.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>sayNow(W[+b.dataset.say][0]));
+    $app.querySelectorAll(".ko.hide").forEach(k=>k.onclick=()=>k.classList.remove("hide"));
+  };
+  draw();window.scrollTo(0,0);
+}
+
+home();
+</script>
