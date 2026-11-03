@@ -324,7 +324,10 @@ function home(){
     if(!url)return;btn.disabled=true;msg.textContent="단어를 읽어 오는 중…";
     try{const r=await fetch("/api/import",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
       const j=await r.json();if(!r.ok)throw new Error(j.detail||"단어를 가져오지 못했어요.");
-      BOOKS=await(await fetch("/api/books",{cache:"no-store"})).json();delete BOOKWORDS[j.id];
+      const{words,...info}=j;
+      BOOKS=await(await fetch("/api/books",{cache:"no-store"})).json();
+      if(!BOOKS.some(b=>b.id===info.id))BOOKS.push(info);
+      BOOKWORDS[j.id]=words;
       FLASH=`'${j.title}'에서 ${j.count}단어를 가져왔어요.`;await openBook(j.id)}
     catch(err){msg.textContent=err.message;btn.disabled=false}};
   const del=$app.querySelector("#delBook");

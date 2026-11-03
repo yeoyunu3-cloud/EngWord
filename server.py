@@ -14,6 +14,9 @@
 책 제목은 data/<책 id>/title.txt 가 있으면 그 내용, 없으면 BOOK_TITLES 또는 폴더 이름.
 클래스카드에서 가져온 책은 data/cc-<세트 번호>/ 에 저장되고, 세트 전체가 Day 하나다.
 
+Vercel(서버리스)에서는 코드 폴더가 읽기 전용이라 가져온 세트와 progress.db를 /tmp/engword 에 쓴다.
+/tmp는 서버 인스턴스가 바뀌면 비워지므로, 거기 쓴 내용은 언제든 사라질 수 있다.
+
 실행:  .venv/bin/python server.py   →  http://localhost:8001
 """
 import os
@@ -31,7 +34,10 @@ from classcard import CardSetError, fetch_set
 
 ROOT = Path(__file__).parent
 DATA = ROOT / "data"
-DB_PATH = ROOT / "progress.db"
+STATE = Path(os.environ.get("ENGWORD_STATE_DIR") or ("/tmp/engword" if os.environ.get("VERCEL") else ROOT))
+IMPORTED = DATA if STATE == ROOT else STATE / "data"
+IMPORTED.mkdir(parents=True, exist_ok=True)
+DB_PATH = STATE / "progress.db"
 DAY_SIZE = 25
 BOOK_TITLES = {"basic": "고교 필수 영단어"}
 
@@ -40,7 +46,9 @@ app = FastAPI(title="EngWord")
 
 def load_books() -> dict:
     books = {}
-    for folder in sorted(p for p in DATA.iterdir() if p.is_dir()):
+    # 같은 이름이면 IMPORTED 쪽(새로 가져온 내용)이 이긴다
+    folders = {p.name: p for d in (DATA, IMPORTED) for p in d.iterdir() if p.is_dir()}
+    for folder in (folders[k] for k in sorted(folders)):
         words, seen = [], set()
         for f in sorted(folder.glob("*.txt")):
             for line in f.read_text(encoding="utf-8").splitlines():
@@ -125,13 +133,14 @@ def import_set(req: ImportReq):
     except CardSetError as e:
         raise HTTPException(400, str(e))
     book_id = f"cc-{set_id}"
-    folder = DATA / book_id
+    folder = IMPORTED / book_id
     folder.mkdir(parents=True, exist_ok=True)
     (folder / "title.txt").write_text(title + "\n", encoding="utf-8")
     # 클래스카드 카드는 품사·예문이 없어서 그 칸은 비워 둔다. 같은 링크를 다시 넣으면 새 내용으로 덮어쓴다
     (folder / "words.txt").write_text("".join(f"{en}||{ko}|\n" for en, ko in cards), encoding="utf-8")
     BOOKS = load_books()
-    return summary(book_id)
+    # 서버리스에서는 다음 요청이 다른 인스턴스로 갈 수 있어서 단어까지 한 번에 돌려준다
+    return {**summary(book_id), "words": BOOKS[book_id]["words"]}
 
 
 @app.delete("/api/books/{book}")
@@ -139,7 +148,9 @@ def delete_book(book: str):
     global BOOKS
     if not book.startswith("cc-") or book not in BOOKS:
         raise HTTPException(404, "가져온 단어책만 지울 수 있어요.")
-    shutil.rmtree(DATA / book)
+    if not (IMPORTED / book).is_dir():
+        raise HTTPException(403, "저장소에 들어 있는 세트는 화면에서 지울 수 없어요.")
+    shutil.rmtree(IMPORTED / book)
     BOOKS = load_books()
     reset_progress(book)
     return {"ok": True}

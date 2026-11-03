@@ -1,0 +1,4 @@
+.venv/
+progress.db
+__pycache__/
+docs/

@@ -4,8 +4,7 @@
 기본은 **직접 써 보는 방식**(주관식)이고, 모의고사는 객관식(4지선다)이나 둘을 섞어서도 풀 수 있습니다.
 클래스카드 세트 링크를 넣으면 그 세트의 단어를 읽어 와 새 단어책으로 추가합니다.
 
-**라이브 데모: https://engword.onrender.com**
-(무료 서버라 한동안 접속이 없으면 잠듭니다. 첫 접속은 30초쯤 걸릴 수 있어요.)
+**라이브 데모: https://engword.vercel.app**
 
 | 홈 | 객관식 (4지선다) | 주관식 (적기) |
 |---|---|---|
@@ -27,7 +26,7 @@
 | 프론트엔드 | HTML, CSS, JavaScript (프레임워크 없이 파일 하나), Web Speech API (발음) |
 | 백엔드 | Python 3.12, FastAPI, Uvicorn |
 | 저장 | SQLite (학습 기록), 텍스트 파일 (단어책), localStorage |
-| 배포 | Render 무료 웹 서비스 (`render.yaml`), GitHub push 시 자동 배포 |
+| 배포 | Vercel 무료 플랜 (서버리스 Python), GitHub push 시 자동 배포 |
 
 ## 단어책
 
@@ -52,13 +51,13 @@
 
 처음 실행하면 `.venv`를 만들고 패키지를 설치한 뒤 http://localhost:8001 을 엽니다.
 
-### Render에 배포
+### Vercel에 배포
 
-1. [Render](https://render.com)에 GitHub 계정으로 가입합니다. 무료 플랜은 카드 등록이 필요 없습니다.
-2. **New → Blueprint**에서 이 저장소를 고르면 `render.yaml` 설정대로 서버가 만들어집니다.
-3. 배포가 끝나면 `https://<서비스 이름>.onrender.com` 주소가 생깁니다. 이후로는 `main`에 push할 때마다 자동으로 다시 배포됩니다.
+1. [Vercel](https://vercel.com)에 GitHub 계정으로 가입합니다. Hobby(무료) 플랜은 카드 등록이 필요 없습니다.
+2. **Add New → Project**에서 이 저장소를 **Import**하고 설정은 그대로 둔 채 **Deploy**를 누릅니다. FastAPI 앱(`server.py`의 `app`)을 자동으로 찾아 배포합니다.
+3. 배포가 끝나면 `https://<프로젝트 이름>.vercel.app` 주소가 생깁니다. 이후로는 `main`에 push할 때마다 자동으로 다시 배포됩니다.
 
-무료 플랜은 서버를 다시 시작하면 파일이 처음 상태로 돌아갑니다. 그래서 학습 기록(`progress.db`)과 화면에서 새로 가져온 세트는 재배포·재시작 때 사라집니다. 저장소에 커밋된 단어책은 남습니다.
+Vercel에서는 코드 폴더가 읽기 전용이라, 화면에서 가져온 세트와 학습 기록은 서버의 임시 폴더(`/tmp`)에 저장됩니다. 임시 폴더는 서버가 바뀌면 비워지므로 언제든 사라질 수 있습니다. 학습 기록은 브라우저에도 함께 저장되고, 저장소에 커밋된 단어책은 항상 남습니다.
 
 ### 파일만 열기 (내 시험 범위만)
 
@@ -148,7 +147,6 @@ EngWord/
 ├── server.py           # FastAPI 백엔드
 ├── classcard.py        # 클래스카드 세트 페이지에서 단어·뜻 읽기
 ├── run.sh              # 설치 + 실행
-├── render.yaml         # Render 배포 설정
 ├── docs/               # README 스크린샷
 ├── requirements.txt
 ├── data/
