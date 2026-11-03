@@ -1,0 +1,237 @@
+# 단어|품사|뜻|예문
+eager|adj.|열망하는|The students were eager to learn.
+earn|v.|벌다, 얻다|She works part-time to earn money.
+economy|n.|경제|The economy is growing slowly.
+edge|n.|가장자리, 끝|Don't stand near the edge of the cliff.
+edit|v.|편집하다|I need to edit my essay before I submit it.
+educate|v.|교육하다|Schools educate children about safety.
+effect|n.|효과, 영향|The medicine had a quick effect.
+efficient|adj.|효율적인|This new engine is more efficient.
+effort|n.|노력|Learning English takes a lot of effort.
+elderly|adj.|나이 든|We visited an elderly neighbor.
+element|n.|요소|Luck is an important element of success.
+emerge|v.|나타나다, 드러나다|New problems began to emerge.
+emotion|n.|감정|She couldn't hide her emotion.
+emphasize|v.|강조하다|The teacher will emphasize the key points.
+employ|v.|고용하다|The company will employ 50 new workers.
+enable|v.|가능하게 하다|The Internet can enable people to work from home.
+encounter|v.|마주치다|You may encounter wild animals on the trail.
+encourage|v.|격려하다|My parents always encourage me.
+endanger|v.|위험에 빠뜨리다|Pollution can endanger wildlife.
+endure|v.|견디다|They had to endure the cold winter.
+enemy|n.|적|The army attacked the enemy at night.
+enforce|v.|시행하다, 강요하다|The police enforce the law.
+engage|v.|참여하다, 관여하다|Students should engage in class discussions.
+enhance|v.|향상하다|Good lighting can enhance a photo.
+enormous|adj.|거대한|An enormous wave hit the beach.
+ensure|v.|보장하다, 확실하게 하다|Please ensure that the door is locked.
+enterprise|n.|기업, 사업|He runs a small enterprise.
+entertain|v.|즐겁게 하다|The clown tried to entertain the kids.
+enthusiasm|n.|열정|She spoke with great enthusiasm.
+entire|adj.|전체의|I spent the entire day reading.
+entrance|n.|입구|Meet me at the main entrance.
+environment|n.|환경|We must protect the environment.
+equal|adj.|동등한, 같은|All people are equal under the law.
+equipment|n.|장비|The gym has new equipment.
+era|n.|시대|We live in the digital era.
+error|n.|실수, 오류|There is an error in your answer.
+escape|v.|탈출하다|The bird tried to escape from the cage.
+essential|adj.|필수적인|Water is essential for life.
+establish|v.|설립하다, 확립하다|They plan to establish a new school.
+estimate|v.|추정하다|Experts estimate the cost at $1 million.
+ethical|adj.|윤리적인|Is it ethical to test on animals?
+evidence|n.|증거|There is no evidence of life on Mars.
+evident|adj.|분명한|It was evident that she was tired.
+evolve|v.|진화하다, 발전하다|Languages evolve over time.
+exaggerate|v.|과장하다|Don't exaggerate the problem.
+exceed|v.|초과하다|Don't exceed the speed limit.
+excess|n.|초과, 과잉|An excess of salt is bad for you.
+exchange|v.|교환하다|Can I exchange this shirt for a smaller one?
+exclude|v.|제외하다|The list will exclude students who were absent.
+exhaust|v.|기진맥진하게 하다, 다 써 버리다|Long hikes exhaust me.
+exhibit|v.|전시하다|The gallery will exhibit her photos.
+exist|v.|존재하다|Do ghosts really exist?
+expand|v.|확장하다|The company plans to expand overseas.
+expense|n.|비용, 지출|Rent is my biggest expense.
+experiment|n.|실험|We did an experiment in science class.
+expert|n.|전문가|She is an expert in history.
+explore|v.|탐험하다|We want to explore the island.
+export|v.|수출하다|Korea will export more cars this year.
+expose|v.|드러내다, 노출시키다|Don't expose your skin to the sun too long.
+express|v.|표현하다|It's hard to express my feelings in words.
+extend|v.|연장하다, 확장하다|Can I extend my visa?
+extinct|adj.|멸종된|Dinosaurs are extinct.
+extraordinary|adj.|비범한, 놀라운|She has an extraordinary talent.
+extreme|adj.|극단적인|The desert has extreme heat.
+facility|n.|시설|The new gym is a modern facility.
+factor|n.|요인|Price is an important factor.
+faith|n.|믿음, 신앙|I have faith in you.
+false|adj.|거짓의, 틀린|The rumor turned out to be false.
+familiar|adj.|익숙한|Your face looks familiar.
+famine|n.|기근|Millions died in the famine.
+fascinate|v.|매혹하다|Stars fascinate young children.
+fatal|adj.|치명적인|The accident was fatal.
+fault|n.|잘못, 결점|It wasn't your fault.
+feature|n.|특징, 기능|This phone has a new camera feature.
+fee|n.|요금, 수수료|The entrance fee is 5,000 won.
+female|adj.|여성의, 암컷의|The female bird sits on the eggs.
+fierce|adj.|사나운, 격렬한|There was fierce competition for the prize.
+finance|n.|재정, 금융|He works in finance.
+flexible|adj.|유연한|My work hours are flexible.
+float|v.|뜨다|Wood can float on water.
+flood|n.|홍수|The flood destroyed many houses.
+flourish|v.|번창하다|Plants flourish in warm weather.
+focus|v.|집중하다|Focus on one thing at a time.
+forbid|v.|금지하다|My parents forbid me to play games at night.
+force|n.|힘, 무력|The force of the wind broke the window.
+forecast|n.|예보|The forecast says it will snow.
+foreign|adj.|외국의|She speaks three foreign languages.
+form|v.|형성하다|Ice can form on the road at night.
+formal|adj.|공식적인, 격식을 차린|Wear formal clothes to the interview.
+former|adj.|이전의|He is a former soldier.
+fortune|n.|행운, 재산|He made a fortune selling cars.
+found|v.|설립하다|They will found a new company.
+foundation|n.|기초, 재단|Reading is the foundation of learning.
+fragile|adj.|깨지기 쉬운|Be careful. The box is fragile.
+frame|n.|틀, 액자|I put the photo in a frame.
+freedom|n.|자유|People fought for freedom.
+frequent|adj.|빈번한|He is a frequent visitor here.
+frustrate|v.|좌절시키다|Slow Internet can frustrate users.
+fuel|n.|연료|The car ran out of fuel.
+fulfill|v.|이행하다, 성취하다|She worked hard to fulfill her dream.
+function|n.|기능|What is the function of the heart?
+fund|n.|기금, 자금|We raised a fund for the library.
+fundamental|adj.|근본적인|Freedom of speech is a fundamental right.
+furious|adj.|몹시 화난|My dad was furious about the broken window.
+gain|v.|얻다|You can gain experience by volunteering.
+gap|n.|틈, 격차|The gap between rich and poor is growing.
+gather|v.|모으다, 모이다|People began to gather in the square.
+gender|n.|성별|Pay should not depend on gender.
+gene|n.|유전자|This gene controls eye color.
+generate|v.|발생시키다|Wind can generate electricity.
+generation|n.|세대|The younger generation uses social media a lot.
+generous|adj.|관대한, 너그러운|She is generous with her time.
+genius|n.|천재|Mozart was a musical genius.
+genuine|adj.|진짜의, 진실한|This is a genuine diamond.
+global|adj.|세계적인|Climate change is a global problem.
+goal|n.|목표|My goal is to read 30 books this year.
+grab|v.|붙잡다|Grab your coat. We're leaving.
+gradual|adj.|점진적인|There was a gradual change in the weather.
+grant|v.|주다, 허락하다|The school will grant us permission.
+grateful|adj.|고마워하는|I am grateful for your help.
+grave|n.|무덤|They put flowers on the grave.
+guarantee|v.|보장하다|We guarantee your satisfaction.
+guilty|adj.|유죄의, 죄책감이 드는|I feel guilty about lying.
+habit|n.|습관|Reading before bed is a good habit.
+habitat|n.|서식지|The forest is a habitat for many birds.
+handle|v.|다루다, 처리하다|She knows how to handle stress.
+harsh|adj.|가혹한, 거친|The winter was harsh this year.
+harvest|n.|수확|The farmers had a good harvest.
+hazard|n.|위험|Smoking is a health hazard.
+heal|v.|치유하다, 낫다|Time will heal the pain.
+heritage|n.|유산|Hangeul is part of our cultural heritage.
+hesitate|v.|망설이다|Don't hesitate to ask questions.
+hide|v.|숨기다, 숨다|The cat likes to hide under the bed.
+highlight|v.|강조하다|The report will highlight the main issues.
+hire|v.|고용하다|The store will hire more workers.
+honor|n.|명예, 영광|It is an honor to meet you.
+host|v.|주최하다|Korea will host the event next year.
+hostile|adj.|적대적인|The crowd was hostile to the speaker.
+humble|adj.|겸손한|Despite his success, he is humble.
+humid|adj.|습한|Summer in Korea is hot and humid.
+hunger|n.|배고픔, 굶주림|Many children suffer from hunger.
+identical|adj.|동일한|The twins wear identical clothes.
+identify|v.|확인하다, 식별하다|Can you identify the man in the photo?
+identity|n.|정체성, 신원|The police checked his identity.
+ignorant|adj.|무지한|He was ignorant of the rules.
+illegal|adj.|불법의|It is illegal to drive without a license.
+illustrate|v.|설명하다, 삽화를 넣다|Let me illustrate this with an example.
+image|n.|이미지, 영상|The image on the screen was blurry.
+imagine|v.|상상하다|Imagine a world without music.
+imitate|v.|모방하다|Children imitate their parents.
+immediate|adj.|즉각적인|We need an immediate answer.
+immigrant|n.|이민자|Her parents were immigrants from China.
+impact|n.|영향, 충격|Social media has a big impact on teens.
+implement|v.|실행하다|The city will implement a new plan.
+imply|v.|암시하다|What do you imply by that?
+import|v.|수입하다|Korea must import oil.
+impose|v.|부과하다, 강요하다|The government will impose a new tax.
+impress|v.|감동시키다, 깊은 인상을 주다|He tried to impress the judges.
+improve|v.|향상시키다|Practice will improve your skills.
+incident|n.|사건|The incident happened last night.
+include|v.|포함하다|The price will include breakfast.
+income|n.|수입, 소득|Her income is higher than mine.
+increase|v.|증가하다|The population continues to increase.
+independent|adj.|독립적인|She is an independent woman.
+indicate|v.|나타내다, 가리키다|The red light will indicate danger.
+industry|n.|산업|The car industry is growing.
+inevitable|adj.|불가피한|Change is inevitable.
+infant|n.|유아|The infant slept all afternoon.
+infect|v.|감염시키다|The virus can infect animals too.
+influence|n.|영향|Parents have a strong influence on children.
+inform|v.|알리다|Please inform us of any changes.
+ingredient|n.|재료, 성분|Flour is the main ingredient of bread.
+inherit|v.|물려받다|He will inherit his father's farm.
+initial|adj.|처음의|My initial plan was to walk.
+injure|v.|부상을 입히다|Be careful not to injure yourself.
+innocent|adj.|무죄의, 순진한|The man was innocent of the crime.
+innovation|n.|혁신|Innovation drives economic growth.
+insight|n.|통찰력|The book gives insight into Korean history.
+insist|v.|주장하다, 고집하다|They insist on paying for dinner.
+inspire|v.|영감을 주다|Her story will inspire many people.
+install|v.|설치하다|I need to install the new app.
+instance|n.|사례, 경우|For instance, apples are rich in fiber.
+instinct|n.|본능|Birds build nests by instinct.
+institution|n.|기관, 제도|The bank is a financial institution.
+instruct|v.|지시하다, 가르치다|The coach will instruct the players.
+instrument|n.|악기, 도구|Can you play a musical instrument?
+insult|v.|모욕하다|Don't insult people online.
+insurance|n.|보험|Do you have car insurance?
+intellectual|adj.|지적인|Chess is an intellectual game.
+intelligence|n.|지능|Artificial intelligence is changing the world.
+intense|adj.|강렬한, 극심한|The pain was intense.
+interact|v.|상호 작용하다|Children interact with each other at school.
+interfere|v.|간섭하다, 방해하다|Don't interfere in my business.
+internal|adj.|내부의|The company had internal problems.
+interpret|v.|해석하다, 통역하다|How do you interpret this poem?
+interrupt|v.|방해하다, 끼어들다|Please don't interrupt me while I'm talking.
+interval|n.|간격|There was a short interval between the two acts.
+invade|v.|침입하다|The army will invade at dawn.
+invent|v.|발명하다|Who will invent the next big thing?
+invest|v.|투자하다|He wants to invest in real estate.
+investigate|v.|조사하다|The police will investigate the case.
+invisible|adj.|눈에 보이지 않는|Air is invisible.
+involve|v.|포함하다, 관련시키다|The job will involve a lot of travel.
+isolate|v.|고립시키다|The snow can isolate the village.
+issue|n.|문제, 쟁점|Climate change is a global issue.
+journey|n.|여행, 여정|The journey took three days.
+justice|n.|정의|They fought for justice.
+justify|v.|정당화하다|Nothing can justify violence.
+keen|adj.|열망하는, 예리한|She is keen to learn Spanish.
+kidnap|v.|납치하다|The criminals tried to kidnap a child.
+labor|n.|노동|The house was built with cheap labor.
+lack|n.|부족|Lack of sleep makes me tired.
+landscape|n.|풍경|The landscape here is beautiful.
+launch|v.|출시하다, 발사하다|The company will launch a new phone.
+lawyer|n.|변호사|She wants to become a lawyer.
+layer|n.|층|A layer of dust covered the table.
+leak|v.|새다|The roof began to leak.
+lecture|n.|강의|The lecture lasted two hours.
+legal|adj.|합법적인, 법률의|Is it legal to park here?
+legend|n.|전설|The legend says a dragon lived here.
+leisure|n.|여가|What do you do in your leisure time?
+liberty|n.|자유|The Statue of Liberty is in New York.
+license|n.|면허|She got her driver's license.
+lifetime|n.|일생, 평생|It was the trip of a lifetime.
+limit|n.|한계, 제한|There is a limit to my patience.
+link|n.|연결, 관련|There is a link between diet and health.
+liquid|n.|액체|Water is a liquid.
+literature|n.|문학|She studies English literature.
+load|n.|짐, 부담|The truck carried a heavy load.
+loan|n.|대출|He took out a loan to buy a car.
+local|adj.|지역의|We buy vegetables at the local market.
+locate|v.|위치를 찾아내다|Can you locate Korea on the map?
+logical|adj.|논리적인|Her argument was logical.
+loose|adj.|느슨한, 헐렁한|These pants are too loose.
+loyal|adj.|충실한|Dogs are loyal animals.
+luxury|n.|사치(품)|A car is a luxury for many people.

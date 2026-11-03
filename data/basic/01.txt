@@ -1,0 +1,241 @@
+# 단어|품사|뜻|예문  (예문에는 단어가 그대로 들어가야 빈칸 문제가 만들어짐)
+abandon|v.|버리다, 포기하다|They had to abandon the car in the snow.
+absorb|v.|흡수하다|Plants absorb water through their roots.
+accept|v.|받아들이다|She decided to accept the job offer.
+access|n.|접근, 이용|Students have free access to the library.
+accompany|v.|동반하다, 함께 가다|Parents must accompany children under ten.
+accomplish|v.|성취하다|We can accomplish a lot if we work together.
+accurate|adj.|정확한|The weather report was accurate.
+achieve|v.|달성하다|She worked hard to achieve her goal.
+acquire|v.|습득하다, 얻다|Children acquire language quickly.
+adapt|v.|적응하다|Animals adapt to their environment.
+adequate|adj.|적절한, 충분한|The room has adequate light for reading.
+adjust|v.|조정하다, 적응하다|You can adjust the height of the chair.
+admire|v.|존경하다, 감탄하다|I admire her courage.
+admit|v.|인정하다|He refused to admit his mistake.
+adopt|v.|채택하다, 입양하다|The school decided to adopt a new rule.
+advance|n.|발전, 진보|This is a great advance in medicine.
+advantage|n.|이점, 장점|Speaking two languages is a big advantage.
+advertise|v.|광고하다|They advertise their products on TV.
+afford|v.|~할 여유가 있다|I can't afford a new phone.
+agriculture|n.|농업|Agriculture is important to the local economy.
+aim|n.|목표, 목적|Our aim is to finish by Friday.
+alert|adj.|경계하는, 기민한|Drivers must stay alert at night.
+allow|v.|허락하다|My parents allow me to stay up late on weekends.
+alter|v.|바꾸다, 변경하다|We had to alter our plans because of the rain.
+alternative|n.|대안|Is there an alternative to this plan?
+amaze|v.|놀라게 하다|The magic show will amaze you.
+ambition|n.|야망, 포부|His ambition is to become a doctor.
+amount|n.|양, 액수|A large amount of water was wasted.
+ancestor|n.|조상|My ancestor came from a small village.
+ancient|adj.|고대의|We visited an ancient temple.
+annual|adj.|매년의, 연간의|The school holds an annual festival.
+anticipate|v.|예상하다|We did not anticipate so many visitors.
+anxiety|n.|불안|Exams can cause a lot of anxiety.
+apologize|v.|사과하다|You should apologize to your friend.
+appeal|v.|호소하다, 관심을 끌다|The design will appeal to young people.
+appear|v.|나타나다, ~인 것 같다|A rainbow began to appear in the sky.
+apply|v.|지원하다, 적용하다|You can apply for the job online.
+appointment|n.|약속, 예약|I have a dentist appointment at three.
+appreciate|v.|감사하다, 진가를 알다|I really appreciate your help.
+approach|v.|다가가다, 접근하다|The cat began to approach the bird slowly.
+appropriate|adj.|적절한|Jeans are not appropriate for the ceremony.
+approve|v.|승인하다, 찬성하다|My parents did not approve of the trip.
+argue|v.|논쟁하다, 주장하다|They always argue about money.
+arise|v.|발생하다|Problems may arise during the trip.
+arrange|v.|정리하다, 준비하다|Please arrange the books on the shelf.
+arrest|v.|체포하다|The police will arrest the thief soon.
+artificial|adj.|인공의|The flowers on the table are artificial.
+aspect|n.|측면|Money is only one aspect of the problem.
+assess|v.|평가하다|Teachers assess students in many ways.
+assign|v.|배정하다, 맡기다|The teacher will assign us a topic.
+assist|v.|돕다|Volunteers assist elderly people.
+associate|v.|연관 짓다|People associate red with danger.
+assume|v.|가정하다, 추정하다|Don't assume that everyone agrees with you.
+atmosphere|n.|대기, 분위기|The restaurant has a friendly atmosphere.
+attach|v.|붙이다, 첨부하다|Please attach a photo to the form.
+attempt|n.|시도|He passed the test on his first attempt.
+attend|v.|참석하다, 다니다|About 300 students attend the school.
+attitude|n.|태도|She has a positive attitude.
+attract|v.|끌다, 유인하다|Bright colors attract bees.
+audience|n.|청중, 관객|The audience clapped loudly.
+author|n.|작가, 저자|Who is the author of this book?
+authority|n.|권한, 당국|Teachers have authority in the classroom.
+available|adj.|이용 가능한|Tickets are available online.
+average|adj.|평균의|The average age of the members is 17.
+avoid|v.|피하다|Try to avoid junk food.
+award|n.|상|She won an award for her painting.
+aware|adj.|알고 있는, 의식하는|Are you aware of the risks?
+balance|n.|균형|It's hard to keep your balance on ice.
+ban|v.|금지하다|Some schools ban phones in class.
+barrier|n.|장벽|Language can be a barrier to communication.
+behave|v.|행동하다|Please behave yourself in the museum.
+belief|n.|믿음, 신념|It is a common belief that cats hate water.
+belong|v.|속하다|This bag does not belong to me.
+beneficial|adj.|유익한|Exercise is beneficial to your health.
+benefit|n.|이익, 혜택|One benefit of walking is better sleep.
+betray|v.|배신하다|He would never betray a friend.
+bitter|adj.|쓴, 쓰라린|This coffee tastes bitter.
+blame|v.|비난하다, 탓하다|Don't blame others for your mistakes.
+boast|v.|자랑하다|He likes to boast about his grades.
+bond|n.|유대, 결속|There is a strong bond between the sisters.
+border|n.|국경, 경계|They crossed the border at night.
+borrow|v.|빌리다|Can I borrow your pen?
+bother|v.|괴롭히다, 신경 쓰이게 하다|Does the noise bother you?
+brave|adj.|용감한|The brave firefighter saved the child.
+breathe|v.|숨 쉬다|It is hard to breathe in smoky air.
+brief|adj.|짧은, 간단한|He gave a brief speech.
+broadcast|v.|방송하다|They will broadcast the game live tonight.
+budget|n.|예산|We are on a tight budget.
+burden|n.|짐, 부담|He didn't want to be a burden to his family.
+calculate|v.|계산하다|Can you calculate the total cost?
+campaign|n.|캠페인, 운동|The school started a campaign to save energy.
+capable|adj.|~할 수 있는, 유능한|She is capable of doing the job alone.
+capacity|n.|수용력, 능력|The stadium has a capacity of 50,000.
+capture|v.|붙잡다, 포착하다|The police tried to capture the thief.
+career|n.|직업, 경력|She wants a career in science.
+category|n.|범주|Put the words into the correct category.
+cause|n.|원인|What was the cause of the fire?
+caution|n.|조심, 주의|Use caution when crossing the street.
+cease|v.|중단하다|The factory will cease production next year.
+celebrate|v.|축하하다, 기념하다|We celebrate Chuseok with our family.
+challenge|n.|도전, 어려움|Learning Chinese is a real challenge.
+character|n.|성격, 등장인물|The main character of the novel is a boy.
+characteristic|n.|특징|Patience is a characteristic of good teachers.
+charge|n.|요금, 책임|There is no charge for children.
+charity|n.|자선 단체, 자선|She gives money to charity every month.
+chase|v.|뒤쫓다|The dog likes to chase cats.
+cheat|v.|속이다, 부정행위를 하다|Never cheat on a test.
+chemical|n.|화학 물질|This chemical is dangerous to touch.
+circumstance|n.|상황, 환경|In this circumstance, we must wait.
+cite|v.|인용하다|You must cite your sources in the report.
+civil|adj.|시민의|Everyone has civil rights.
+claim|v.|주장하다|Some people claim that they saw a ghost.
+classify|v.|분류하다|Scientists classify animals into groups.
+client|n.|고객, 의뢰인|The lawyer met her client.
+climate|n.|기후|The climate here is mild.
+collapse|v.|붕괴하다|The old bridge could collapse at any time.
+colleague|n.|동료|She went to lunch with a colleague.
+combine|v.|결합하다|You can combine blue and yellow to make green.
+comfort|v.|위로하다|She tried to comfort her crying friend.
+command|n.|명령|The soldier followed the command.
+comment|n.|논평, 의견|Thank you for your comment.
+commercial|adj.|상업의|The area is full of commercial buildings.
+commit|v.|저지르다, 전념하다|He did not commit the crime.
+committee|n.|위원회|The committee will meet on Monday.
+communicate|v.|의사소통하다|We communicate by email.
+community|n.|공동체, 지역 사회|She helps people in her community.
+compare|v.|비교하다|Don't compare yourself to others.
+compete|v.|경쟁하다|Ten teams will compete in the final.
+complain|v.|불평하다|Many customers complain about the slow service.
+complex|adj.|복잡한|The problem is too complex to solve quickly.
+component|n.|구성 요소|Trust is a key component of friendship.
+concentrate|v.|집중하다|I can't concentrate with the TV on.
+concept|n.|개념|The concept of time is hard to explain.
+concern|n.|걱정, 관심사|Safety is our main concern.
+conclude|v.|결론을 내리다|We can conclude that the plan worked.
+condition|n.|상태, 조건|The car is in good condition.
+conduct|v.|수행하다|Scientists conduct experiments in the lab.
+conference|n.|회의|She spoke at an international conference.
+confidence|n.|자신감, 신뢰|She answered with confidence.
+conflict|n.|갈등, 충돌|The conflict between the two groups lasted years.
+confuse|v.|혼동시키다|Don't confuse "affect" with "effect."
+connect|v.|연결하다|You can connect the printer to your laptop.
+conscious|adj.|의식하는|She is conscious of her weight.
+consequence|n.|결과|Every action has a consequence.
+conserve|v.|보존하다, 아끼다|We must conserve water.
+consider|v.|고려하다|Please consider my offer.
+consist|v.|구성되다(of)|The team will consist of five people.
+constant|adj.|끊임없는|The baby needs constant care.
+construct|v.|건설하다|They plan to construct a new bridge.
+consume|v.|소비하다|Cars consume a lot of fuel.
+contact|n.|연락, 접촉|Keep in contact with your old friends.
+contain|v.|포함하다, 담다|This drink may contain sugar.
+contemporary|adj.|현대의, 동시대의|She likes contemporary art.
+content|n.|내용|The content of the book is interesting.
+context|n.|문맥, 상황|Guess the meaning from the context.
+continent|n.|대륙|Africa is a large continent.
+contrast|n.|대조|There is a sharp contrast between the two cities.
+contribute|v.|기여하다|Everyone should contribute to the project.
+convenient|adj.|편리한|Online shopping is convenient.
+convince|v.|납득시키다, 설득하다|I tried to convince him to stay.
+cooperate|v.|협력하다|The two countries agreed to cooperate.
+cope|v.|대처하다|How do you cope with stress?
+core|n.|핵심|Honesty is the core of our values.
+correspond|v.|일치하다|Your words do not correspond with your actions.
+crash|n.|충돌 사고|Nobody was hurt in the crash.
+create|v.|창조하다|Artists create new things every day.
+creature|n.|생물|The bat is a strange creature.
+crime|n.|범죄|Crime has decreased in this area.
+crisis|n.|위기|The country faced an economic crisis.
+criticize|v.|비판하다|Don't criticize others too quickly.
+crop|n.|농작물|Rice is the main crop here.
+crucial|adj.|결정적인, 중대한|Sleep is crucial for good health.
+cultivate|v.|경작하다, 기르다|Farmers cultivate rice in this area.
+cure|n.|치료법|There is no cure for the common cold.
+curious|adj.|호기심 많은|Children are curious about everything.
+current|adj.|현재의|What is your current address?
+custom|n.|관습|It is a local custom to bow.
+damage|n.|손상, 피해|The storm caused a lot of damage.
+deal|v.|다루다(with)|How will you deal with the problem?
+debate|n.|토론|We had a debate about school uniforms.
+decade|n.|10년|Prices have doubled in a decade.
+decay|v.|썩다|Sugar can make your teeth decay.
+decline|v.|감소하다, 거절하다|The number of farmers continues to decline.
+decrease|v.|감소하다|Crime began to decrease last year.
+dedicate|v.|바치다, 헌신하다|She will dedicate her life to science.
+defeat|v.|패배시키다|Our team will defeat them easily.
+defend|v.|방어하다|Soldiers defend the country.
+define|v.|정의하다|How do you define success?
+delay|n.|지연|The flight had a two-hour delay.
+delicate|adj.|섬세한, 연약한|This glass is very delicate.
+deliver|v.|배달하다|They deliver pizza until midnight.
+demand|n.|수요, 요구|There is a high demand for nurses.
+democracy|n.|민주주의|Democracy gives people the right to vote.
+demonstrate|v.|보여 주다, 증명하다|The teacher will demonstrate the experiment.
+deny|v.|부인하다|He did not deny the rumor.
+depend|v.|의존하다|Children depend on their parents.
+deposit|n.|예금, 보증금|You need to pay a deposit.
+depress|v.|우울하게 하다|Rainy days depress me.
+deserve|v.|~할 자격이 있다|You deserve a break.
+desire|n.|욕구, 갈망|She has a strong desire to travel.
+despite|prep.|~에도 불구하고|Despite the rain, we went out.
+destination|n.|목적지|Paris is a popular destination.
+destroy|v.|파괴하다|The fire could destroy the forest.
+detail|n.|세부 사항|Pay attention to every detail.
+detect|v.|감지하다, 발견하다|Dogs can detect smells we can't.
+determine|v.|결정하다, 알아내다|This test will determine your level.
+develop|v.|개발하다, 발달하다|Babies develop quickly.
+device|n.|장치, 기기|This device checks your heart rate.
+devote|v.|바치다, 쏟다|He will devote his weekend to studying.
+diet|n.|식단|A healthy diet includes vegetables.
+differ|v.|다르다|Opinions differ on this issue.
+digest|v.|소화하다|Some people cannot digest milk.
+dimension|n.|차원, 크기|The problem has another dimension.
+disappear|v.|사라지다|The sun began to disappear behind the clouds.
+disaster|n.|재난|The flood was a terrible disaster.
+discipline|n.|규율, 훈육|The school has strict discipline.
+discount|n.|할인|Students get a 10% discount.
+discourage|v.|낙담시키다, 막다|Don't let failure discourage you.
+discover|v.|발견하다|Scientists discover new species every year.
+discrimination|n.|차별|Racial discrimination is against the law.
+disease|n.|질병|Heart disease is common in older people.
+display|v.|전시하다, 보여 주다|The museum will display her paintings.
+distance|n.|거리|The distance between the cities is 100 km.
+distinct|adj.|뚜렷한, 별개의|There is a distinct smell of gas.
+distinguish|v.|구별하다|Can you distinguish between the twins?
+distract|v.|산만하게 하다|Phones distract students in class.
+distribute|v.|분배하다|Volunteers distribute food to the poor.
+district|n.|지역, 구역|He lives in a quiet district.
+diverse|adj.|다양한|Seoul has a diverse population.
+divide|v.|나누다|Let's divide the cake into eight pieces.
+document|n.|문서|Please sign this document.
+domestic|adj.|국내의, 가정의|Domestic flights are cheaper.
+dominate|v.|지배하다|Big companies dominate the market.
+donate|v.|기부하다|She decided to donate her old clothes.
+doubt|n.|의심|There is no doubt that he is talented.
+draft|n.|초안|I wrote the first draft of my essay.
+dramatic|adj.|극적인|There was a dramatic change in the weather.
+due|adj.|~하기로 예정된|The report is due on Friday.
+durable|adj.|내구성 있는|These boots are very durable.
+duty|n.|의무|It is our duty to protect nature.

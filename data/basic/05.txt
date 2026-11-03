@@ -1,0 +1,75 @@
+# 단어|품사|뜻|예문  (수능 빈출 심화)
+abstract|adj.|추상적인|Love is an abstract idea.
+abundant|adj.|풍부한|The region has abundant water.
+accelerate|v.|가속하다|The car began to accelerate.
+accumulate|v.|축적하다|Dust will accumulate if you don't clean.
+acknowledge|v.|인정하다|He refused to acknowledge his error.
+adolescent|n.|청소년|Every adolescent needs enough sleep.
+advocate|v.|옹호하다|They advocate equal rights for all.
+aggressive|adj.|공격적인|The dog became aggressive.
+allocate|v.|할당하다|We need to allocate more time to math.
+ambiguous|adj.|애매한|The question was ambiguous.
+ample|adj.|충분한|There is ample space for everyone.
+apparent|adj.|명백한|It was apparent that he was lying.
+arbitrary|adj.|임의적인, 제멋대로인|The rule seems arbitrary.
+assert|v.|주장하다|She will assert her rights.
+attribute|v.|~의 탓으로 돌리다|They attribute their success to hard work.
+bias|n.|편견|The report shows a clear bias.
+boundary|n.|경계|The river marks the boundary.
+coherent|adj.|일관성 있는|Her argument was clear and coherent.
+coincidence|n.|우연의 일치|What a coincidence to see you here!
+compensate|v.|보상하다|The company will compensate the workers.
+comprehend|v.|이해하다|It's hard to comprehend the size of space.
+compromise|n.|타협|They reached a compromise.
+conceal|v.|숨기다|He tried to conceal his anger.
+confront|v.|맞서다|You must confront your fears.
+consensus|n.|합의|There is a consensus on the issue.
+contradict|v.|모순되다, 반박하다|The facts contradict his story.
+controversy|n.|논란|The decision caused controversy.
+conventional|adj.|관습적인, 전통적인|She doesn't like conventional methods.
+correlation|n.|상관관계|There is a correlation between sleep and grades.
+deceive|v.|속이다|Don't try to deceive me.
+deficiency|n.|결핍|Vitamin D deficiency is common in winter.
+deliberate|adj.|고의적인, 신중한|It was a deliberate attack.
+derive|v.|끌어내다, 유래하다|Many English words derive from Latin.
+deteriorate|v.|악화되다|His health began to deteriorate.
+dilemma|n.|딜레마, 진퇴양난|She faced a moral dilemma.
+diminish|v.|줄어들다|The pain will diminish over time.
+discard|v.|버리다|Discard any food past its date.
+disguise|v.|변장하다, 숨기다|He tried to disguise his voice.
+dispute|n.|분쟁, 논쟁|The border dispute lasted years.
+diversity|n.|다양성|We celebrate cultural diversity.
+elaborate|adj.|정교한|They made an elaborate plan.
+empathy|n.|공감|Good doctors show empathy.
+empirical|adj.|경험적인, 실증적인|We need empirical evidence.
+exploit|v.|착취하다, 이용하다|Some companies exploit workers.
+fluctuate|v.|변동하다|Prices fluctuate every day.
+hypothesis|n.|가설|Scientists test their hypothesis.
+immense|adj.|엄청난|The project needs immense effort.
+inherent|adj.|내재된|There are risks inherent in any sport.
+integrate|v.|통합하다|We should integrate new students quickly.
+intrinsic|adj.|본질적인, 내재적인|Learning has intrinsic value.
+irrelevant|adj.|무관한|That fact is irrelevant.
+manipulate|v.|조작하다|Some ads manipulate our feelings.
+meditate|v.|명상하다|I meditate for ten minutes every morning.
+misleading|adj.|오해의 소지가 있는|The headline was misleading.
+notable|adj.|주목할 만한|It is a notable achievement.
+obsess|v.|집착하게 하다|Don't obsess over small details.
+oppress|v.|억압하다|Dictators oppress their people.
+paradox|n.|역설|It's a paradox that more choice can make us unhappy.
+perceptive|adj.|통찰력 있는|She is a very perceptive reader.
+plausible|adj.|그럴듯한|His excuse sounded plausible.
+predominant|adj.|우세한, 지배적인|Blue is the predominant color in the room.
+profound|adj.|깊은, 심오한|The book had a profound effect on me.
+prolong|v.|연장하다|Exercise can prolong your life.
+reinforce|v.|강화하다|Practice will reinforce what you learn.
+retain|v.|유지하다, 보유하다|Sleep helps you retain information.
+scrutiny|n.|정밀 조사|The plan came under scrutiny.
+simultaneous|adj.|동시의|There were two simultaneous attacks.
+spontaneous|adj.|자발적인, 즉흥적인|It was a spontaneous decision.
+stereotype|n.|고정관념|That is just a stereotype.
+subjective|adj.|주관적인|Taste in music is subjective.
+undergo|v.|겪다|She will undergo surgery next week.
+underlying|adj.|근본적인, 밑에 있는|What is the underlying cause?
+undermine|v.|약화시키다|Lies undermine trust.
+verify|v.|확인하다, 검증하다|Always verify the facts.

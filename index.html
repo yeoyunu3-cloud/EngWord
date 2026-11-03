@@ -52,6 +52,37 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .dir{font-size:.75rem;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
 .prompt{font-size:1.7rem;font-weight:700;text-wrap:balance;overflow-wrap:anywhere}
 .prompt.en{font-family:var(--f-word);font-size:2.1rem}
+.cloze{align-items:stretch;text-align:left}
+.cloze .dir{text-align:center}
+.sents{margin:0;padding-left:1.4em;display:grid;gap:12px;font-family:var(--f-word);font-size:1.15rem;line-height:1.6}
+.sents li{overflow-wrap:anywhere}
+.blank{display:inline-block;border-bottom:2px solid var(--accent);min-width:3em;line-height:1.1}
+.books{display:flex;gap:8px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:500;display:flex;gap:8px;align-items:baseline}
+.tab small{color:var(--muted);font-variant-numeric:tabular-nums}
+.tab.on{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.tab.on small{color:inherit;opacity:.8}
+.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;max-height:330px;overflow-y:auto;padding:2px}
+.day{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px;text-align:left;display:flex;flex-direction:column;gap:5px}
+.day:hover{border-color:var(--accent)}
+.day.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.day b{font-variant-numeric:tabular-nums}
+.day.done b::after{content:" ✓";color:var(--ok)}
+.dw{font-family:var(--f-word);font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.here{display:flex;flex-direction:column;gap:2px;border-left:3px solid var(--accent);padding-left:12px}
+.pos{font-family:var(--f-body);font-style:italic;font-weight:400;font-size:.8rem;color:var(--muted)}
+.ex{font-family:var(--f-word);font-style:italic;font-size:.92rem;color:var(--muted);margin-top:2px}
+.page-head{display:flex;flex-direction:column;gap:2px;border-bottom:2px solid var(--ink);padding-bottom:10px}
+.page-head h1{font-family:var(--f-word);font-size:2rem}
+.book{list-style:none;margin:0;padding:0;display:grid}
+.entry{display:grid;grid-template-columns:3.2em 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.entry .no{font-family:var(--f-word);color:var(--muted);font-size:.85rem;font-variant-numeric:tabular-nums;padding-top:4px}
+.entry .txt{min-width:0;display:flex;flex-direction:column;gap:3px}
+.entry .head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.entry .en{font-family:var(--f-word);font-weight:700;font-size:1.2rem;overflow-wrap:anywhere}
+.entry .speak{width:28px;height:28px;font-size:.75rem}
+.entry .ko{color:var(--ink)}
+.entry .ko.hide{color:transparent;background:var(--line);border-radius:6px;cursor:pointer;user-select:none}
 .hint{font-family:var(--f-word);color:var(--muted);letter-spacing:.06em}
 .type{display:flex;gap:8px}
 .type input{flex:1;min-width:0;font:inherit;font-family:var(--f-word);font-size:1.25rem;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
@@ -73,6 +104,17 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .item .txt{min-width:0;display:flex;flex-direction:column}
 .score{font-size:3rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
 .keys{font-size:.8rem;color:var(--muted);text-align:center}
+/* 4지선다 보기 */
+.choices{display:grid;gap:8px}
+.choice{display:flex;gap:12px;align-items:baseline;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:14px 16px;font-size:1.05rem;overflow-wrap:anywhere}
+.choice.en{font-family:var(--f-word);font-size:1.15rem}
+.choice .num{font-family:var(--f-body);font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice:disabled{cursor:default}
+.choice.ok{border-color:var(--ok);background:var(--ok-soft)}
+.choice.bad{border-color:var(--bad);background:var(--bad-soft)}
+.imp{display:flex;gap:8px}
+.imp input{flex:1;min-width:0;font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 @media (max-width:480px){.prompt.en{font-size:1.7rem}.card{padding:22px 14px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -80,7 +122,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 <main id="app"></main>
 
 <script>
-const W=[
+const EXAM=[
 ["certain","특정한"],["intention","의도"],["profit","이익, 수익"],["political benefit","정치적 이점"],
 ["disturb","방해하다"],["harm","해(를 끼치다)"],["B as well as A","A뿐만 아니라 B도"],["individual","개인"],
 ["involved","관련된"],["state","상태"],["emergency","비상, 응급"],["measure","측정하다"],
@@ -102,14 +144,38 @@ const W=[
 ["eliminate","제거하다"],["objectively","객관적으로"],["trust","신뢰하다"],["lead to ~","~에 이르다"],
 ["pass through ~","~를 빠져나가다"],["unidentified","정체불명의"]
 ];
+let W=EXAM;
 const ALT={judgment:["judgement"],analyze:["analyse"]};
-const SET=10, NSETS=Math.ceil(W.length/SET);
+const SET=10;let NSETS=Math.ceil(W.length/SET);
 const KEY="engword-trainer-v1";
 const $app=document.getElementById("app");
 let S=load();
-function load(){let s=null;try{s=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!s||!s.w)s={w:{}};if(!s.dir)s.dir="both";return s}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-function st(i){return S.w[i]||(S.w[i]={m:0,x:0})}
+function load(){let s=null;try{s=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!s||!s.w)s={w:{}};if(!s.dir)s.dir="both";if(!s.mode)s.mode="write";
+  // 예전 기록(번호 키)을 "책:단어" 키로 옮김
+  for(const k of Object.keys(s.w))if(/^\d+$/.test(k)){if(EXAM[k])s.w["exam:"+EXAM[k][0]]=s.w[k];delete s.w[k]}
+  return s}
+// 지금 보고 있는 책과 Day. 서버가 없으면 내 시험 범위만 쓴다
+let CUR={book:"exam",day:0,title:"내 시험 범위"};
+let BOOKS=[],BOOKWORDS={},SERVER=false,FLASH="";
+const sent={};let syncTimer=null;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  if(SERVER){clearTimeout(syncTimer);syncTimer=setTimeout(sync,600)}}
+async function sync(){
+  const by={};
+  for(const[k,v]of Object.entries(S.w)){const j=JSON.stringify(v);if(sent[k]===j)continue;
+    const c=k.indexOf(":"),b=k.slice(0,c);(by[b]||(by[b]={}))[k.slice(c+1)]={m:v.m?1:0,x:v.x||0};sent[k]=j}
+  for(const[b,items]of Object.entries(by)){
+    try{await fetch(`/api/progress/${encodeURIComponent(b)}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(items)})}
+    catch(e){for(const w of Object.keys(items))delete sent[b+":"+w]}}
+}
+async function pullProgress(b){
+  try{const r=await fetch(`/api/progress/${encodeURIComponent(b)}`);if(!r.ok)return;const j=await r.json();
+    for(const[w,v]of Object.entries(j)){const k=b+":"+w,o=S.w[k]||{m:0,x:0};
+      S.w[k]={m:(o.m||v.m)?1:0,x:Math.max(o.x||0,v.x||0)}}
+    save()}catch(e){}
+}
+const wkey=(b,w)=>b+":"+w;
+function st(i){const k=wkey(CUR.book,W[i][0]);return S.w[k]||(S.w[k]={m:0,x:0})}
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const norm=s=>s.toLowerCase().replace(/[ㄱ-힝]/g," ").replace(/[^a-z ]/g," ").replace(/\s+/g," ").trim();
@@ -139,6 +205,48 @@ const setIdx=s=>Array.from({length:Math.min(SET,W.length-s*SET)},(_,k)=>s*SET+k)
 let key=null; // current keyboard handler
 document.addEventListener("keydown",e=>{if(key)key(e)});
 
+/* ---------- 단어책 ---------- */
+function bookBar(){
+  if(!BOOKS.length)return"";
+  const tabs=[{id:"exam",title:"내 시험 범위",count:EXAM.length},...BOOKS].map(b=>`<button class="tab ${CUR.book===b.id?"on":""}" data-book="${b.id}">${esc(b.title)}<small>${b.count}</small></button>`).join("");
+  let days="";
+  const bk=BOOKS.find(b=>b.id===CUR.book);
+  if(bk&&BOOKWORDS[bk.id]&&bk.days.length>1){const all=BOOKWORDS[bk.id];
+    days=`<div class="days">${bk.days.map(d=>{const ws=all.slice((d.day-1)*bk.daySize,(d.day-1)*bk.daySize+d.count);
+      const done=ws.filter(o=>(S.w[wkey(bk.id,o.w)]||{}).m).length;
+      return`<button class="day ${CUR.day===d.day?"on":""} ${done===d.count?"done":""}" data-day="${d.day}"><b>Day ${String(d.day).padStart(2,"0")}</b><span class="dw">${esc(ws[0].w)} – ${esc(ws[ws.length-1].w)}</span><span class="meter"><i style="width:${done/d.count*100}%"></i></span></button>`}).join("")}</div>`}
+  return`<nav class="books">${tabs}</nav>${days}`}
+function bindBookBar(){
+  $app.querySelectorAll("[data-book]").forEach(b=>b.onclick=()=>openBook(b.dataset.book));
+  $app.querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>openDay(CUR.book,+b.dataset.day));
+}
+const multiDay=()=>CUR.day>0&&((BOOKS.find(b=>b.id===CUR.book)||{}).days||[]).length>1;
+function setWords(list,cur){W=list;NSETS=Math.ceil(W.length/SET);CUR=cur;S.cur={book:cur.book,day:cur.day};save()}
+async function openBook(id){
+  if(id==="exam"){setWords(EXAM,{book:"exam",day:0,title:"내 시험 범위"});return home()}
+  const bk=BOOKS.find(b=>b.id===id);if(!bk)return;
+  if(!BOOKWORDS[id]){
+    try{const r=await fetch(`/api/books/${encodeURIComponent(id)}/words`);BOOKWORDS[id]=(await r.json()).words}
+    catch(e){$app.insertAdjacentHTML("afterbegin",`<div class="fb bad">단어책을 불러오지 못했어요. 서버가 켜져 있는지 확인해 주세요.</div>`);return}
+    await pullProgress(id)}
+  const last=S.cur&&S.cur.book===id?S.cur.day:0;
+  const all=BOOKWORDS[id];
+  const firstOpen=bk.days.find(d=>all.slice((d.day-1)*bk.daySize,(d.day-1)*bk.daySize+d.count).some(o=>!(S.w[wkey(id,o.w)]||{}).m));
+  return openDay(id,last||(firstOpen?firstOpen.day:1))}
+async function openDay(id,day){
+  const bk=BOOKS.find(b=>b.id===id);if(!bk)return;
+  if(!BOOKWORDS[id])return openBook(id);
+  const ws=BOOKWORDS[id].slice((day-1)*bk.daySize,day*bk.daySize).map(o=>[o.w,o.ko,o.pos,o.ex]);
+  setWords(ws,{book:id,day,title:bk.title});home();window.scrollTo(0,0)}
+async function boot(){
+  try{const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),1500);
+    const r=await fetch("/api/books",{signal:ctrl.signal,cache:"no-store"});
+    if(!r.ok)throw 0;BOOKS=await r.json();SERVER=true;
+    await pullProgress("exam");
+    if(S.cur&&S.cur.book!=="exam"&&BOOKS.some(b=>b.id===S.cur.book))return openBook(S.cur.book);
+  }catch(e){BOOKS=[];SERVER=false}
+  home()}
+
 /* ---------- home ---------- */
 function home(){
   key=null;
@@ -147,8 +255,15 @@ function home(){
   let sets="";
   for(let s=0;s<NSETS;s++){const ids=setIdx(s),done=ids.filter(i=>st(i).m).length;
     sets+=`<button class="set" data-set="${s}"><span class="n">세트 ${s+1}</span><span class="w">${esc(W[ids[0]][0].replace(/ [ㄱ-힝].*/,""))} …</span><span class="muted">${done}/${ids.length} 완료</span><span class="meter"><i style="width:${done/ids.length*100}%"></i></span></button>`}
+  const exams=[...new Set([10,20,40,W.length].filter(n=>n<=W.length))];
+  // 예문이 없는 책(클래스카드에서 가져온 세트)은 빈칸 문제를 만들 수 없다
+  const hasCloze=CUR.book==="exam"||W.some(w=>w[3]);
   $app.innerHTML=`
   <div class="top"><h1>영단어 암기 트레이너</h1></div>
+  ${FLASH?`<div class="fb ok">${esc(FLASH)}</div>`:""}
+  ${bookBar()}
+  ${SERVER?`<form class="imp" id="imp"><input id="impUrl" type="url" inputmode="url" placeholder="클래스카드 세트 링크 (예: https://www.classcard.net/set/31507889)" aria-label="클래스카드 세트 링크"><button class="btn" id="impBtn">단어 가져오기</button></form><p class="muted" id="impMsg" role="status"></p>`:""}
+  <div class="here"><span class="muted">지금 공부하는 범위</span><h2>${esc(CUR.title)}${multiDay()?` · Day ${String(CUR.day).padStart(2,"0")}`:""}</h2></div>
   <div class="stat">
     <div><b>${mastered}<span class="muted"> / ${W.length}</span></b><span class="muted">외운 단어</span></div>
     <div><b>${weak.length}</b><span class="muted">틀린 적 있는 단어</span></div>
@@ -156,7 +271,8 @@ function home(){
   <div class="meter big"><i style="width:${mastered/W.length*100}%"></i></div>
   <ol class="steps">
     <li><b>세트별 학습</b>: 10개씩 훑어보고 바로 직접 써 보기. 단어마다 ${S.dir==="both"?"영어 보고 뜻 쓰기, 뜻 보고 영어 쓰기를 둘 다":"두 번"} 맞혀야 끝나요.</li>
-    <li><b>모의고사</b>: 전체 범위를 섞어서 시험처럼 풀어요.</li>
+    <li><b>모의고사</b>: 전체 범위를 섞어서 시험처럼 풀어요. 주관식(직접 쓰기), 객관식(4지선다), 둘을 섞어서 중 고를 수 있어요.</li>
+    ${hasCloze?`<li><b>빈칸 주관식</b>: 예문 세 개에 공통으로 빠진 단어를 써요.</li>`:""}
     <li><b>오답 집중</b>: 많이 틀린 단어만 다시 돌려요. 시험 직전에 한 번 더.</li>
   </ol>
   <section class="panel">
@@ -165,16 +281,21 @@ function home(){
   </section>
   <section class="panel">
     <h2>2. 모의고사</h2>
+    <nav class="books" aria-label="문제 형식">${[["write","주관식 (적기)"],["mc","객관식 (4지선다)"],["mix","섞어서"]].map(([v,t])=>`<button class="tab ${S.mode===v?"on":""}" data-mode="${v}">${t}</button>`).join("")}</nav>
     <div class="row">
-      <button class="btn primary" data-exam="20">20문제</button>
-      <button class="btn" data-exam="40">40문제</button>
-      <button class="btn" data-exam="${W.length}">전체 ${W.length}문제</button>
+      ${exams.map((n,k)=>`<button class="btn ${k===0?"primary":""}" data-exam="${n}">${n===W.length?`전체 ${n}문제`:`${n}문제`}</button>`).join("")}
     </div>
   </section>
+  ${hasCloze?`<section class="panel">
+    <h2>3. 빈칸 주관식</h2>
+    <p class="muted">${CUR.book==="exam"?"세 문장의 빈칸에 공통으로 들어갈 단어를":"예문의 빈칸에 들어갈 단어를"} 직접 써요. 문맥으로 단어를 떠올리는 연습이에요.</p>
+    <div class="row">${Array.from({length:NSETS},(_,s)=>`<button class="btn" data-cl="${s}">세트 ${s+1}</button>`).join("")}</div>
+    <div class="row">${W.length>20?`<button class="btn primary" data-clr="20">전체에서 20문제</button>`:""}<button class="btn ${W.length>20?"":"primary"}" data-clr="${W.length}">전체 ${W.length}문제</button></div>
+  </section>`:""}
   <section class="panel">
-    <h2>3. 오답 집중</h2>
+    <h2>${hasCloze?4:3}. 오답 집중</h2>
     <p class="muted">${weak.length?`틀린 횟수가 많은 단어부터 최대 15개를 다시 학습해요.`:`아직 틀린 단어가 없어요. 학습이나 모의고사를 먼저 풀어 보세요.`}</p>
-    <div class="row"><button class="btn" data-weak ${weak.length?"":"disabled"}>오답 학습 시작</button><button class="btn" data-list>전체 단어장</button></div>
+    <div class="row"><button class="btn" data-weak ${weak.length?"":"disabled"}>오답 학습 시작</button><button class="btn" data-list>${multiDay()?"Day 단어장":"전체 단어장"}</button></div>
   </section>
   <div class="toggles">
     <label for="dirSel">문제 방향</label>
@@ -184,15 +305,41 @@ function home(){
       <option value="ko" ${S.dir==="ko"?"selected":""}>뜻 보고 영어 쓰기만</option>
     </select>
     <button class="link" id="reset">기록 초기화</button>
+    ${(BOOKS.find(b=>b.id===CUR.book)||{}).imported?`<button class="link" id="delBook">이 단어 세트 삭제</button>`:""}
   </div>
   <div id="confirm"></div>`;
   $app.querySelectorAll("[data-set]").forEach(b=>b.onclick=()=>preview(setIdx(+b.dataset.set),`세트 ${+b.dataset.set+1}`));
   $app.querySelectorAll("[data-exam]").forEach(b=>b.onclick=()=>exam(+b.dataset.exam));
   const wb=$app.querySelector("[data-weak]");wb.onclick=()=>{const ids=weak.sort((a,b)=>st(b).x-st(a).x).slice(0,15);preview(ids,"오답 집중")};
   $app.querySelector("[data-list]").onclick=list;
+  bindBookBar();
+  $app.querySelectorAll("[data-cl]").forEach(b=>b.onclick=()=>cloze(setIdx(+b.dataset.cl),`빈칸 세트 ${+b.dataset.cl+1}`));
+  $app.querySelectorAll("[data-clr]").forEach(b=>b.onclick=()=>cloze(shuffle(W.map((_,i)=>i)).slice(0,+b.dataset.clr),"빈칸 주관식"));
   $app.querySelector("#dirSel").onchange=e=>{S.dir=e.target.value;save();home()};
-  $app.querySelector("#reset").onclick=()=>{$app.querySelector("#confirm").innerHTML=`<div class="panel"><p>모든 학습 기록을 지울까요?</p><div class="row"><button class="btn primary" id="yes">지우기</button><button class="btn" id="no">취소</button></div></div>`;
-    $app.querySelector("#yes").onclick=()=>{S.w={};save();home()};$app.querySelector("#no").onclick=home};
+  $app.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{S.mode=b.dataset.mode;save();home()});
+  FLASH="";
+  const imp=$app.querySelector("#imp");
+  if(imp)imp.onsubmit=async e=>{e.preventDefault();
+    const url=$app.querySelector("#impUrl").value.trim(),msg=$app.querySelector("#impMsg"),btn=$app.querySelector("#impBtn");
+    if(!url)return;btn.disabled=true;msg.textContent="단어를 읽어 오는 중…";
+    try{const r=await fetch("/api/import",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
+      const j=await r.json();if(!r.ok)throw new Error(j.detail||"단어를 가져오지 못했어요.");
+      BOOKS=await(await fetch("/api/books",{cache:"no-store"})).json();delete BOOKWORDS[j.id];
+      FLASH=`'${j.title}'에서 ${j.count}단어를 가져왔어요.`;await openBook(j.id)}
+    catch(err){msg.textContent=err.message;btn.disabled=false}};
+  const del=$app.querySelector("#delBook");
+  if(del)del.onclick=()=>{$app.querySelector("#confirm").innerHTML=`<div class="panel"><p>${esc(CUR.title)} 세트와 학습 기록을 지울까요? 링크로 다시 가져올 수 있어요.</p><div class="row"><button class="btn primary" id="yes">지우기</button><button class="btn" id="no">취소</button></div></div>`;
+    $app.querySelector("#yes").onclick=async()=>{const id=CUR.book,pre=id+":";
+      try{await fetch(`/api/books/${encodeURIComponent(id)}`,{method:"DELETE"})}catch(e){}
+      for(const k of Object.keys(S.w))if(k.startsWith(pre)){delete S.w[k];delete sent[k]}
+      try{BOOKS=await(await fetch("/api/books",{cache:"no-store"})).json()}catch(e){BOOKS=BOOKS.filter(b=>b.id!==id)}
+      delete BOOKWORDS[id];openBook("exam")};
+    $app.querySelector("#no").onclick=home};
+  $app.querySelector("#reset").onclick=()=>{$app.querySelector("#confirm").innerHTML=`<div class="panel"><p>${esc(CUR.title)}의 학습 기록을 모두 지울까요?</p><div class="row"><button class="btn primary" id="yes">지우기</button><button class="btn" id="no">취소</button></div></div>`;
+    $app.querySelector("#yes").onclick=async()=>{const pre=CUR.book+":";for(const k of Object.keys(S.w))if(k.startsWith(pre)){delete S.w[k];delete sent[k]}
+      try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+      if(SERVER)try{await fetch(`/api/progress/${encodeURIComponent(CUR.book)}`,{method:"DELETE"})}catch(e){}
+      home()};$app.querySelector("#no").onclick=home};
 }
 
 /* ---------- preview ---------- */
@@ -204,7 +351,7 @@ function preview(ids,label){
     <h1>먼저 훑어보기</h1>
     <p class="muted">소리 내서 한 번씩 읽어 보세요. 뜻을 가리고 스스로 떠올려 본 뒤 퀴즈로 넘어가면 더 오래 남아요.</p>
     <div class="row"><button class="btn primary" id="go">퀴즈 시작 (Enter)</button><button class="btn" id="hide">${hide?"뜻 보이기":"뜻 가리기"}</button></div>
-    <div class="list">${ids.map(i=>`<div class="item"><button class="speak" data-say="${i}" aria-label="발음 듣기">▶</button><div class="txt"><span class="en">${esc(W[i][0])}</span><span class="ko ${hide?"hide":""}" data-i="${i}">${esc(W[i][1])}</span></div><span></span></div>`).join("")}</div>
+    <div class="list">${ids.map(i=>`<div class="item"><button class="speak" data-say="${i}" aria-label="발음 듣기">▶</button><div class="txt"><span class="en">${esc(W[i][0])}${W[i][2]?` <i class="pos">${esc(W[i][2])}</i>`:""}</span><span class="ko ${hide?"hide":""}" data-i="${i}">${esc(W[i][1])}</span>${W[i][3]?`<span class="ex">${esc(W[i][3])}</span>`:""}</div><span></span></div>`).join("")}</div>
     <button class="btn primary" id="go2">퀴즈 시작</button>`;
     $app.querySelector("#back").onclick=home;
     $app.querySelector("#go").onclick=$app.querySelector("#go2").onclick=()=>drill(ids,label);
@@ -260,6 +407,48 @@ function ask({i,type,top,onDone}){
   key=null;
 }
 
+/* ---------- 4지선다 ---------- */
+// 같은 범위의 다른 단어에서 오답 보기 3개를 뽑는다. 뜻이나 철자가 같은 단어는 보기에서 뺀다
+function choicesFor(i,type){
+  const pick=k=>type===0?W[k][1]:W[k][0];
+  const right=pick(i),opts=[right],seen=new Set([right]);
+  for(const k of shuffle(W.map((_,k)=>k))){if(opts.length>=4)break;
+    const v=pick(k);if(k===i||seen.has(v)||W[k][0]===W[i][0]||W[k][1]===W[i][1])continue;seen.add(v);opts.push(v)}
+  return shuffle(opts)}
+function askChoice({i,type,top,onDone}){
+  const en=W[i][0],ko=W[i][1],promptEn=type===0,right=promptEn?ko:en,opts=choicesFor(i,type);
+  let answered=false;
+  $app.innerHTML=`${top}
+  <div class="card">
+    <span class="dir">${promptEn?"영어 → 알맞은 뜻 고르기":"뜻 → 알맞은 영어 고르기"}</span>
+    <div class="prompt ${promptEn?"en":""}">${esc(promptEn?en:ko)}</div>
+    ${promptEn?`<button class="speak" id="sp" aria-label="발음 듣기">▶</button>`:""}
+  </div>
+  <div class="choices">${opts.map((o,k)=>`<button class="choice ${promptEn?"":"en"}" data-c="${k}"><span class="num">${k+1}</span><span>${esc(o)}</span></button>`).join("")}</div>
+  <div class="row"><button class="link" id="idk">모르겠어요</button></div>
+  <div id="fb"></div>
+  <p class="keys">숫자 1–${opts.length} 선택 · 틀리면 Enter로 다음</p>`;
+  if(promptEn)$app.querySelector("#sp").onclick=()=>sayNow(en);
+  const btns=[...$app.querySelectorAll("[data-c]")];
+  const finish=k=>{
+    if(answered)return;answered=true;
+    const ok=k!==null&&opts[k]===right;
+    btns.forEach((b,j)=>{b.disabled=true;if(opts[j]===right)b.classList.add("ok");else if(j===k)b.classList.add("bad")});
+    const fb=$app.querySelector("#fb");
+    if(ok){fb.innerHTML=`<div class="fb ok"><span><b>정답</b> · <span class="ans">${esc(en)}</span> = ${esc(ko)}</span></div>`;
+      key=null;setTimeout(()=>onDone(true,false),600);return}
+    fb.innerHTML=`<div class="fb bad"><span class="muted">정답</span><span><span class="ans mark">${esc(en)}</span> &nbsp;${esc(ko)}</span>
+      <div class="row"><button class="btn primary" id="nx">다음 (Enter)</button><button class="speak" id="sp2" aria-label="발음 듣기">▶</button></div></div>`;
+    $app.querySelector("#sp2").onclick=()=>sayNow(en);
+    const next=()=>{key=null;onDone(false,false)};
+    $app.querySelector("#nx").onclick=next;
+    key=e=>{if(e.key==="Enter"){e.preventDefault();next()}};
+  };
+  btns.forEach((b,k)=>b.onclick=()=>finish(k));
+  $app.querySelector("#idk").onclick=()=>finish(null);
+  key=e=>{const n=+e.key;if(n>=1&&n<=opts.length){e.preventDefault();finish(n-1)}};
+}
+
 /* ---------- drill: spaced repetition inside a session ---------- */
 function drill(ids,label){
   const stages=STAGES[S.dir]||STAGES.both,maxStage=stages.length;
@@ -308,7 +497,9 @@ function exam(n){
     const i=ids[k];
     const top=`<div class="top"><button class="link" id="back">← 그만하기</button><span class="muted" style="font-variant-numeric:tabular-nums">모의고사 ${k+1} / ${ids.length} · 정답 ${score}</span></div>
       <div class="meter big"><i style="width:${k/ids.length*100}%"></i></div>`;
-    ask({i,type:types[Math.random()*types.length|0],top,onDone:(ok,hint)=>{
+    // 형식: 주관식(ask) / 객관식(askChoice) / 섞어서는 문제마다 반반
+    const mc=S.mode==="mc"||(S.mode==="mix"&&Math.random()<.5);
+    (mc?askChoice:ask)({i,type:types[Math.random()*types.length|0],top,onDone:(ok,hint)=>{
       if(ok&&!hint)score++;else{wrong.push(i);if(!ok){st(i).x++;st(i).m=0}}
       save();k++;step();
     }});
@@ -316,18 +507,174 @@ function exam(n){
   };
   step();
 }
-function examDone(total,score,wrong){
-  key=e=>{if(e.key==="Enter"){e.preventDefault();wrong.length?preview(wrong,"모의고사 오답"):home()}};
+function examDone(total,score,wrong,label="모의고사",retry=()=>preview(wrong,"모의고사 오답")){
+  key=e=>{if(e.key==="Enter"){e.preventDefault();wrong.length?retry():home()}};
   const pct=Math.round(score/total*100);
-  $app.innerHTML=`<span class="muted">모의고사 결과</span>
+  $app.innerHTML=`<span class="muted">${label} 결과</span>
   <div class="row" style="align-items:baseline"><span class="score">${score}<span class="muted" style="font-size:1.4rem"> / ${total}</span></span><span class="muted">${pct}점</span></div>
   <p>${pct>=90?"시험 준비 거의 끝났어요. 틀린 것만 한 번 더 보고 가세요.":pct>=70?"좋아요. 틀린 단어만 다시 돌리면 금방 올라가요.":"세트별 학습을 한 바퀴 더 돌리고 다시 풀어 보세요."}</p>
   ${wrong.length?`<h2>틀린 단어 ${wrong.length}개</h2><div class="list">${wrong.map(i=>`<div class="item"><button class="speak" data-say="${i}" aria-label="발음 듣기">▶</button><div class="txt"><span class="en">${esc(W[i][0])}</span><span class="ko">${esc(W[i][1])}</span></div><span></span></div>`).join("")}</div>`:""}
-  <div class="row">${wrong.length?`<button class="btn primary" id="rw">틀린 것만 학습 (Enter)</button>`:""}<button class="btn" id="hm">홈</button></div>`;
+  <div class="row">${wrong.length?`<button class="btn primary" id="rw">틀린 것만 다시 (Enter)</button>`:""}<button class="btn" id="hm">홈</button></div>`;
   $app.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>sayNow(W[+b.dataset.say][0]));
-  const rw=$app.querySelector("#rw");if(rw)rw.onclick=()=>preview(wrong,"모의고사 오답");
+  const rw=$app.querySelector("#rw");if(rw)rw.onclick=retry;
   $app.querySelector("#hm").onclick=home;
   window.scrollTo(0,0);
+}
+
+/* ---------- 빈칸 주관식: 세 문장에 공통으로 들어갈 말 ---------- */
+// 영어 단어 → [빈칸에 쓸 답, "문장1|문장2|문장3"]. ___ 자리가 빈칸
+const CL={
+"certain":["certain","Only ___ students can use this room.|There are ___ rules you must follow.|___ foods can cause allergies."],
+"intention":["intention","I have no ___ of quitting my job.|Her ___ was to help, not to hurt.|He announced his ___ to run for mayor."],
+"profit":["profit","The company made a huge ___ this year.|They sold the old house at a ___.|The shop's ___ fell by 20 percent."],
+"political benefit":["political benefit","He was accused of seeking ___ from the disaster.|The new law brought little ___ to the president.|Some leaders visit flooded towns only for ___."],
+"disturb":["disturb","Please do not ___ me while I'm studying.|Loud music may ___ your neighbors.|I'm sorry to ___ you, but I have a question."],
+"harm":["harm","Too much sugar can ___ your health.|The storm caused serious ___ to the town.|He meant no ___ by what he said."],
+"B as well as A":["as well as","She speaks French ___ English.|Exercise is good for your mind ___ your body.|He bought a notebook ___ a pen."],
+"individual":["individual","Each ___ has the right to vote.|The teacher treats every student as an ___.|The rights of the ___ must be protected."],
+"involved":["involved","Three cars were ___ in the accident.|Everyone ___ in the project worked hard.|I don't want to get ___ in their fight."],
+"state":["state","The old house was in a terrible ___.|She was in a ___ of shock after the news.|The patient's ___ is getting better."],
+"emergency":["emergency","In an ___, call 119 right away.|The plane made an ___ landing.|The hospital's ___ room was full."],
+"measure":["measure","We need to ___ the room before buying a sofa.|The nurse will ___ your blood pressure.|This tool can ___ the speed of the wind."],
+"struck":["struck","A strong earthquake ___ the city last night.|The tree was ___ by lightning.|The typhoon ___ the coast on Monday."],
+"resident":["resident","She has been a ___ of Seoul for ten years.|The ___ complained about the noise upstairs.|Every ___ of the building got a letter."],
+"shelter":["shelter","The families stayed in a ___ after the flood.|We looked for ___ from the heavy rain.|Food and ___ are basic human needs."],
+"the news that 주어 동사":["the news that","I was shocked by ___ he had moved away.|___ the war had ended made everyone happy.|Did you hear ___ school is closed tomorrow?"],
+"be about to 동사원형":["about to","Hurry up! The train is ___ leave.|I was ___ call you when you called me.|Sit down. The movie is ___ start."],
+"be up to ~":["up to","It's ___ you to decide.|Whether we go or not is ___ the teacher.|What to eat for dinner is ___ you."],
+"apparently":["apparently","___, she didn't hear the fire alarm.|He was ___ very upset about the result.|___, the store is closed today."],
+"displaced":["displaced","Thousands of ___ people need food and water.|The war left many families ___.|___ children were moved to safe areas."],
+"so 형용사 that 주어 동사":["so that","It was ___ cold ___ we stayed home.|The test was ___ hard ___ nobody passed.|He was ___ tired ___ he fell asleep in class."],
+"anxious":["anxious","She felt ___ before the big exam.|Parents were ___ about their children's safety.|Don't be ___. Everything will be fine."],
+"aftershock":["aftershock","A strong ___ hit two hours after the earthquake.|People were afraid of another ___.|The ___ was smaller than the main quake."],
+"government":["government","The ___ announced a new law yesterday.|The ___ sent help to the victims.|Many people do not trust the ___."],
+"viral":["viral","The funny video went ___ overnight.|Her post became ___ on social media.|The flu is a ___ infection."],
+"significantly":["significantly","Prices have risen ___ this year.|His grades improved ___ after he joined the study group.|The new medicine ___ reduced the pain."],
+"farther":["farther","The station is ___ than I thought.|I'm too tired to walk any ___.|False news spreads ___ than true news."],
+"on average":["on average","___, people sleep about seven hours a night.|Students spend, ___, two hours on homework.|___, it rains ten days a month here."],
+"explanation":["explanation","There is no simple ___ for this problem.|The teacher gave a clear ___ of the rule.|Do you have an ___ for being late?"],
+"phenomenon":["phenomenon","Fake news is a common ___ today.|Scientists studied the strange ___.|The northern lights are a natural ___."],
+"previously":["previously","She ___ worked at a bank.|This fact was ___ unknown.|As I ___ mentioned, the test is on Friday."],
+"daily life":["daily life","Smartphones are a big part of our ___.|Music plays an important role in my ___.|The war changed people's ___ completely."],
+"tend to 동사원형":["tend to","People ___ believe news they already agree with.|I ___ eat too much when I'm stressed.|Children ___ copy their parents."],
+"effortlessly":["effortlessly","She solved the difficult puzzle ___.|He speaks three languages ___.|The bird flew ___ through the sky."],
+"likely":["likely","It is ___ to rain tomorrow.|He is ___ to win the race.|That is the most ___ reason for the delay."],
+"proof":["proof","There is no ___ that he stole the money.|Please show me ___ of your age.|The photo was ___ that she was there."],
+"critically":["critically","We should think ___ about what we read online.|Read the article ___ before you share it.|The teacher asked us to look ___ at the data."],
+"examine":["examine","The doctor will ___ your eyes.|We must ___ the facts carefully.|Let's ___ the evidence together."],
+"moreover":["moreover","The hotel was cheap. ___, it was very clean.|The plan is too expensive. ___, it is risky.|She is smart. ___, she is kind to everyone."],
+"be inclined to 동사원형":["inclined to","I am ___ agree with you.|People are ___ trust their friends more than strangers.|He is ___ be lazy on weekends."],
+"fit":["fit","The news didn't ___ what I already believed.|These shoes don't ___ me anymore.|His story doesn't ___ the facts."],
+"process":["process","Learning a language is a slow ___.|The ___ of making paper is simple.|We are in the ___ of moving to a new house."],
+"fall into ~":["fall into","Don't ___ the same trap again.|Many people ___ bad habits during vacation.|It is easy to ___ the habit of staying up late."],
+"trap":["trap","The mouse was caught in a ___.|Don't fall into the ___ of believing everything you see.|The free gift was just a ___."],
+"confirmation bias":["confirmation bias","Because of ___, we only see what we want to believe.|___ makes people ignore opposite opinions.|Social media can make ___ even stronger."],
+"that is":["that is","He is my mother's brother, ___, my uncle.|We leave in two days, ___, on Friday.|She is a vegetarian; ___, she doesn't eat meat."],
+"selectively":["selectively","People ___ remember only the good memories.|He ___ reads news that agrees with him.|The museum ___ chooses which artworks to show."],
+"ignore":["ignore","Don't ___ the warning signs.|She tried to ___ the noise and keep studying.|We cannot ___ the facts."],
+"election":["election","Who do you think will win the next ___?|The presidential ___ is held every five years.|She voted for the first time in the ___."],
+"blindly":["blindly","Don't ___ follow what other people say.|He ___ trusted everything on the news.|They ___ accepted the rules without asking why."],
+"describe":["describe","Can you ___ the man you saw?|Words cannot ___ how happy I am.|Please ___ your hometown in three sentences."],
+"favored":["favored","Our ___ candidate lost the election.|Pizza is the most ___ food among kids.|The news only showed the ___ side of the story."],
+"candidate":["candidate","Which ___ will you vote for?|She is a strong ___ for the job.|Each ___ gave a short speech."],
+"in a positive way":["in a positive way","The article described the candidate ___.|Try to think about the problem ___.|The new rule changed our school ___."],
+"unconsciously":["unconsciously","We often judge others ___.|She ___ touched her hair when she was nervous.|People ___ copy the body language of others."],
+"spot":["spot","Can you ___ the difference between the two pictures?|It is hard to ___ fake news.|She can ___ a spelling mistake quickly."],
+"face value":["face value","Don't take everything you read at ___.|He accepted her story at ___.|News on social media should not be taken at ___."],
+"judge":["judge","Don't ___ a book by its cover.|It is hard to ___ who is right.|You should not ___ people by their looks."],
+"judgment":["judgment","Use your own ___ when you read the news.|Her ___ turned out to be wrong.|Don't make a quick ___ about him."],
+"analyze":["analyze","Scientists ___ the data from the survey.|We need to ___ the problem first.|Let's ___ why the plan failed."],
+"evaluate":["evaluate","Teachers ___ students' work every week.|We must ___ the news carefully.|It is hard to ___ the risks of the plan."],
+"affect":["affect","Weather can ___ your mood.|The news may ___ the result of the election.|Lack of sleep can ___ your health."],
+"article":["article","I read an interesting ___ in the newspaper.|She wrote an ___ about climate change.|The ___ was full of false information."],
+"suit":["suit","That color doesn't ___ you.|We tend to believe stories that ___ our opinions.|Short hair will ___ her face."],
+"look for ~":["look for","I need to ___ my keys.|We should ___ other sources of information.|What are you going to ___ at the store?"],
+"oppose":["oppose","Many people ___ the new law.|I strongly ___ the idea of war.|Why do you ___ this plan?"],
+"as well":["as well","She plays the piano and sings ___.|I'd like a cup of coffee ___.|He is smart and kind ___."],
+"credibility":["credibility","The ___ of a news source is important.|The scandal damaged the politician's ___.|Check the ___ of a website before you trust it."],
+"source":["source","Always check the ___ of the information.|The sun is a ___ of energy.|Who is the ___ of this news?"],
+"intent":["intent","His ___ was to help us.|We don't know the writer's true ___.|She had no ___ to hurt him."],
+"whether 주어 동사":["whether","I don't know ___ he will come.|Check ___ the news is true or not.|She asked me ___ I was okay."],
+"reliable":["reliable","Is this website ___?|We need a ___ source for our report.|He is a ___ friend who always keeps his promises."],
+"eliminate":["eliminate","We must ___ fake news from the Internet.|This medicine can ___ the pain.|Try to ___ mistakes in your writing."],
+"objectively":["objectively","Try to look at the facts ___.|Judges must decide cases ___.|It's hard to think ___ about yourself."],
+"trust":["trust","I ___ my best friend completely.|You can't ___ everything on the Internet.|Do you ___ the news you watch?"],
+"lead to ~":["lead to","Fake news can ___ wrong decisions.|Hard work will ___ success.|Smoking can ___ serious diseases."],
+"pass through ~":["pass through","The train will ___ a long tunnel.|Light can ___ glass.|We had to ___ security at the airport."],
+"unidentified":["unidentified","An ___ man called the police.|The rumor came from an ___ source.|An ___ flying object was seen last night."]
+};
+// 같은 빈칸에 둘 다 자연스러운 경우
+const CL_ALT={"intention":["intent"],"intent":["intention"]};
+const reEsc=t=>t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+// 예문에서 단어를 찾아 빈칸으로 만든다. 동사 변화(s, ed, ing)와 be 동사 생략도 찾는다
+function findInSentence(h,ex){
+  const cands=[h,...(h.startsWith("be ")?[h.slice(3)]:[])];
+  for(const c of cands){const ws=c.split(" ");
+    const re=new RegExp("\\b"+reEsc(ws[0])+"(?:s|es|d|ed|ing)?"+ws.slice(1).map(w=>"\\s+"+reEsc(w)).join("")+"\\b","i");
+    const m=ex.match(re);if(m)return m}
+  return null}
+function clData(i){
+  const en=W[i][0];
+  if(CUR.book==="exam"){const[a,raw]=CL[en];return{ans:a,sents:raw.split("|"),alts:CL_ALT[en]||[]}}
+  const ex=W[i][3]||"",m=findInSentence(en,ex);
+  if(!m)return{ans:en,sents:["___"],alts:[]};
+  return{ans:m[0],sents:[ex.slice(0,m.index)+"___"+ex.slice(m.index+m[0].length)],alts:[en]}}
+function clAnswerRight(input,i){const n=norm(input);if(!n)return false;const c=clData(i);
+  return [c.ans,...c.alts].some(a=>norm(a)===n)}
+function askCloze({i,top,onDone}){
+  const ko=W[i][1],cd=clData(i),ans=cd.ans,sents=cd.sents;
+  const parts=ans.split(" "),nb=sents[0].split("___").length-1;
+  // 빈칸이 두 개인 문장(so ~ that)은 단어를 하나씩 나눠 채운다
+  const fill=(s,show)=>{let k=0;return esc(s).replace(/___/g,()=>{const t=nb>1?parts[k++]||"":ans;return show?`<b class="mark">${esc(t)}</b>`:`<span class="blank">${"&nbsp;".repeat(Math.max(6,t.length*2))}</span>`})};
+  let answered=false,hintUsed=false;
+  $app.innerHTML=`${top}
+  <div class="card cloze">
+    <span class="dir">${sents.length>1?"세 문장의 빈칸에 공통으로 들어갈 말":"빈칸에 들어갈 말"}</span>
+    <ol class="sents" id="sents">${sents.map(s=>`<li>${fill(s,false)}</li>`).join("")}</ol>
+    <div class="hint" id="hint"></div>
+  </div>
+  <div class="type"><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" lang="en" placeholder="${nb>1?"빈칸 순서대로 띄어 써서":"영어로"} 입력"><button class="btn primary" id="ok">확인</button></div>
+  <div class="row"><button class="link" id="hm">뜻 힌트</button><button class="link" id="hb">첫 글자 힌트</button><button class="link" id="idk">모르겠어요</button></div>
+  <div id="fb"></div>
+  <p class="keys">Enter 확인 · 틀리면 Enter로 다음</p>`;
+  const inp=$app.querySelector("#ans");inp.focus();
+  const hint=t=>{hintUsed=true;const h=$app.querySelector("#hint");h.textContent=h.textContent?h.textContent+"  ·  "+t:t;inp.focus()};
+  const finish=ok=>{
+    answered=true;inp.disabled=true;inp.classList.add(ok?"ok":"bad");
+    $app.querySelector("#sents").innerHTML=sents.map(s=>`<li>${fill(s,true)}</li>`).join("");
+    const fb=$app.querySelector("#fb");
+    if(ok){fb.innerHTML=`<div class="fb ok"><span><b>정답</b> · <span class="ans">${esc(ans)}</span> = ${esc(ko)}</span></div>`;
+      key=null;setTimeout(()=>onDone(true,hintUsed),hintUsed?1400:1000);return}
+    fb.innerHTML=`<div class="fb bad"><span class="muted">정답</span><span><span class="ans mark">${esc(ans)}</span> &nbsp;${esc(ko)}</span>
+      <div class="row"><button class="btn primary" id="nx">다음 (Enter)</button><button class="speak" id="sp2" aria-label="발음 듣기">▶</button></div></div>`;
+    $app.querySelector("#sp2").onclick=()=>sayNow(ans);
+    const next=()=>{key=null;onDone(false,hintUsed)};
+    $app.querySelector("#nx").onclick=next;
+    key=e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();next()}};
+  };
+  const submit=()=>{if(answered||!inp.value.trim())return;finish(clAnswerRight(inp.value,i))};
+  inp.addEventListener("keydown",e=>{if(e.key!=="Enter")return;e.stopPropagation();if(e.isComposing||e.keyCode===229)return;e.preventDefault();submit()});
+  $app.querySelector("#ok").onclick=submit;
+  $app.querySelector("#hm").onclick=e=>{e.target.disabled=true;hint("뜻: "+ko)};
+  $app.querySelector("#hb").onclick=e=>{e.target.disabled=true;hint(hintOf(ans))};
+  $app.querySelector("#idk").onclick=()=>{if(!answered)finish(false)};
+  key=null;
+}
+function cloze(ids,label){
+  ids=shuffle(ids);
+  let k=0,score=0;const wrong=[];
+  const step=()=>{
+    if(k>=ids.length)return examDone(ids.length,score,wrong,label,()=>cloze(wrong,label+" 오답"));
+    const i=ids[k];
+    const top=`<div class="top"><button class="link" id="back">← 그만하기</button><span class="muted" style="font-variant-numeric:tabular-nums">${label} ${k+1} / ${ids.length} · 정답 ${score}</span></div>
+      <div class="meter big"><i style="width:${k/ids.length*100}%"></i></div>`;
+    askCloze({i,top,onDone:(ok,hint)=>{
+      if(ok&&!hint)score++;else{wrong.push(i);if(!ok)st(i).x++}
+      save();k++;step();
+    }});
+    $app.querySelector("#back").onclick=home;
+  };
+  step();
 }
 
 /* ---------- word list ---------- */
@@ -335,11 +682,12 @@ function list(){
   let hide=false;
   const draw=()=>{
     key=null;
+    const base=CUR.day?(CUR.day-1)*((BOOKS.find(b=>b.id===CUR.book)||{}).daySize||0):0;
     $app.innerHTML=`<div class="top"><button class="link" id="back">← 홈</button><span class="muted">${W.length}단어</span></div>
-    <h1>전체 단어장</h1>
+    <header class="page-head"><span class="muted">${esc(CUR.title)}</span><h1>${multiDay()?`Day ${String(CUR.day).padStart(2,"0")}`:"전체 단어장"}</h1></header>
     <p class="muted">뜻을 가린 뒤 하나씩 떠올려 보고, 칸을 눌러 확인하세요.</p>
     <div class="row"><button class="btn" id="hide">${hide?"뜻 보이기":"뜻 가리기"}</button></div>
-    <div class="list">${W.map((w,i)=>`<div class="item"><button class="speak" data-say="${i}" aria-label="발음 듣기">▶</button><div class="txt"><span class="en">${esc(w[0])}</span><span class="ko ${hide?"hide":""}">${esc(w[1])}</span></div><span class="x">${st(i).x?`${st(i).x}번 틀림`:""}</span></div>`).join("")}</div>`;
+    <ol class="book">${W.map((w,i)=>`<li class="entry"><span class="no">${String(base+i+1).padStart(4,"0")}</span><div class="txt"><div class="head"><span class="en">${esc(w[0])}</span>${w[2]?`<i class="pos">${esc(w[2])}</i>`:""}<button class="speak" data-say="${i}" aria-label="발음 듣기">▶</button>${st(i).x?`<span class="x">${st(i).x}번 틀림</span>`:""}</div><span class="ko ${hide?"hide":""}">${esc(w[1])}</span>${w[3]?`<span class="ex">${esc(w[3])}</span>`:""}</div></li>`).join("")}</ol>`;
     $app.querySelector("#back").onclick=home;
     $app.querySelector("#hide").onclick=()=>{hide=!hide;draw()};
     $app.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>sayNow(W[+b.dataset.say][0]));
@@ -348,5 +696,5 @@ function list(){
   draw();window.scrollTo(0,0);
 }
 
-home();
+boot();
 </script>

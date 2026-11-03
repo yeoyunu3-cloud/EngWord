@@ -1,0 +1,257 @@
+# 단어|품사|뜻|예문
+sacrifice|n.|희생|Parents make many sacrifices for their kids.
+satisfy|v.|만족시키다|Nothing can satisfy him.
+scale|n.|규모, 저울|The project is on a large scale.
+scarce|adj.|부족한, 드문|Water is scarce in the desert.
+scatter|v.|흩뿌리다|The wind will scatter the leaves.
+scheme|n.|계획, 음모|They came up with a scheme to make money.
+scholar|n.|학자|He is a famous scholar of history.
+scold|v.|꾸짖다|My mom will scold me for being late.
+scope|n.|범위|That is beyond the scope of this class.
+secure|adj.|안전한|Keep your password secure.
+seek|v.|찾다, 구하다|Many people seek happiness in money.
+seize|v.|붙잡다|You should seize the chance.
+senior|adj.|손위의, 고위의|She is a senior manager.
+sensitive|adj.|민감한|My teeth are sensitive to cold.
+separate|v.|분리하다|Separate the white clothes from the dark ones.
+sequence|n.|순서, 연속|Put the pictures in the right sequence.
+settle|v.|해결하다, 정착하다|They decided to settle in Busan.
+severe|adj.|심각한, 가혹한|He has a severe headache.
+shallow|adj.|얕은|The river is shallow here.
+shame|n.|수치심, 유감|What a shame you can't come!
+share|v.|공유하다, 나누다|Let's share the pizza.
+shift|n.|변화, 교대 근무|She works the night shift.
+shortage|n.|부족|There is a shortage of doctors.
+signal|n.|신호|Wait for the signal to start.
+significant|adj.|중요한, 상당한|This is a significant discovery.
+similar|adj.|비슷한|Our ideas are similar.
+sincere|adj.|진실한|Please accept my sincere apology.
+site|n.|장소, 부지|This is the site of the new hospital.
+skeptical|adj.|회의적인|I'm skeptical about his story.
+slavery|n.|노예 제도|Slavery ended in the 1800s.
+slight|adj.|약간의|There is a slight problem.
+soak|v.|담그다, 흠뻑 적시다|Soak the beans overnight.
+sociable|adj.|사교적인|She is very sociable.
+soil|n.|흙, 토양|The soil here is rich.
+solar|adj.|태양의|Solar energy is clean.
+soldier|n.|군인|The soldier returned home.
+solid|adj.|고체의, 단단한|Ice is solid water.
+solution|n.|해결책|We need a quick solution.
+sophisticated|adj.|세련된, 정교한|This is a sophisticated machine.
+sorrow|n.|슬픔|She felt deep sorrow.
+sow|v.|씨를 뿌리다|Farmers sow seeds in spring.
+span|n.|기간|My attention span is short.
+spare|adj.|여분의|Do you have a spare pen?
+species|n.|종|Many species are in danger.
+specific|adj.|구체적인|Can you be more specific?
+spectator|n.|관중|The spectator cheered loudly.
+spill|v.|엎지르다|Don't spill your milk.
+spirit|n.|정신, 영혼|The team showed great spirit.
+splendid|adj.|훌륭한, 화려한|We had a splendid time.
+spoil|v.|망치다, 버릇없게 만들다|Too much sugar will spoil the cake.
+sponsor|n.|후원자|The company is the main sponsor of the event.
+spread|v.|퍼지다|Rumors spread quickly.
+stable|adj.|안정된|His condition is stable.
+standard|n.|기준, 표준|The school has high standards.
+stare|v.|빤히 보다|It's rude to stare at people.
+starve|v.|굶주리다|Many animals starve in winter.
+statement|n.|진술, 성명|The police took his statement.
+statistics|n.|통계|The statistics show a rise in crime.
+status|n.|지위, 상태|What is your marital status?
+steady|adj.|꾸준한|She made steady progress.
+steep|adj.|가파른|The hill is very steep.
+stimulate|v.|자극하다|Coffee can stimulate your brain.
+stock|n.|재고, 주식|The item is out of stock.
+strategy|n.|전략|We need a new strategy.
+strength|n.|힘, 강점|Patience is her greatest strength.
+stress|n.|스트레스, 강조|Exams cause a lot of stress.
+strict|adj.|엄격한|My father is very strict.
+structure|n.|구조|The structure of the building is strong.
+struggle|v.|애쓰다, 투쟁하다|Many families struggle to pay rent.
+stubborn|adj.|고집 센|He is as stubborn as a mule.
+submit|v.|제출하다|Please submit your homework by Friday.
+substance|n.|물질|This substance is toxic.
+substitute|n.|대체물, 대리인|We had a substitute teacher today.
+subtle|adj.|미묘한|There is a subtle difference.
+succeed|v.|성공하다|If you work hard, you will succeed.
+sufficient|adj.|충분한|We have sufficient food for a week.
+suggest|v.|제안하다|I suggest we leave early.
+sum|n.|합계, 액수|He paid a large sum of money.
+summary|n.|요약|Write a summary of the story.
+superior|adj.|우수한|This product is superior to that one.
+supply|n.|공급|The supply of water was cut off.
+support|v.|지지하다, 지원하다|My family will support my decision.
+suppose|v.|가정하다, 생각하다|I suppose you're right.
+surface|n.|표면|The surface of the table is smooth.
+surgery|n.|수술|He had surgery on his knee.
+surround|v.|둘러싸다|Trees surround the house.
+survey|n.|설문 조사|We did a survey of 100 students.
+survive|v.|살아남다|Plants can't survive without water.
+suspect|v.|의심하다|I suspect he is lying.
+sustain|v.|지속하다, 유지하다|We can't sustain this pace.
+swallow|v.|삼키다|It hurts when I swallow.
+symbol|n.|상징|The dove is a symbol of peace.
+sympathy|n.|동정, 공감|I have no sympathy for him.
+symptom|n.|증상|Fever is a symptom of the flu.
+talent|n.|재능|She has a talent for music.
+target|n.|목표, 표적|Our target is to sell 1,000 books.
+task|n.|과제, 일|This task is too difficult.
+tear|n.|눈물|A tear ran down her face.
+technique|n.|기술, 기법|He learned a new painting technique.
+temporary|adj.|일시적인|This is just a temporary job.
+tempt|v.|유혹하다|Don't tempt me with cake.
+tend|v.|경향이 있다|Prices tend to rise in winter.
+tension|n.|긴장|There is tension between the two countries.
+term|n.|용어, 기간|What does this term mean?
+terrify|v.|겁나게 하다|Spiders terrify my sister.
+territory|n.|영토|This island is Korean territory.
+theory|n.|이론|Darwin's theory changed science.
+therapy|n.|치료|She is getting therapy for her back.
+thorough|adj.|철저한|The police did a thorough search.
+threat|n.|위협|Pollution is a threat to health.
+thrive|v.|번성하다|These plants thrive in the shade.
+tidy|adj.|깔끔한|Keep your room tidy.
+tight|adj.|꽉 끼는, 빠듯한|These shoes are too tight.
+tolerate|v.|참다, 용인하다|I can't tolerate rude people.
+tough|adj.|힘든, 거친|It was a tough decision.
+trace|n.|흔적|There was no trace of the thief.
+tradition|n.|전통|It is a family tradition.
+traffic|n.|교통(량)|The traffic was terrible this morning.
+tragedy|n.|비극|The accident was a tragedy.
+trait|n.|특성|Kindness is her best trait.
+transfer|v.|옮기다, 갈아타다|You need to transfer at the next station.
+transform|v.|변형시키다|The project will transform the city.
+translate|v.|번역하다|Can you translate this into Korean?
+transport|n.|수송, 교통수단|Public transport is cheap in Seoul.
+treat|v.|대하다, 치료하다|Treat others as you want to be treated.
+treatment|n.|치료, 대우|The new treatment worked well.
+tremendous|adj.|엄청난|She made a tremendous effort.
+trend|n.|경향, 유행|This is the latest fashion trend.
+trial|n.|재판, 시험|The trial will start next week.
+tribe|n.|부족|The tribe lives in the jungle.
+triumph|n.|승리|The concert was a triumph.
+typical|adj.|전형적인|It was a typical Monday.
+ultimate|adj.|궁극적인|Our ultimate goal is world peace.
+unique|adj.|독특한, 유일한|Every person is unique.
+unite|v.|통합하다|The war helped unite the people.
+universal|adj.|보편적인|Music is a universal language.
+urban|adj.|도시의|More people live in urban areas.
+urge|v.|촉구하다|I urge you to see a doctor.
+urgent|adj.|긴급한|This is an urgent message.
+utility|n.|공공 서비스, 유용성|The rent includes every utility.
+vacant|adj.|비어 있는|Is this seat vacant?
+vague|adj.|모호한|His answer was vague.
+valid|adj.|유효한|Your ticket is valid for one month.
+valuable|adj.|귀중한|This ring is very valuable.
+vanish|v.|사라지다|The magician made the coin vanish.
+variety|n.|다양성|The store sells a variety of goods.
+various|adj.|다양한|There are various ways to learn English.
+vary|v.|다르다, 다양하다|Prices vary from store to store.
+vast|adj.|광대한|The Sahara is a vast desert.
+vehicle|n.|차량|No vehicle may enter this area.
+venture|n.|모험적 사업|The new venture was a success.
+verbal|adj.|언어의, 구두의|We made a verbal agreement.
+version|n.|버전, 판|Download the latest version.
+victim|n.|피해자|The victim was taken to the hospital.
+violate|v.|위반하다|Don't violate the rules.
+violence|n.|폭력|Violence is never the answer.
+virtual|adj.|가상의|Virtual reality is popular now.
+virtue|n.|미덕|Patience is a virtue.
+visible|adj.|눈에 보이는|The stars are visible tonight.
+vision|n.|시력, 비전|She has good vision.
+vital|adj.|필수적인|Water is vital for life.
+vivid|adj.|생생한|I have a vivid memory of that day.
+volume|n.|음량, 부피|Turn down the volume, please.
+voluntary|adj.|자발적인|Joining the club is voluntary.
+vote|v.|투표하다|You can vote at 18 in Korea.
+vulnerable|adj.|취약한|Children are vulnerable to disease.
+wage|n.|임금|The minimum wage went up this year.
+wander|v.|돌아다니다|We love to wander around the city.
+warn|v.|경고하다|I must warn you about the dog.
+waste|v.|낭비하다|Don't waste your time.
+wealth|n.|부, 재산|Health is more important than wealth.
+weapon|n.|무기|The police found a weapon at the scene.
+welfare|n.|복지|The government spends a lot on welfare.
+widespread|adj.|널리 퍼진|The disease is widespread in the area.
+wisdom|n.|지혜|Old people have a lot of wisdom.
+withdraw|v.|인출하다, 철수하다|I need to withdraw some money.
+witness|n.|목격자|The witness saw the accident.
+worship|v.|숭배하다|People worship in different ways.
+worth|adj.|~의 가치가 있는|This book is worth reading.
+yield|v.|산출하다, 양보하다|This field will yield a lot of rice.
+youth|n.|젊음, 청년|He spent his youth in Busan.
+zone|n.|구역|This is a no-parking zone.
+account for|phr.|설명하다, 차지하다|How do you account for the mistake?
+add up to|phr.|합계가 ~이 되다|The bills add up to 50,000 won.
+apply for|phr.|~에 지원하다|I want to apply for the scholarship.
+be absorbed in|phr.|~에 몰두하다|He was absorbed in his book.
+be accustomed to|phr.|~에 익숙하다|I am not accustomed to spicy food.
+be aware of|phr.|~을 알고 있다|You should be aware of the danger.
+be capable of|phr.|~할 수 있다|She is capable of doing better.
+be concerned about|phr.|~을 걱정하다|Parents are often concerned about grades.
+be familiar with|phr.|~에 익숙하다|Are you familiar with this area?
+be likely to|phr.|~할 것 같다|Prices are likely to rise next year.
+be responsible for|phr.|~에 책임이 있다|Who is responsible for the trip?
+be supposed to|phr.|~하기로 되어 있다|You are supposed to be here at nine.
+break down|phr.|고장 나다|My car tends to break down in winter.
+bring about|phr.|초래하다|The new law will bring about change.
+bring up|phr.|기르다, (화제를) 꺼내다|It's hard to bring up three kids.
+call off|phr.|취소하다|They had to call off the game.
+carry out|phr.|수행하다|Scientists carry out tests every day.
+catch up with|phr.|따라잡다|I ran to catch up with my friends.
+come up with|phr.|생각해 내다|She can come up with great ideas.
+cope with|phr.|대처하다|How do you cope with stress?
+count on|phr.|~에 의지하다|You can count on me.
+cut down on|phr.|~을 줄이다|I need to cut down on sugar.
+deal with|phr.|다루다, 처리하다|We must deal with the problem now.
+depend on|phr.|~에 의존하다|Many people depend on their phones.
+do without|phr.|~없이 지내다|I can't do without coffee.
+figure out|phr.|알아내다, 이해하다|I can't figure out this math problem.
+fill out|phr.|작성하다|Please fill out this form.
+get along with|phr.|~와 잘 지내다|I get along with my classmates.
+get over|phr.|극복하다, 회복하다|It took weeks to get over the flu.
+get rid of|phr.|없애다|We need to get rid of old clothes.
+give up|phr.|포기하다|Never give up on your dreams.
+go through|phr.|겪다|She had to go through a hard time.
+hand in|phr.|제출하다|Please hand in your essays.
+keep up with|phr.|뒤처지지 않다|It's hard to keep up with the news.
+look after|phr.|돌보다|Can you look after my dog?
+look forward to|phr.|~을 고대하다|I look forward to seeing you.
+look up to|phr.|존경하다|I look up to my grandfather.
+make up for|phr.|보상하다, 만회하다|I'll make up for lost time.
+pay attention to|phr.|~에 주의를 기울이다|Pay attention to the teacher.
+point out|phr.|지적하다|She was quick to point out my mistake.
+put off|phr.|미루다|Don't put off your homework.
+put up with|phr.|참다|I can't put up with the noise.
+result in|phr.|결과적으로 ~이 되다|Speeding can result in accidents.
+run out of|phr.|~을 다 써 버리다|We are about to run out of milk.
+set up|phr.|설립하다, 설치하다|They want to set up a new business.
+show off|phr.|자랑하다|He likes to show off his car.
+stand for|phr.|나타내다, 상징하다|What does "UN" stand for?
+take advantage of|phr.|이용하다|Take advantage of this chance.
+take care of|phr.|돌보다|Nurses take care of patients.
+take part in|phr.|참가하다|Everyone can take part in the event.
+take place|phr.|일어나다, 개최되다|The meeting will take place on Monday.
+turn down|phr.|거절하다, 줄이다|She had to turn down the job offer.
+turn out|phr.|~으로 판명되다|The rumor may turn out to be false.
+used to|phr.|~하곤 했다|I used to live in Daegu.
+when it comes to|phr.|~에 관해서라면|When it comes to math, she is the best.
+in addition|phr.|게다가|In addition, the hotel has a pool.
+in advance|phr.|미리|Buy your tickets in advance.
+in charge of|phr.|~을 맡고 있는|Who is in charge of this project?
+in contrast|phr.|대조적으로|In contrast, his brother is shy.
+in fact|phr.|사실은|In fact, I've never been there.
+in spite of|phr.|~에도 불구하고|In spite of the rain, we played soccer.
+in terms of|phr.|~의 측면에서|In terms of price, this is the best.
+instead of|phr.|~ 대신에|I'll have tea instead of coffee.
+as a result|phr.|결과적으로|As a result, the game was canceled.
+according to|phr.|~에 따르면|According to the news, it will snow.
+due to|phr.|~ 때문에|The game was canceled due to rain.
+for instance|phr.|예를 들어|For instance, cats can see in the dark.
+on behalf of|phr.|~을 대표하여|I'm speaking on behalf of my class.
+on purpose|phr.|고의로|He broke the vase on purpose.
+by chance|phr.|우연히|I met her by chance.
+at least|phr.|적어도|Sleep at least seven hours.
+regardless of|phr.|~에 상관없이|Anyone can join regardless of age.
+rather than|phr.|~보다는|I prefer walking rather than driving.
+so far|phr.|지금까지|So far, everything is going well.

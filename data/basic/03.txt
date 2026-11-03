@@ -1,0 +1,263 @@
+# 단어|품사|뜻|예문
+maintain|v.|유지하다|It is hard to maintain a healthy weight.
+major|adj.|주요한|Traffic is a major problem in Seoul.
+majority|n.|대다수|The majority of students walk to school.
+male|adj.|남성의, 수컷의|The male lion has a large mane.
+manage|v.|관리하다, 해내다|She can manage the store alone.
+manufacture|v.|제조하다|The factory will manufacture toys.
+margin|n.|여백, 차이|Write your notes in the margin.
+marine|adj.|바다의|Marine animals need clean oceans.
+mature|adj.|성숙한|She is very mature for her age.
+maximum|n.|최대|The maximum speed here is 60 km/h.
+mechanism|n.|기계 장치, 구조|The clock has a simple mechanism.
+medium|adj.|중간의|I'd like a medium coffee, please.
+memorize|v.|암기하다|I need to memorize these words.
+mental|adj.|정신의|Exercise is good for your mental health.
+mention|v.|언급하다|Did he mention my name?
+merchant|n.|상인|The merchant sold silk and spices.
+mere|adj.|단지 ~에 불과한|He was a mere child at the time.
+merit|n.|장점|Each plan has its own merit.
+method|n.|방법|This is the best method of learning.
+migrate|v.|이주하다|Birds migrate south in winter.
+military|adj.|군사의|He did his military service.
+mineral|n.|광물, 무기질|Milk is rich in minerals and vitamins.
+minimum|n.|최소|You need a minimum of 60 points to pass.
+minister|n.|장관, 성직자|The prime minister gave a speech.
+minor|adj.|작은, 사소한|It was only a minor mistake.
+minority|n.|소수|Only a minority of people disagreed.
+miracle|n.|기적|It's a miracle that he survived.
+mission|n.|임무|Their mission was to rescue the hostages.
+mobile|adj.|이동하는, 휴대의|Mobile phones are everywhere.
+moderate|adj.|적당한, 온건한|Moderate exercise is good for you.
+modest|adj.|겸손한, 적당한|She is modest about her success.
+modify|v.|수정하다|We had to modify the design.
+monitor|v.|감시하다, 관찰하다|Doctors monitor the patient closely.
+moral|adj.|도덕적인|Lying is a moral issue.
+motivate|v.|동기를 부여하다|Good teachers motivate their students.
+multiple|adj.|다수의, 많은|There are multiple ways to solve it.
+murder|n.|살인|The murder shocked the town.
+mutual|adj.|상호의, 서로의|They have mutual respect.
+mystery|n.|미스터리, 수수께끼|His death is still a mystery.
+myth|n.|신화, 근거 없는 믿음|It's a myth that bats are blind.
+narrative|n.|이야기, 서술|The novel has a simple narrative.
+narrow|adj.|좁은|The street is too narrow for buses.
+native|adj.|태어난 곳의, 토착의|Her native language is Korean.
+navigate|v.|길을 찾다, 항해하다|Sailors used stars to navigate.
+negative|adj.|부정적인|Don't be so negative.
+neglect|v.|방치하다, 소홀히 하다|Don't neglect your health.
+negotiate|v.|협상하다|The two sides will negotiate a deal.
+nervous|adj.|긴장한, 초조한|I get nervous before speeches.
+neutral|adj.|중립의|Switzerland stayed neutral during the war.
+nevertheless|adv.|그럼에도 불구하고|It was raining. Nevertheless, we went hiking.
+noble|adj.|고귀한, 귀족의|Helping others is a noble act.
+normal|adj.|보통의, 정상적인|It's normal to feel nervous.
+notice|v.|알아차리다|Did you notice her new haircut?
+notion|n.|개념, 생각|I have no notion of what he means.
+nourish|v.|영양분을 공급하다|Good food will nourish your body.
+novel|n.|소설|I'm reading a novel by Han Kang.
+nuclear|adj.|핵의|Nuclear power is a hot topic.
+numerous|adj.|수많은|He has numerous friends.
+nutrition|n.|영양|Good nutrition is important for kids.
+obey|v.|복종하다, 따르다|Students must obey the school rules.
+object|n.|물체, 목적|There's a strange object in the sky.
+objective|n.|목표|Our main objective is to win.
+obligation|n.|의무|You have no obligation to buy.
+observe|v.|관찰하다|Scientists observe animals in the wild.
+obstacle|n.|장애물|Fear is the biggest obstacle to success.
+obtain|v.|얻다|You must obtain a permit first.
+obvious|adj.|명백한|The answer is obvious.
+occasion|n.|경우, 행사|A wedding is a special occasion.
+occupation|n.|직업|Please write your occupation on the form.
+occupy|v.|차지하다|The sofa will occupy half the room.
+occur|v.|일어나다, 발생하다|When did the accident occur?
+odd|adj.|이상한, 홀수의|Three is an odd number.
+offend|v.|기분 상하게 하다|I didn't mean to offend you.
+offer|v.|제공하다, 제안하다|They offer free Wi-Fi.
+official|adj.|공식적인|English is an official language in India.
+operate|v.|작동하다, 수술하다|Can you operate this machine?
+opinion|n.|의견|In my opinion, the movie was boring.
+opponent|n.|상대, 반대자|He shook hands with his opponent.
+opportunity|n.|기회|This is a great opportunity for you.
+optimistic|adj.|낙관적인|She is optimistic about the future.
+option|n.|선택(권)|We have no option but to wait.
+orbit|n.|궤도|The moon is in orbit around the Earth.
+ordinary|adj.|평범한|It was just an ordinary day.
+organ|n.|장기, 기관|The heart is a vital organ.
+organize|v.|조직하다, 정리하다|Let's organize a party for her.
+origin|n.|기원|The origin of the word is Latin.
+original|adj.|원래의, 독창적인|The original plan was better.
+outcome|n.|결과|Nobody knows the outcome yet.
+outstanding|adj.|뛰어난|She is an outstanding student.
+overcome|v.|극복하다|You can overcome your fear.
+overlook|v.|간과하다, 내려다보다|Don't overlook the small details.
+overseas|adv.|해외로|She wants to study overseas.
+owe|v.|빚지다|I owe you 10,000 won.
+pain|n.|고통|I have a pain in my back.
+panic|n.|공황, 당황|People ran out in a panic.
+participate|v.|참가하다|All students must participate in the event.
+particular|adj.|특정한, 특별한|Is there a particular reason?
+passenger|n.|승객|The bus had only one passenger.
+passion|n.|열정|She has a passion for music.
+patience|n.|인내심|Teaching requires a lot of patience.
+patient|n.|환자|The doctor saw the patient.
+pattern|n.|무늬, 양식|I like the pattern on your shirt.
+peculiar|adj.|이상한, 독특한|There's a peculiar smell in here.
+penalty|n.|벌, 처벌|The penalty for speeding is a fine.
+perceive|v.|인지하다|How do others perceive you?
+percent|n.|퍼센트|Ninety percent of the class passed.
+perform|v.|공연하다, 수행하다|The band will perform tonight.
+permanent|adj.|영구적인|Is this a permanent job?
+permit|v.|허락하다|Please permit me to explain.
+persist|v.|지속되다, 고집하다|If the pain continues to persist, see a doctor.
+perspective|n.|관점|Try to see it from my perspective.
+persuade|v.|설득하다|I tried to persuade her to come.
+phase|n.|단계|The project is in its final phase.
+philosophy|n.|철학|He studied philosophy in college.
+physical|adj.|신체의, 물리적인|Physical activity is good for kids.
+pioneer|n.|개척자|She was a pioneer in computer science.
+plenty|n.|풍부한 양|We have plenty of time.
+policy|n.|정책|The new policy starts next month.
+polite|adj.|공손한|It's polite to say thank you.
+pollution|n.|오염|Air pollution is a big problem.
+popularity|n.|인기|The singer's popularity is growing.
+population|n.|인구|The population of Seoul is about 10 million.
+portion|n.|부분, 1인분|A large portion of my salary goes to rent.
+portrait|n.|초상화|She painted a portrait of her mother.
+possess|v.|소유하다|They possess great wealth.
+potential|n.|잠재력|She has the potential to be a star.
+poverty|n.|가난|Many people live in poverty.
+practical|adj.|실용적인|Give me some practical advice.
+praise|v.|칭찬하다|Parents should praise their children.
+precious|adj.|귀중한|Time is precious.
+precise|adj.|정확한|Give me the precise time.
+predict|v.|예측하다|No one can predict the future.
+prefer|v.|선호하다|I prefer tea to coffee.
+pregnant|adj.|임신한|She is pregnant with her second child.
+prejudice|n.|편견|We must fight against prejudice.
+prepare|v.|준비하다|I need to prepare for the exam.
+presence|n.|존재, 참석|Thank you for your presence today.
+preserve|v.|보존하다|We must preserve our traditions.
+pressure|n.|압력, 부담|Students feel a lot of pressure.
+pretend|v.|~인 척하다|Don't pretend you didn't hear me.
+prevent|v.|막다, 예방하다|Washing hands can prevent illness.
+previous|adj.|이전의|In my previous job, I was a teacher.
+primary|adj.|주된, 초등의|Our primary goal is safety.
+primitive|adj.|원시적인|Primitive people used stone tools.
+principal|n.|교장|The principal gave a speech.
+principle|n.|원칙|It's against my principle to lie.
+priority|n.|우선 사항|Safety is our top priority.
+privacy|n.|사생활|Everyone has the right to privacy.
+privilege|n.|특권|It's a privilege to work with you.
+procedure|n.|절차|Follow the safety procedure.
+produce|v.|생산하다|This farm can produce a lot of rice.
+profession|n.|직업, 전문직|Teaching is a noble profession.
+progress|n.|진전, 발전|You're making good progress.
+prohibit|v.|금지하다|The law will prohibit smoking in parks.
+promote|v.|촉진하다, 승진시키다|The company will promote her to manager.
+prompt|adj.|즉각적인|Thank you for your prompt reply.
+proper|adj.|적절한|Wear proper shoes for hiking.
+property|n.|재산, 부동산|This land is private property.
+proportion|n.|비율|A large proportion of students agreed.
+propose|v.|제안하다|I propose that we start now.
+prospect|n.|전망, 가능성|The prospect of a long holiday made us happy.
+prosper|v.|번영하다|The town began to prosper.
+protect|v.|보호하다|Sunscreen helps protect your skin.
+protest|n.|항의, 시위|Thousands joined the protest.
+prove|v.|증명하다|Can you prove it?
+provide|v.|제공하다|The hotel will provide breakfast.
+psychology|n.|심리학|She majored in psychology.
+publish|v.|출판하다|They will publish her book next year.
+punish|v.|처벌하다|Parents should not punish children too harshly.
+purchase|v.|구입하다|You can purchase tickets online.
+pursue|v.|추구하다|She wants to pursue a career in music.
+puzzle|v.|당황하게 하다|His answer seemed to puzzle the teacher.
+qualify|v.|자격을 얻다|You need to qualify for the final.
+quality|n.|품질|This bag is of high quality.
+quantity|n.|양|Quality is more important than quantity.
+quarrel|n.|말다툼|They had a quarrel over money.
+quit|v.|그만두다|He decided to quit smoking.
+quote|v.|인용하다|Can I quote you on that?
+race|n.|인종, 경주|People of every race live here.
+rational|adj.|이성적인|Let's make a rational decision.
+raw|adj.|날것의|I don't like raw fish.
+react|v.|반응하다|How did she react to the news?
+realistic|adj.|현실적인|Set realistic goals.
+reality|n.|현실|His dream became a reality.
+realize|v.|깨닫다|I didn't realize it was so late.
+reason|n.|이유|What's the reason for your absence?
+recall|v.|기억해 내다|I can't recall his name.
+receipt|n.|영수증|Keep the receipt.
+recent|adj.|최근의|In recent years, prices have gone up.
+recipe|n.|요리법|Can you share the recipe?
+recognize|v.|알아보다, 인정하다|I didn't recognize you with glasses.
+recommend|v.|추천하다|Can you recommend a good book?
+recover|v.|회복하다|She will recover from her illness soon.
+recruit|v.|모집하다|The club will recruit new members.
+reduce|v.|줄이다|We need to reduce waste.
+refer|v.|언급하다, 참고하다|You can refer to the dictionary.
+reflect|v.|반사하다, 반영하다|The lake can reflect the mountains.
+reform|n.|개혁|The country needs education reform.
+refuse|v.|거절하다|I had to refuse his offer.
+regard|v.|여기다, 간주하다|People regard him as a hero.
+region|n.|지역|This region is famous for apples.
+register|v.|등록하다|You need to register for the class.
+regret|v.|후회하다|You won't regret it.
+regular|adj.|규칙적인|Regular exercise keeps you healthy.
+regulate|v.|규제하다, 조절하다|Laws regulate the use of drones.
+reject|v.|거절하다|The company may reject his application.
+relate|v.|관련시키다, 공감하다|I can relate to your problem.
+relationship|n.|관계|They have a good relationship.
+relative|n.|친척|She is staying with a relative.
+release|v.|풀어 주다, 발표하다|The band will release a new album.
+relevant|adj.|관련 있는|Your answer isn't relevant to the question.
+relieve|v.|덜어 주다, 안심시키다|This medicine will relieve the pain.
+religion|n.|종교|People of every religion are welcome.
+reluctant|adj.|꺼리는|He was reluctant to help.
+rely|v.|의지하다|You can rely on me.
+remain|v.|남아 있다|Please remain seated.
+remarkable|adj.|주목할 만한|She made remarkable progress.
+remedy|n.|치료법, 해결책|Honey is a good remedy for a cough.
+remind|v.|상기시키다|Please remind me to call Mom.
+remote|adj.|외딴, 원격의|They live in a remote village.
+remove|v.|제거하다|Please remove your shoes.
+rent|n.|집세|The rent is due on Monday.
+repair|v.|수리하다|Can you repair my bike?
+replace|v.|대체하다|Robots may replace many workers.
+represent|v.|대표하다, 나타내다|She will represent our school.
+reputation|n.|평판|The restaurant has a good reputation.
+request|n.|요청|We received your request.
+require|v.|필요로 하다|This job will require patience.
+rescue|v.|구조하다|Firefighters rescue people from fires.
+research|n.|연구|She is doing research on cancer.
+resemble|v.|닮다|You resemble your mother.
+reserve|v.|예약하다|I'd like to reserve a table for two.
+resign|v.|사임하다|The minister decided to resign.
+resist|v.|저항하다, 참다|I can't resist chocolate.
+resolve|v.|해결하다|We need to resolve this conflict.
+resource|n.|자원|Water is a precious resource.
+respect|n.|존경, 존중|Treat others with respect.
+respond|v.|응답하다|Please respond by Friday.
+responsible|adj.|책임이 있는|Who is responsible for this mess?
+restore|v.|복구하다|They will restore the old palace.
+restrict|v.|제한하다|The new rule will restrict phone use.
+retire|v.|은퇴하다|My father will retire next year.
+reveal|v.|드러내다|She refused to reveal her secret.
+revenue|n.|수익, 세입|The company's revenue grew by 10%.
+reverse|v.|뒤집다, 반대로 하다|We can't reverse time.
+review|v.|검토하다, 복습하다|Review your notes before the test.
+revolution|n.|혁명|The Industrial Revolution changed the world.
+reward|n.|보상|Hard work brings its own reward.
+rhythm|n.|리듬|I love the rhythm of this song.
+rid|v.|없애다(get rid of)|How can I get rid of this smell?
+ridiculous|adj.|우스꽝스러운, 터무니없는|That's a ridiculous idea.
+rigid|adj.|엄격한, 단단한|The school has rigid rules.
+risk|n.|위험|Smoking increases the risk of cancer.
+rival|n.|경쟁자|He beat his rival in the final.
+role|n.|역할|Parents play an important role.
+rough|adj.|거친, 대략의|The sea was rough today.
+route|n.|경로, 노선|Which route is the fastest?
+routine|n.|일과, 판에 박힌 일|Exercise is part of my daily routine.
+royal|adj.|왕의|The royal family lives in the palace.
+rude|adj.|무례한|It's rude to talk with your mouth full.
+ruin|v.|망치다|The rain will ruin our picnic.
+rural|adj.|시골의|She grew up in a rural area.
