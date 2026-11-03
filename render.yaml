@@ -1,0 +1,13 @@
+# Render 무료 웹 서비스 설정 (Blueprint). GitHub에 push하면 자동으로 다시 배포된다.
+services:
+  - type: web
+    name: engword
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/books
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
