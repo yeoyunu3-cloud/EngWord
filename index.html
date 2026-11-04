@@ -114,6 +114,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .choice.ok{border-color:var(--ok);background:var(--ok-soft)}
 .choice.bad{border-color:var(--bad);background:var(--bad-soft)}
 .imp{display:flex;gap:8px}
+.auth{display:flex;flex-direction:column;gap:10px;max-width:380px}
+.auth input{font:inherit;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.acct{display:flex;align-items:center;gap:10px;font-size:.9rem}
 .imp input{flex:1;min-width:0;font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 @media (max-width:480px){.prompt.en{font-size:1.7rem}.card{padding:22px 14px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -121,6 +124,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 
 <main id="app"></main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 const EXAM=[
 ["certain","특정한"],["intention","의도"],["profit","이익, 수익"],["political benefit","정치적 이점"],
@@ -159,7 +163,66 @@ let CUR={book:"exam",day:0,title:"내 시험 범위"};
 let BOOKS=[],BOOKWORDS={},SERVER=false,FLASH="";
 const sent={};let syncTimer=null;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
-  if(SERVER){clearTimeout(syncTimer);syncTimer=setTimeout(sync,600)}}
+  if(SERVER){clearTimeout(syncTimer);syncTimer=setTimeout(sync,600)}
+  if(USER){clearTimeout(cloudTimer);cloudTimer=setTimeout(pushCloud,800)}}
+
+/* ---------- 로그인 (Supabase) ----------
+   로그인하면 S 전체를 user_state 테이블의 내 줄(user_id)에 JSON으로 저장한다.
+   다른 사람 줄은 RLS 정책 때문에 읽거나 쓸 수 없다. 표 만들기: supabase.sql */
+let SB=null,USER=null,cloudTimer=null;
+async function pushCloud(){if(!SB||!USER)return;
+  try{await SB.from("user_state").upsert({user_id:USER.id,state:S,updated_at:new Date().toISOString()})}catch(e){}}
+// 클라우드 기록과 이 브라우저 기록을 합친다: 외운 단어는 한쪽만 외웠어도 외운 것, 틀린 횟수는 큰 쪽
+async function pullCloud(){if(!SB||!USER)return;
+  try{const{data,error}=await SB.from("user_state").select("state").eq("user_id",USER.id).maybeSingle();
+    if(error)return;const c=(data&&data.state)||{};
+    for(const[k,v]of Object.entries(c.w||{})){const o=S.w[k]||{m:0,x:0};
+      S.w[k]={m:(o.m||v.m)?1:0,x:Math.max(o.x||0,v.x||0)}}
+    if(!S.drill&&c.drill)S.drill=c.drill;
+    if(!S.cur&&c.cur)S.cur=c.cur;
+    save()}catch(e){}}
+async function initAuth(){
+  if(!window.supabase)return;
+  try{const r=await fetch("/api/config",{cache:"no-store"});if(!r.ok)return;const c=await r.json();
+    if(!c.supabaseUrl||!c.supabaseKey)return;
+    SB=window.supabase.createClient(c.supabaseUrl,c.supabaseKey);
+    const{data}=await SB.auth.getSession();USER=data.session?data.session.user:null;
+    if(USER)await pullCloud();
+  }catch(e){SB=null}}
+const AUTH_MSG={"Invalid login credentials":"이메일이나 비밀번호가 틀렸어요.","User already registered":"이미 가입한 이메일이에요. 로그인해 주세요.","Email not confirmed":"메일함에서 가입 확인 링크를 먼저 눌러 주세요.","Failed to fetch":"로그인 서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요."};
+function account(){
+  key=null;
+  $app.innerHTML=`<div class="top"><button class="link" id="back">← 홈</button></div>
+  <h1>로그인</h1>
+  <p class="muted">로그인하면 학습 기록이 계정에 저장돼서 폰, 컴퓨터 어디서 열어도 이어서 공부할 수 있어요.</p>
+  <form class="auth" id="auth">
+    <input id="em" type="email" autocomplete="email" placeholder="이메일" aria-label="이메일" required>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="비밀번호 (6자 이상)" aria-label="비밀번호" minlength="6" required>
+    <div class="row"><button class="btn primary" id="in">로그인</button><button class="btn" type="button" id="up">회원가입</button></div>
+    <p class="muted" id="am" role="status"></p>
+  </form>`;
+  const em=$app.querySelector("#em"),pw=$app.querySelector("#pw"),am=$app.querySelector("#am");
+  const run=async signup=>{
+    if(!em.value||pw.value.length<6){am.textContent="이메일과 6자 이상 비밀번호를 넣어 주세요.";return}
+    am.textContent=signup?"가입하는 중…":"로그인하는 중…";
+    const{data,error}=signup
+      ?await SB.auth.signUp({email:em.value,password:pw.value,options:{emailRedirectTo:location.origin}})
+      :await SB.auth.signInWithPassword({email:em.value,password:pw.value});
+    if(error){am.textContent=AUTH_MSG[error.message]||error.message;return}
+    if(!data.session){am.textContent="가입 확인 메일을 보냈어요. 메일의 링크를 누른 뒤 로그인해 주세요.";return}
+    USER=data.session.user;await pullCloud();await pushCloud();
+    FLASH="로그인했어요. 이제 기록이 계정에 저장돼요.";home()};
+  $app.querySelector("#auth").onsubmit=e=>{e.preventDefault();run(false)};
+  $app.querySelector("#up").onclick=()=>run(true);
+  $app.querySelector("#back").onclick=home;
+  em.focus()}
+// 로그아웃하면 이 브라우저의 기록도 지운다 (같은 컴퓨터를 다른 사람이 쓸 수 있으니까). 기록은 계정에 남아 있다
+async function logout(){
+  clearTimeout(cloudTimer);await pushCloud();
+  try{await SB.auth.signOut()}catch(e){}
+  USER=null;S={w:{},dir:S.dir,mode:S.mode};for(const k in sent)delete sent[k];
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  FLASH="로그아웃했어요.";openBook("exam")}
 async function sync(){
   const by={};
   for(const[k,v]of Object.entries(S.w)){const j=JSON.stringify(v);if(sent[k]===j)continue;
@@ -239,6 +302,7 @@ async function openDay(id,day){
   const ws=BOOKWORDS[id].slice((day-1)*bk.daySize,day*bk.daySize).map(o=>[o.w,o.ko,o.pos,o.ex]);
   setWords(ws,{book:id,day,title:bk.title});home();window.scrollTo(0,0)}
 async function boot(){
+  await initAuth();
   try{const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),1500);
     const r=await fetch("/api/books",{signal:ctrl.signal,cache:"no-store"});
     if(!r.ok)throw 0;BOOKS=await r.json();SERVER=true;
@@ -248,6 +312,9 @@ async function boot(){
   home()}
 
 /* ---------- home ---------- */
+// 저장된 세트가 지금 범위의 단어와 맞을 때만 이어서 하기를 보여 준다
+function resumable(){const d=S.drill;
+  return!!(d&&d.book===CUR.book&&d.day===CUR.day&&Array.isArray(d.q)&&d.q.length&&d.ids.every(i=>i<W.length))}
 function home(){
   key=null;
   const mastered=W.filter((_,i)=>st(i).m).length;
@@ -259,10 +326,11 @@ function home(){
   // 예문이 없는 책(클래스카드에서 가져온 세트)은 빈칸 문제를 만들 수 없다
   const hasCloze=CUR.book==="exam"||W.some(w=>w[3]);
   $app.innerHTML=`
-  <div class="top"><h1>영단어 암기 트레이너</h1></div>
+  <div class="top"><h1>영단어 암기 트레이너</h1>${SB?(USER?`<span class="acct"><span class="muted">${esc(USER.email||"")}</span><button class="link" id="logout">로그아웃</button></span>`:`<button class="btn" id="login">로그인</button>`):""}</div>
   ${FLASH?`<div class="fb ok">${esc(FLASH)}</div>`:""}
   ${bookBar()}
   ${SERVER?`<form class="imp" id="imp"><input id="impUrl" type="url" inputmode="url" placeholder="클래스카드 세트 링크 (예: https://www.classcard.net/set/31507889)" aria-label="클래스카드 세트 링크"><button class="btn" id="impBtn">단어 가져오기</button></form><p class="muted" id="impMsg" role="status"></p>`:""}
+  ${resumable()?`<div class="fb ok"><span><b>${esc(S.drill.label)}</b>을 하다 멈췄어요 · 남은 단어 ${new Set(S.drill.q.map(x=>x.i)).size}개</span><div class="row"><button class="btn primary" id="resume">이어서 하기</button><button class="btn" id="dropDrill">처음부터</button></div></div>`:""}
   <div class="here"><span class="muted">지금 공부하는 범위</span><h2>${esc(CUR.title)}${multiDay()?` · Day ${String(CUR.day).padStart(2,"0")}`:""}</h2></div>
   <div class="stat">
     <div><b>${mastered}<span class="muted"> / ${W.length}</span></b><span class="muted">외운 단어</span></div>
@@ -308,6 +376,11 @@ function home(){
     ${(BOOKS.find(b=>b.id===CUR.book)||{}).imported?`<button class="link" id="delBook">이 단어 세트 삭제</button>`:""}
   </div>
   <div id="confirm"></div>`;
+  const li=$app.querySelector("#login");if(li)li.onclick=account;
+  const lo=$app.querySelector("#logout");if(lo)lo.onclick=logout;
+  const rs=$app.querySelector("#resume");
+  if(rs){rs.onclick=()=>drill(S.drill.ids,S.drill.label,S.drill);
+    $app.querySelector("#dropDrill").onclick=()=>{delete S.drill;save();home()}}
   $app.querySelectorAll("[data-set]").forEach(b=>b.onclick=()=>preview(setIdx(+b.dataset.set),`세트 ${+b.dataset.set+1}`));
   $app.querySelectorAll("[data-exam]").forEach(b=>b.onclick=()=>exam(+b.dataset.exam));
   const wb=$app.querySelector("[data-weak]");wb.onclick=()=>{const ids=weak.sort((a,b)=>st(b).x-st(a).x).slice(0,15);preview(ids,"오답 집중")};
@@ -453,16 +526,20 @@ function askChoice({i,type,top,onDone}){
 }
 
 /* ---------- drill: spaced repetition inside a session ---------- */
-function drill(ids,label){
-  const stages=STAGES[S.dir]||STAGES.both,maxStage=stages.length;
-  let q=shuffle(ids).map(i=>({i,stage:0}));
-  let progress=0,total=ids.length*maxStage,wrongs=new Set();
+// 하다 만 세트는 S.drill에 저장해서 창을 닫았다 열어도 이어서 할 수 있다
+function drill(ids,label,resume){
+  const dir=resume?resume.dir:S.dir;
+  const stages=STAGES[dir]||STAGES.both,maxStage=stages.length;
+  let q=resume?resume.q.map(o=>({...o})):shuffle(ids).map(i=>({i,stage:0}));
+  let progress=resume?resume.progress:0,total=ids.length*maxStage,wrongs=new Set(resume?resume.wrongs:[]);
+  const keep=()=>{S.drill={book:CUR.book,day:CUR.day,label,ids,dir,q:q.map(o=>({...o})),progress,wrongs:[...wrongs]}};
   const step=()=>{
-    if(!q.length)return drillDone(ids,label,wrongs);
-    const it=q.shift();
-    const top=`<div class="top"><button class="link" id="back">← 그만하기</button><span class="muted">${label} · 남은 단어 ${new Set([it,...q].map(x=>x.i)).size}</span></div>
+    if(!q.length){delete S.drill;save();return drillDone(ids,label,wrongs)}
+    const it=q[0]; // 답하기 전까지 큐에 남겨 둬야 중간에 나가도 이 단어가 저장된다
+    const top=`<div class="top"><button class="link" id="back">← 그만하기</button><span class="muted">${label} · 남은 단어 ${new Set(q.map(x=>x.i)).size}</span></div>
       <div class="meter big"><i style="width:${progress/total*100}%"></i></div>`;
     ask({i:it.i,type:stages[it.stage],top,onDone:(ok,hint)=>{
+      q.shift();
       if(ok&&!hint){it.stage++;progress++;
         if(it.stage<maxStage)q.splice(Math.min(q.length,3+(Math.random()*4|0)),0,it);
         else st(it.i).m=1;
@@ -470,11 +547,11 @@ function drill(ids,label){
         if(!ok){st(it.i).x++;wrongs.add(it.i);if(it.stage>0){it.stage--;progress--}}
         q.splice(Math.min(q.length,2),0,it);
       }
-      save();step();
+      keep();save();step();
     }});
     $app.querySelector("#back").onclick=home;
   };
-  step();
+  keep();save();step();
 }
 function drillDone(ids,label,wrongs){
   key=e=>{if(e.key==="Enter"){e.preventDefault();home()}};

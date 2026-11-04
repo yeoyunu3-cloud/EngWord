@@ -8,6 +8,7 @@
 - PUT  /api/progress/{book}       : 학습 기록 저장
 - POST /api/import                : 클래스카드 세트 링크로 단어책 추가 {"url": "..."}
 - DELETE /api/books/{book}        : 가져온 단어책(cc-*) 삭제
+- GET  /api/config                : 로그인용 Supabase 주소와 공개 키 (환경변수 SUPABASE_URL, SUPABASE_ANON_KEY)
 
 단어책은 data/<책 id>/*.txt 파일을 이름 순서대로 읽어 만든다.
 한 줄 형식: 단어|품사|뜻|예문   (#으로 시작하는 줄은 주석)
@@ -95,6 +96,13 @@ def summary(book_id: str) -> dict:
 @app.get("/")
 def index():
     return FileResponse(ROOT / "index.html")
+
+
+@app.get("/api/config")
+def config():
+    # anon 키는 브라우저에 보여도 되는 공개 키다. 다른 사람 기록은 Supabase의 RLS 정책이 막는다
+    return {"supabaseUrl": os.environ.get("SUPABASE_URL", ""),
+            "supabaseKey": os.environ.get("SUPABASE_ANON_KEY", "")}
 
 
 @app.get("/api/books")
