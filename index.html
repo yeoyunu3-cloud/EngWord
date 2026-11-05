@@ -259,8 +259,11 @@ function home(){
   for(let s=0;s<NSETS;s++){const ids=setIdx(s),done=ids.filter(i=>st(i).m).length;
     sets+=`<button class="set" data-set="${s}"><span class="n">세트 ${s+1}</span><span class="w">${esc(W[ids[0]][0].replace(/ [ㄱ-힝].*/,""))} …</span><span class="muted">${done}/${ids.length} 완료</span><span class="meter"><i style="width:${done/ids.length*100}%"></i></span></button>`}
   const exams=[...new Set([10,20,40,W.length].filter(n=>n<=W.length))];
-  // 예문이 없는 책(클래스카드에서 가져온 세트)은 빈칸 문제를 만들 수 없다
-  const hasCloze=CUR.book==="exam"||W.some(w=>w[3]);
+  // 빈칸 주관식(세 문장)은 내 시험 범위에만 있다. 서술형은 SEO에 문장이 있거나 예문이 있는 단어만 나온다
+  const hasCloze=CUR.book==="exam";
+  const seoIds=W.map((_,i)=>i).filter(i=>seoData(i)),hasSeo=seoIds.length>0;
+  const seoSets=Array.from({length:NSETS},(_,s)=>setIdx(s).filter(i=>seoIds.includes(i)));
+  const nCloze=hasCloze?3:0,nSeo=hasSeo?3+(hasCloze?1:0):0,nWeak=3+(hasCloze?1:0)+(hasSeo?1:0);
   $app.innerHTML=`
   <div class="top"><h1>영단어 암기 트레이너</h1></div>
   ${FLASH?`<div class="fb ok">${esc(FLASH)}</div>`:""}
@@ -275,8 +278,9 @@ function home(){
   <div class="meter big"><i style="width:${mastered/W.length*100}%"></i></div>
   <ol class="steps">
     <li><b>세트별 학습</b>: 10개씩 훑어보고 바로 직접 써 보기. 단어마다 ${S.dir==="both"?"영어 보고 뜻 쓰기, 뜻 보고 영어 쓰기를 둘 다":"두 번"} 맞혀야 끝나요.</li>
-    <li><b>모의고사</b>: 전체 범위를 섞어서 시험처럼 풀어요. 주관식(직접 쓰기), 객관식(4지선다), 둘을 섞어서 중 고를 수 있어요.</li>
+    <li><b>모의고사</b>: 전체 범위를 섞어서 시험처럼 풀어요. 적기(직접 쓰기), 객관식(4지선다), 둘을 섞어서 중 고를 수 있어요.</li>
     ${hasCloze?`<li><b>빈칸 주관식</b>: 예문 세 개에 공통으로 빠진 단어를 써요.</li>`:""}
+    ${hasSeo?`<li><b>서술형</b>: 영어 문장 하나에서 빠진 단어를 써요.</li>`:""}
     <li><b>오답 집중</b>: 많이 틀린 단어만 다시 돌려요. 시험 직전에 한 번 더.</li>
   </ol>
   <section class="panel">
@@ -285,19 +289,25 @@ function home(){
   </section>
   <section class="panel">
     <h2>2. 모의고사</h2>
-    <nav class="books" aria-label="문제 형식">${[["write","주관식 (적기)"],["mc","객관식 (4지선다)"],["mix","섞어서"]].map(([v,t])=>`<button class="tab ${S.mode===v?"on":""}" data-mode="${v}">${t}</button>`).join("")}</nav>
+    <nav class="books" aria-label="문제 형식">${[["write","적기"],["mc","객관식 (4지선다)"],["mix","섞어서"]].map(([v,t])=>`<button class="tab ${S.mode===v?"on":""}" data-mode="${v}">${t}</button>`).join("")}</nav>
     <div class="row">
       ${exams.map((n,k)=>`<button class="btn ${k===0?"primary":""}" data-exam="${n}">${n===W.length?`전체 ${n}문제`:`${n}문제`}</button>`).join("")}
     </div>
   </section>
   ${hasCloze?`<section class="panel">
-    <h2>3. 빈칸 주관식</h2>
-    <p class="muted">${CUR.book==="exam"?"세 문장의 빈칸에 공통으로 들어갈 단어를":"예문의 빈칸에 들어갈 단어를"} 직접 써요. 문맥으로 단어를 떠올리는 연습이에요.</p>
+    <h2>${nCloze}. 빈칸 주관식</h2>
+    <p class="muted">세 문장의 빈칸에 공통으로 들어갈 단어를 직접 써요. 문맥으로 단어를 떠올리는 연습이에요.</p>
     <div class="row">${Array.from({length:NSETS},(_,s)=>`<button class="btn" data-cl="${s}">세트 ${s+1}</button>`).join("")}</div>
     <div class="row">${W.length>20?`<button class="btn primary" data-clr="20">전체에서 20문제</button>`:""}<button class="btn ${W.length>20?"":"primary"}" data-clr="${W.length}">전체 ${W.length}문제</button></div>
   </section>`:""}
+  ${hasSeo?`<section class="panel">
+    <h2>${nSeo}. 서술형</h2>
+    <p class="muted">영어 문장 하나에서 빠진 단어를 직접 써요. 시험의 서술형 빈칸처럼 철자까지 정확히 써야 맞아요.</p>
+    <div class="row">${seoSets.map((ids,s)=>ids.length?`<button class="btn" data-seo="${s}">세트 ${s+1}</button>`:"").join("")}</div>
+    <div class="row">${seoIds.length>20?`<button class="btn primary" data-seor="20">전체에서 20문제</button>`:""}<button class="btn ${seoIds.length>20?"":"primary"}" data-seor="${seoIds.length}">전체 ${seoIds.length}문제</button></div>
+  </section>`:""}
   <section class="panel">
-    <h2>${hasCloze?4:3}. 오답 집중</h2>
+    <h2>${nWeak}. 오답 집중</h2>
     <p class="muted">${weak.length?`틀린 횟수가 많은 단어부터 최대 15개를 다시 학습해요.`:`아직 틀린 단어가 없어요. 학습이나 모의고사를 먼저 풀어 보세요.`}</p>
     <div class="row"><button class="btn" data-weak ${weak.length?"":"disabled"}>오답 학습 시작</button><button class="btn" data-list>${multiDay()?"Day 단어장":"전체 단어장"}</button></div>
   </section>
@@ -322,6 +332,8 @@ function home(){
   bindBookBar();
   $app.querySelectorAll("[data-cl]").forEach(b=>b.onclick=()=>cloze(setIdx(+b.dataset.cl),`빈칸 세트 ${+b.dataset.cl+1}`));
   $app.querySelectorAll("[data-clr]").forEach(b=>b.onclick=()=>cloze(shuffle(W.map((_,i)=>i)).slice(0,+b.dataset.clr),"빈칸 주관식"));
+  $app.querySelectorAll("[data-seo]").forEach(b=>b.onclick=()=>cloze(seoSets[+b.dataset.seo],`서술형 세트 ${+b.dataset.seo+1}`,seoData));
+  $app.querySelectorAll("[data-seor]").forEach(b=>b.onclick=()=>cloze(shuffle(seoIds).slice(0,+b.dataset.seor),"서술형",seoData));
   $app.querySelector("#dirSel").onchange=e=>{S.dir=e.target.value;save();home()};
   $app.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{S.mode=b.dataset.mode;save();home()});
   FLASH="";
@@ -617,6 +629,168 @@ const CL={
 "pass through ~":["pass through","The train will ___ a long tunnel.|Light can ___ glass.|We had to ___ security at the airport."],
 "unidentified":["unidentified","An ___ man called the police.|The rumor came from an ___ source.|An ___ flying object was seen last night."]
 };
+/* ---------- 서술형: 영어 문장 하나, 빈칸 하나 ---------- */
+// 단어(목록에 적힌 그대로) → [답, "문장", 다른 정답(선택)]. 빈칸 두 개(so ~ that)는 답을 띄어 써서 순서대로 채운다
+const SEO={
+// 내 시험 범위
+"certain":["certain","The museum is only open at ___ times of the year."],
+"intention":["intention","It was never my ___ to make you cry."],
+"profit":["profit","The small bakery makes a ___ every month."],
+"political benefit":["political benefit","Critics said the president used the crisis for ___."],
+"disturb":["disturb","The ringing phone may ___ the baby's sleep."],
+"harm":["harm","Some chemicals can ___ the fish in the river."],
+"B as well as A":["as well as","She is good at math ___ science."],
+"individual":["individual","The coach gave each ___ player a different task."],
+"involved":["involved","The police questioned everyone ___ in the fight."],
+"state":["state","After the earthquake, the city was in a ___ of chaos."],
+"emergency":["emergency","Press this red button only in an ___."],
+"measure":["measure","Use a ruler to ___ the length of the line."],
+"struck":["struck","Last year, a huge flood ___ the small village."],
+"resident":["resident","Each ___ of the town received a free mask."],
+"shelter":["shelter","The lost dog was taken to an animal ___."],
+"the news that 주어 동사":["the news that","We were happy to hear ___ our team had won."],
+"be about to 동사원형":["about to","The class was ___ begin when I arrived."],
+"be up to ~":["up to","Where we go on vacation is ___ Dad."],
+"apparently":["apparently","___, the singer canceled the concert because she was sick."],
+"displaced":["displaced","The camp was built for ___ families from the war zone."],
+"so 형용사 that 주어 동사":["so that","The soup was ___ hot ___ I burned my tongue."],
+"anxious":["anxious","He looked ___ while he waited for the test results."],
+"aftershock":["aftershock","People ran outside when the ___ shook the building again."],
+"government":["government","The ___ plans to build more public schools."],
+"viral":["viral","The ___ disease spread quickly through the city."],
+"significantly":["significantly","Taking the subway can ___ reduce air pollution."],
+"farther":["farther","My house is ___ from school than yours."],
+"on average":["on average","___, a cat sleeps about 15 hours a day."],
+"explanation":["explanation","His ___ for being late didn't make any sense."],
+"phenomenon":["phenomenon","Global warming is a ___ that affects the whole planet."],
+"previously":["previously","The building was ___ used as a hospital."],
+"daily life":["daily life","Computers have changed our ___ in many ways."],
+"tend to 동사원형":["tend to","Older people ___ wake up early in the morning."],
+"effortlessly":["effortlessly","The skater glided ___ across the ice."],
+"likely":["likely","Students who sleep well are more ___ to do well on tests."],
+"proof":["proof","Do you have any ___ that this story is true?"],
+"critically":["critically","A good reader thinks ___ about the writer's claims."],
+"examine":["examine","The scientist will ___ the sample under a microscope."],
+"moreover":["moreover","This phone is too expensive. ___, its battery is weak."],
+"be inclined to 동사원형":["inclined to","When I'm tired, I am ___ skip breakfast."],
+"fit":["fit","This key doesn't ___ the lock."],
+"process":["process","Writing a good essay is a long ___."],
+"fall into ~":["fall into","Be careful not to ___ the habit of checking your phone in class."],
+"trap":["trap","The hunter set a ___ for the rabbit."],
+"confirmation bias":["confirmation bias","___ leads us to look only for facts that support our opinions."],
+"that is":["that is","I'll see you next month, ___, in July."],
+"selectively":["selectively","The app ___ shows you posts it thinks you will like."],
+"ignore":["ignore","He chose to ___ his doctor's advice."],
+"election":["election","The ___ results will be announced tonight."],
+"blindly":["blindly","You shouldn't ___ believe everything in advertisements."],
+"describe":["describe","Could you ___ what happened at the accident?"],
+"favored":["favored","Soccer is the most ___ sport at our school."],
+"candidate":["candidate","The ___ promised to lower taxes if she won."],
+"in a positive way":["in a positive way","Our teacher always speaks to us ___."],
+"unconsciously":["unconsciously","I ___ hummed the song all day long."],
+"spot":["spot","Did you ___ any spelling mistakes in my essay?"],
+"face value":["face value","Never accept online reviews at ___."],
+"judge":["judge","It's too early to ___ whether the plan worked."],
+"judgment":["judgment","Trust your own ___ when you make decisions."],
+"analyze":["analyze","The detective tried to ___ every clue."],
+"evaluate":["evaluate","The judges will ___ each performance carefully."],
+"affect":["affect","Stress can ___ how well you sleep."],
+"article":["article","This ___ explains how fake news spreads online."],
+"suit":["suit","This job doesn't ___ my personality."],
+"look for ~":["look for","I'll ___ a better price online."],
+"oppose":["oppose","Most students ___ the plan to shorten lunch time."],
+"as well":["as well","If you go to the park, I'll come ___."],
+"credibility":["credibility","Spelling mistakes can hurt the ___ of your report."],
+"source":["source","Wikipedia is not always a reliable ___."],
+"intent":["intent","The ___ of the law is to protect children."],
+"whether 주어 동사":["whether","I can't decide ___ I should go or stay."],
+"reliable":["reliable","My old car isn't very ___ anymore."],
+"eliminate":["eliminate","The new system will ___ long waiting lines."],
+"objectively":["objectively","A reporter should report the news ___."],
+"trust":["trust","It takes time to ___ new people."],
+"lead to ~":["lead to","A small mistake can ___ a big problem."],
+"pass through ~":["pass through","The parade will ___ the city center."],
+"unidentified":["unidentified","An ___ caller reported the fire to the police."],
+// 영단어 시험 2학기 03 (클래스카드 세트 31507889)
+"break out of ~":["break out of","The prisoners tried to ___ the jail at night."],
+"chamber":["chamber","The king kept his gold in a secret ___ under the castle."],
+"consistently":["consistently","She ___ gets good grades because she studies every day."],
+"encounter":["encounter","You may ___ wild animals if you hike in this forest."],
+"perspective":["perspective","Reading history gives us a new ___ on today's world."],
+"alternative":["alternative","The bridge is closed, so we need an ___ route."],
+"enclosed":["enclosed","The garden is ___ by a high stone wall."],
+"leak out":["leak out","The secret plan began to ___ to the press."],
+"term":["term","Our school's second ___ starts in August."],
+"distort":["distort","Some news reports ___ the facts to attract readers."],
+"understanding":["understanding","Traveling can deepen your ___ of other cultures."],
+"engage in ~":["engage in","Students are encouraged to ___ class discussions."],
+"meaningful":["meaningful","Volunteering at the hospital was a ___ experience for me."],
+"debate":["debate","We had a heated ___ about school uniforms."],
+"worse still":["worse still","It started to rain. ___, I had left my umbrella at home."],
+"foster":["foster","Good teachers ___ a love of learning in their students."],
+"challenging":["challenging","Climbing the mountain was ___ but exciting."],
+"actively":["actively","She ___ takes part in every school event."],
+"diverse":["diverse","Seoul is home to people from ___ backgrounds."],
+"even if 주어 동사":["even if","I will finish the race ___ I come in last."],
+"infection":["infection","Wash your hands often to prevent ___."],
+"rapidly":["rapidly","The fire spread ___ through the dry forest."],
+"infect":["infect","The virus can ___ people through the air."],
+"a number of ~":["a number of","___ students were absent because of the flu."],
+"regardless of ~":["regardless of","Anyone can join the club ___ age."],
+"go viral":["go viral","Her funny dance video is likely to ___ on social media."],
+"theory":["theory","Einstein's ___ of relativity changed modern physics."],
+"take one's eyes off ~":["take my eyes off","The movie was so exciting that I couldn't ___ the screen."],
+"cannot help but 동사원형":["cannot help but","Whenever I see his funny face, I ___ laugh.",["can't help but","can not help but"]],
+"annoyed":["annoyed","I was ___ because my brother kept making noise."],
+"unarmed":["unarmed","The police officer was ___ when he faced the thief."],
+"martial art":["martial art","Taekwondo is a traditional Korean ___."],
+"officially":["officially","The new library will ___ open next Monday."],
+"regarding":["regarding","If you have any questions ___ the test, ask me after class."],
+"distinct":["distinct","The two plants look similar, but they are ___ species."],
+"make clear":["make clear","Let me ___ that I don't agree with this plan."],
+"separate":["separate","Keep raw meat ___ from other food."],
+"scholar":["scholar","The ___ spent years studying ancient Chinese texts."],
+"derive":["derive","Many English words ___ from Latin."],
+"grateful":["grateful","I am ___ for all your help."],
+"emphasize":["emphasize","The coach likes to ___ the importance of teamwork."],
+"priority":["priority","Safety is our top ___."],
+"drought":["drought","The long ___ left the fields dry and the crops dead."],
+"worsen":["worsen","Air pollution may ___ if we do nothing."],
+"deforestation":["deforestation","___ destroys the homes of many animals."],
+"prove":["prove","Can you ___ that you were at home last night?"],
+"take action":["take action","We must ___ now to protect the environment."],
+"come to 동사원형":["come to","Over time, you will ___ love this city."],
+"realize":["realize","I didn't ___ how late it was.",["realise"]],
+"serious":["serious","Climate change is a ___ problem for everyone."],
+"habitat":["habitat","Pandas are losing their natural ___."],
+"disappear":["disappear","Many glaciers may ___ by the end of this century."],
+"temperature":["temperature","The ___ dropped below zero last night."],
+"degree Celsius":["degrees Celsius","Water boils at 100 ___.",["degree celsius"]],
+"prediction":["prediction","The weather ___ for tomorrow is heavy snow."],
+"yellow dust":["yellow dust","Wear a mask when ___ blows in from the desert."],
+"extreme":["extreme","Polar bears can survive ___ cold."],
+"insight":["insight","The book gave me a deep ___ into human nature."],
+"construction":["construction","The new school building is still under ___."],
+"unbearable":["unbearable","The summer heat was almost ___."],
+"portable":["portable","I bought a ___ charger for my phone."],
+"nevertheless":["nevertheless","The test was very hard. ___, she got a perfect score."],
+"severe":["severe","The town suffered ___ damage from the storm."],
+"auditorium":["auditorium","All students gathered in the ___ for the ceremony."],
+"atmosphere":["atmosphere","Carbon dioxide traps heat in the Earth's ___."],
+"flood":["flood","Heavy rain caused a ___ in the village."],
+"organic":["organic","My mother buys ___ vegetables grown without chemicals."],
+"eco-friendly":["eco-friendly","Paper bags are more ___ than plastic ones."],
+"carbon":["carbon","Trees absorb ___ dioxide from the air."],
+"approach":["approach","A big typhoon is about to ___ the coast."],
+"significant":["significant","There was a ___ change in the test results."],
+"crop":["crop","Rice is the main ___ in this region."],
+"be on the rise":["on the rise","Sea levels are ___ around the world."],
+"compete":["compete","Ten teams will ___ in the final round."],
+"conflict":["conflict","The two countries tried to solve the ___ peacefully."],
+"tension":["tension","You could feel the ___ in the room before the results came out."],
+"hostility":["hostility","He showed open ___ toward his rival."],
+"disastrous":["disastrous","The flood had ___ effects on the farmers."]
+};
 // 같은 빈칸에 둘 다 자연스러운 경우
 const CL_ALT={"intention":["intent"],"intent":["intention"]};
 const reEsc=t=>t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
@@ -627,16 +801,14 @@ function findInSentence(h,ex){
     const re=new RegExp("\\b"+reEsc(ws[0])+"(?:s|es|d|ed|ing)?"+ws.slice(1).map(w=>"\\s+"+reEsc(w)).join("")+"\\b","i");
     const m=ex.match(re);if(m)return m}
   return null}
-function clData(i){
-  const en=W[i][0];
-  if(CUR.book==="exam"){const[a,raw]=CL[en];return{ans:a,sents:raw.split("|"),alts:CL_ALT[en]||[]}}
-  const ex=W[i][3]||"",m=findInSentence(en,ex);
-  if(!m)return{ans:en,sents:["___"],alts:[]};
-  return{ans:m[0],sents:[ex.slice(0,m.index)+"___"+ex.slice(m.index+m[0].length)],alts:[en]}}
-function clAnswerRight(input,i){const n=norm(input);if(!n)return false;const c=clData(i);
-  return [c.ans,...c.alts].some(a=>norm(a)===n)}
-function askCloze({i,top,onDone}){
-  const ko=W[i][1],cd=clData(i),ans=cd.ans,sents=cd.sents;
+function clData(i){const en=W[i][0],[a,raw]=CL[en];return{ans:a,sents:raw.split("|"),alts:CL_ALT[en]||[]}}
+// 서술형: SEO에 직접 쓴 문장이 있으면 그것, 없으면 단어책 예문에서 단어를 찾아 빈칸으로. 둘 다 없으면 null
+function seoData(i){const en=W[i][0],s=SEO[en];
+  if(s)return{ans:s[0],sents:[s[1]],alts:[...(s[2]||[]),...(ALT[en]||[])]};
+  const ex=W[i][3]||"",m=ex&&findInSentence(en,ex);
+  return m?{ans:m[0],sents:[ex.slice(0,m.index)+"___"+ex.slice(m.index+m[0].length)],alts:[en]}:null}
+function askCloze({i,top,onDone,cd}){
+  const ko=W[i][1],ans=cd.ans,sents=cd.sents;
   const parts=ans.split(" "),nb=sents[0].split("___").length-1;
   // 빈칸이 두 개인 문장(so ~ that)은 단어를 하나씩 나눠 채운다
   const fill=(s,show)=>{let k=0;return esc(s).replace(/___/g,()=>{const t=nb>1?parts[k++]||"":ans;return show?`<b class="mark">${esc(t)}</b>`:`<span class="blank">${"&nbsp;".repeat(Math.max(6,t.length*2))}</span>`})};
@@ -666,7 +838,8 @@ function askCloze({i,top,onDone}){
     $app.querySelector("#nx").onclick=next;
     key=e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();next()}};
   };
-  const submit=()=>{if(answered||!inp.value.trim())return;finish(clAnswerRight(inp.value,i))};
+  const right=v=>{const n=norm(v);return!!n&&[ans,...cd.alts].some(a=>norm(a)===n)};
+  const submit=()=>{if(answered||!inp.value.trim())return;finish(right(inp.value))};
   inp.addEventListener("keydown",e=>{if(e.key!=="Enter")return;e.stopPropagation();if(e.isComposing||e.keyCode===229)return;e.preventDefault();submit()});
   $app.querySelector("#ok").onclick=submit;
   $app.querySelector("#hm").onclick=e=>{e.target.disabled=true;hint("뜻: "+ko)};
@@ -674,15 +847,15 @@ function askCloze({i,top,onDone}){
   $app.querySelector("#idk").onclick=()=>{if(!answered)finish(false)};
   key=null;
 }
-function cloze(ids,label){
+function cloze(ids,label,get=clData){
   ids=shuffle(ids);
   let k=0,score=0;const wrong=[];
   const step=()=>{
-    if(k>=ids.length)return examDone(ids.length,score,wrong,label,()=>cloze(wrong,label+" 오답"));
+    if(k>=ids.length)return examDone(ids.length,score,wrong,label,()=>cloze(wrong,label+" 오답",get));
     const i=ids[k];
     const top=`<div class="top"><button class="link" id="back">← 그만하기</button><span class="muted" style="font-variant-numeric:tabular-nums">${label} ${k+1} / ${ids.length} · 정답 ${score}</span></div>
       <div class="meter big"><i style="width:${k/ids.length*100}%"></i></div>`;
-    askCloze({i,top,onDone:(ok,hint)=>{
+    askCloze({i,top,cd:get(i),onDone:(ok,hint)=>{
       if(ok&&!hint)score++;else{wrong.push(i);if(!ok)st(i).x++}
       save();k++;step();
     }});
