@@ -19,17 +19,24 @@ Vercel(서버리스)에서는 코드 폴더가 읽기 전용이라 가져온 세
 
 실행:  .venv/bin/python server.py   →  http://localhost:8001
 """
+import base64
+import binascii
+import hmac
 import os
 import shutil
 import sqlite3
 import threading
+import time
+from collections import deque
 from pathlib import Path
+from typing import Annotated
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, StringConstraints
 
+import ai
 from classcard import CardSetError, fetch_set
 
 ROOT = Path(__file__).parent
@@ -226,6 +233,118 @@ def reset_progress(book: str):
         db.execute("DELETE FROM progress WHERE book = ?", (book,))
         db.commit()
     return {"ok": True}
+
+
+# ---------- AI 기능 (사진으로 단어 읽기, 대화 만들기) ----------
+# 키(ANTHROPIC_API_KEY)와 접근 코드(AI_PASSCODE)가 둘 다 있어야 켜진다. 키만 있으면 잠겨 있다.
+# 호출 제한은 서버 인스턴스마다 따로 센다(서버리스라 완벽하지 않음). 최종 상한은 Anthropic Console 월 한도.
+LIMIT_WINDOW = 600  # 10분
+MAX_CODE_FAILS = 10
+MAX_AI_CALLS = 30
+_limit_lock = threading.Lock()
+_code_fails: dict[str, deque] = {}
+_ai_calls: dict[str, deque] = {}
+
+
+def reset_limits() -> None:
+    with _limit_lock:
+        _code_fails.clear()
+        _ai_calls.clear()
+
+
+def _recent(store: dict, ip: str, now: float) -> deque:
+    q = store.setdefault(ip, deque())
+    while q and now - q[0] > LIMIT_WINDOW:
+        q.popleft()
+    return q
+
+
+def _client_ip(request: Request) -> str:
+    fwd = request.headers.get("x-forwarded-for", "")
+    return fwd.split(",")[0].strip() or (request.client.host if request.client else "unknown")
+
+
+def ai_enabled() -> bool:
+    return bool(os.environ.get("ANTHROPIC_API_KEY") and os.environ.get("AI_PASSCODE"))
+
+
+def ai_guard(request: Request) -> None:
+    if not ai_enabled():
+        raise HTTPException(503, "AI 기능이 아직 설정되지 않았어요")
+    ip, now = _client_ip(request), time.monotonic()
+    given = request.headers.get("x-ai-passcode", "")
+    with _limit_lock:
+        fails = _recent(_code_fails, ip, now)
+        if len(fails) >= MAX_CODE_FAILS:
+            raise HTTPException(429, "잠시 후 다시 시도해 주세요")
+        if not hmac.compare_digest(given.encode(), os.environ["AI_PASSCODE"].encode()):
+            fails.append(now)
+            raise HTTPException(401, "접근 코드가 맞지 않아요")
+        calls = _recent(_ai_calls, ip, now)
+        if len(calls) >= MAX_AI_CALLS:
+            raise HTTPException(429, "잠시 후 다시 시도해 주세요")
+        calls.append(now)
+
+
+def sniff_image(data: bytes) -> str | None:
+    """파일 앞부분 바이트로 실제 형식을 알아낸다. 요청에 적힌 형식은 믿지 않는다."""
+    if data.startswith(b"\xff\xd8\xff"):
+        return "image/jpeg"
+    if data.startswith(b"\x89PNG\r\n\x1a\n"):
+        return "image/png"
+    if len(data) >= 12 and data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        return "image/webp"
+    return None
+
+
+def _ai_call(fn, *args):
+    try:
+        return fn(*args)
+    except ai.AIError as e:
+        raise HTTPException(e.status, e.message) from None
+
+
+class PhotoReq(BaseModel):
+    image: str = Field(max_length=4_000_000)
+    mediaType: str = Field(default="", max_length=50)
+
+
+Word = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=60)]
+Meaning = Annotated[str, StringConstraints(strip_whitespace=True, max_length=100)]
+
+
+class WordItem(BaseModel):
+    w: Word
+    ko: Meaning = ""
+
+
+class DialogueReq(BaseModel):
+    words: list[WordItem] = Field(min_length=2, max_length=2)
+
+
+@app.get("/api/ai-status")
+def ai_status():
+    return {"enabled": ai_enabled()}
+
+
+@app.post("/api/photo-words")
+def photo_words(req: PhotoReq, request: Request):
+    ai_guard(request)
+    try:
+        data = base64.b64decode(req.image, validate=True)
+    except (binascii.Error, ValueError):
+        raise HTTPException(400, "사진 파일만 올릴 수 있어요 (JPEG, PNG, WebP)") from None
+    kind = sniff_image(data)
+    if not kind:
+        raise HTTPException(400, "사진 파일만 올릴 수 있어요 (JPEG, PNG, WebP)")
+    # 사진은 메모리에서만 쓰고 저장하지 않는다
+    return {"words": _ai_call(ai.extract_words, req.image, kind)}
+
+
+@app.post("/api/dialogue")
+def dialogue(req: DialogueReq, request: Request):
+    ai_guard(request)
+    return _ai_call(ai.make_dialogue, [w.model_dump() for w in req.words])
 
 
 if __name__ == "__main__":
