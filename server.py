@@ -26,13 +26,46 @@ import threading
 from pathlib import Path
 
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from classcard import CardSetError, fetch_set
 
 ROOT = Path(__file__).parent
+
+
+def load_dotenv(path: Path) -> None:
+    """로컬 .env(KEY=VALUE, # 주석)를 환경 변수로 읽는다. 이미 있는 값은 덮어쓰지 않는다."""
+    if not path.is_file():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        os.environ.setdefault(k.strip(), v.strip())
+
+
+load_dotenv(ROOT / ".env")
+
+# 모든 응답에 붙이는 보안 헤더. 화면은 인라인 script/style을 쓰고 폰트만 Google Fonts에서 받는다
+SECURITY_HEADERS = {
+    "Content-Security-Policy": "; ".join([
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline'",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "font-src https://fonts.gstatic.com",
+        "img-src 'self' data: blob:",
+        "connect-src 'self'",
+        "frame-ancestors 'none'",
+        "base-uri 'none'",
+        "form-action 'self'",
+    ]),
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "no-referrer",
+}
 DATA = ROOT / "data"
 STATE = Path(os.environ.get("ENGWORD_STATE_DIR") or ("/tmp/engword" if os.environ.get("VERCEL") else ROOT))
 IMPORTED = DATA if STATE == ROOT else STATE / "data"
@@ -42,6 +75,14 @@ DAY_SIZE = 25
 BOOK_TITLES = {"basic": "고교 필수 영단어"}
 
 app = FastAPI(title="EngWord")
+
+
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    response = await call_next(request)
+    for k, v in SECURITY_HEADERS.items():
+        response.headers.setdefault(k, v)
+    return response
 
 
 def load_books() -> dict:

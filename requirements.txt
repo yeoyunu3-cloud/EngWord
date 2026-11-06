@@ -1,2 +1,3 @@
 fastapi
 uvicorn[standard]
+anthropic>=2.6,<3
