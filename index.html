@@ -113,6 +113,22 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .choice:disabled{cursor:default}
 .choice.ok{border-color:var(--ok);background:var(--ok-soft)}
 .choice.bad{border-color:var(--bad);background:var(--bad-soft)}
+#dlgBody{display:flex;flex-direction:column;gap:14px}
+#dlgBody h2{margin-top:6px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:.92rem;overflow-wrap:anywhere}
+.chip b{font-family:var(--f-word)}
+.dlg{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.dlg li{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.dlg .who{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-size:.85rem}
+.dlg .say{font-family:var(--f-word);font-size:1.08rem;line-height:1.55;overflow-wrap:anywhere;padding-top:2px}
+.defs{margin:0;display:grid;gap:10px}
+.defs div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.defs dt{font-family:var(--f-word);font-weight:700}
+.defs dd{margin:4px 0 0;font-family:var(--f-word);overflow-wrap:anywhere}
+.item.pick{cursor:pointer}
+.item.pick input{width:18px;height:18px}
+.sticky{position:sticky;bottom:12px}
 .overlay{position:fixed;inset:0;background:rgba(10,15,25,.45);display:grid;place-items:center;padding:16px;z-index:10}
 .modal{width:100%;max-width:380px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
 .code{font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
@@ -280,7 +296,8 @@ function home(){
   const hasCloze=CUR.book==="exam";
   const seoIds=W.map((_,i)=>i).filter(i=>seoData(i)),hasSeo=seoIds.length>0;
   const seoSets=Array.from({length:NSETS},(_,s)=>setIdx(s).filter(i=>seoIds.includes(i)));
-  const nCloze=hasCloze?3:0,nSeo=hasSeo?3+(hasCloze?1:0):0,nWeak=3+(hasCloze?1:0)+(hasSeo?1:0);
+  const hasAi=SERVER&&W.length>=2,aiOk=hasAi&&AI.enabled;
+  const nCloze=hasCloze?3:0,nSeo=hasSeo?3+(hasCloze?1:0):0,nAi=3+(hasCloze?1:0)+(hasSeo?1:0),nWeak=nAi+(hasAi?1:0);
   $app.innerHTML=`
   <div class="top"><h1>영단어 암기 트레이너</h1></div>
   ${FLASH?`<div class="fb ok">${esc(FLASH)}</div>`:""}
@@ -300,6 +317,7 @@ function home(){
     <li><b>모의고사</b>: 전체 범위를 섞어서 시험처럼 풀어요. 적기(직접 쓰기), 객관식(4지선다), 둘을 섞어서 중 고를 수 있어요.</li>
     ${hasCloze?`<li><b>빈칸 주관식</b>: 예문 세 개에 공통으로 빠진 단어를 써요.</li>`:""}
     ${hasSeo?`<li><b>서술형</b>: 영어 문장 하나에서 빠진 단어를 써요.</li>`:""}
+    ${hasAi?`<li><b>AI 대화 만들기</b>: 단어 2개가 들어간 A·B 대화와 영어 정의를 AI가 써 줘요.</li>`:""}
     <li><b>오답 집중</b>: 많이 틀린 단어만 다시 돌려요. 시험 직전에 한 번 더.</li>
   </ol>
   <section class="panel">
@@ -324,6 +342,11 @@ function home(){
     <p class="muted">영어 문장 하나에서 빠진 단어를 직접 써요. 시험의 서술형 빈칸처럼 철자까지 정확히 써야 맞아요.</p>
     <div class="row">${seoSets.map((ids,s)=>ids.length?`<button class="btn" data-seo="${s}">세트 ${s+1}</button>`:"").join("")}</div>
     <div class="row">${seoIds.length>20?`<button class="btn primary" data-seor="20">전체에서 20문제</button>`:""}<button class="btn ${seoIds.length>20?"":"primary"}" data-seor="${seoIds.length}">전체 ${seoIds.length}문제</button></div>
+  </section>`:""}
+  ${hasAi?`<section class="panel">
+    <h2>${nAi}. AI 대화 만들기</h2>
+    <p class="muted">${aiOk?"지금 범위에서 단어 2개를 골라, 그 단어가 한 번씩 들어간 A·B 4줄 대화와 각 단어의 영어 정의를 AI가 만들어요.":AI_OFF}</p>
+    <div class="row"><button class="btn primary" id="dlgRand" ${aiOk?"":"disabled"}>무작위 2개로 만들기</button><button class="btn" id="dlgPick" ${aiOk?"":"disabled"}>단어 골라서 만들기</button></div>
   </section>`:""}
   <section class="panel">
     <h2>${nWeak}. 오답 집중</h2>
@@ -379,6 +402,7 @@ function home(){
       delete BOOKWORDS[id];openBook("exam")};
     $app.querySelector("#no").onclick=home};
   $app.querySelector("#mkSet").onclick=()=>editSet(null,[],"");
+  const dr=$app.querySelector("#dlgRand");if(dr){dr.onclick=()=>dialogueShow(randPair());$app.querySelector("#dlgPick").onclick=dialoguePick}
   bindPhotoPicker(fs=>{editSet(null,[],"");readPhotos(fs)});
   const cc=$app.querySelector("#clearCode");if(cc)cc.onclick=()=>{clearAiCode();home()};
   const em=$app.querySelector("#editMine");
@@ -537,6 +561,52 @@ function editSet(id,draft,title,note){
     if(!rows.length)rows.push({w:"",ko:""});note=msg||null;draw()}};
   draw();window.scrollTo(0,0);
 }
+
+/* ---------- AI 대화 만들기 ---------- */
+const randPair=()=>shuffle(W.map((_,i)=>i)).slice(0,2);
+// 문장 안의 단어를 형광펜으로. 이스케이프한 조각만 이어 붙인다. 못 찾으면 강조 없이
+function markWords(text,words){
+  for(const w of words){const h=w.replace(/[ㄱ-힝~]+/g," ").replace(/\s+/g," ").trim();
+    const m=h&&findInSentence(h,text);
+    if(m)return esc(text.slice(0,m.index))+`<b class="mark">${esc(m[0])}</b>`+esc(text.slice(m.index+m[0].length))}
+  return esc(text)}
+function dialoguePick(){
+  key=null;const picked=[];
+  $app.innerHTML=`<div class="top"><button class="link" id="back">← 홈</button><span class="muted" id="cnt">0 / 2 선택</span></div>
+  <h1>단어 2개 고르기</h1>
+  <p class="muted">대화에 넣을 단어 2개를 고르세요.</p>
+  <div class="list">${W.map((w,i)=>`<label class="item pick"><input type="checkbox" data-i="${i}"><div class="txt"><span class="en">${esc(w[0])}</span><span class="ko">${esc(w[1])}</span></div><span></span></label>`).join("")}</div>
+  <div class="row sticky"><button class="btn primary" id="go" disabled>만들기</button></div>`;
+  const go=$app.querySelector("#go"),boxes=[...$app.querySelectorAll("[data-i]")];
+  boxes.forEach(b=>b.onchange=()=>{const i=+b.dataset.i;
+    if(b.checked){picked.push(i)}else picked.splice(picked.indexOf(i),1);
+    boxes.forEach(x=>{x.disabled=!x.checked&&picked.length>=2});
+    $app.querySelector("#cnt").textContent=`${picked.length} / 2 선택`;go.disabled=picked.length!==2});
+  go.onclick=()=>dialogueShow(picked.slice());
+  $app.querySelector("#back").onclick=home;window.scrollTo(0,0)}
+let DLG_REQ=0;
+async function dialogueShow(pair){
+  key=null;const req=++DLG_REQ,words=pair.map(i=>({w:W[i][0].slice(0,60),ko:W[i][1].slice(0,100)}));
+  $app.innerHTML=`<div class="top"><button class="link" id="back">← 홈</button><span class="muted">AI 대화</span></div>
+  <h1>AI 대화</h1>
+  <div class="chips">${words.map(x=>`<span class="chip"><b>${esc(x.w)}</b> ${esc(x.ko)}</span>`).join("")}</div>
+  <div id="dlgBody"><p class="muted" role="status">만드는 중… 10초쯤 걸려요.</p></div>
+  <div class="row"><button class="btn primary" id="again" disabled>다시 만들기</button><button class="btn" id="other" disabled>다른 단어</button><button class="btn" id="hm">홈</button></div>`;
+  $app.querySelector("#back").onclick=$app.querySelector("#hm").onclick=()=>{DLG_REQ++;home()};
+  const enable=()=>{if(req!==DLG_REQ)return;
+    const a=$app.querySelector("#again"),o=$app.querySelector("#other");a.disabled=o.disabled=false;
+    a.onclick=()=>dialogueShow(pair);o.onclick=()=>dialogueShow(randPair())};
+  let j;
+  try{j=await aiFetch("/api/dialogue",{words})}
+  catch(err){if(req!==DLG_REQ)return;$app.querySelector("#dlgBody").innerHTML=`<div class="fb bad">${esc(err.message)}</div>`;return enable()}
+  if(req!==DLG_REQ)return;
+  const lines=Array.isArray(j.lines)?j.lines:[],defs=Array.isArray(j.definitions)?j.definitions:[];
+  $app.querySelector("#dlgBody").innerHTML=`
+  <ol class="dlg">${lines.map((ln,k)=>`<li><b class="who">${ln.speaker==="B"?"B":"A"}</b><span class="say">${markWords(String(ln.text||""),words.map(x=>x.w))}</span><button class="speak" data-line="${k}" aria-label="${k+1}번째 줄 듣기">▶</button></li>`).join("")}</ol>
+  <h2>영어 정의</h2>
+  <dl class="defs">${defs.map(d=>`<div><dt>${esc(d.word||"")}</dt><dd>${esc(d.definition||"")}</dd></div>`).join("")}</dl>`;
+  $app.querySelectorAll("[data-line]").forEach(b=>b.onclick=()=>sayNow(String(lines[+b.dataset.line].text||"")));
+  enable()}
 
 /* ---------- preview ---------- */
 function preview(ids,label){
