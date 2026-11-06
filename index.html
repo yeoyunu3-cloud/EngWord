@@ -181,7 +181,7 @@ function load(){let s=null;try{s=JSON.parse(localStorage.getItem(KEY))}catch(e){
   return s}
 // 지금 보고 있는 책과 Day. 서버가 없으면 내 시험 범위만 쓴다
 let CUR={book:"exam",day:0,title:"내 시험 범위"};
-let BOOKS=[],BOOKWORDS={},SERVER=false,FLASH="";
+let BOOKS=[],BOOKWORDS={},SERVER=false,FLASH="",FLASH_BAD=false;
 // 내 세트: 직접 만들거나 사진으로 만든 세트. 이 브라우저(S.mySets)에만 저장된다
 const MY={title:40,w:60,ko:100,words:500};
 const mineBooks=()=>Object.entries(S.mySets||{}).sort((a,b)=>a[1].created-b[1].created)
@@ -189,8 +189,10 @@ const mineBooks=()=>Object.entries(S.mySets||{}).sort((a,b)=>a[1].created-b[1].c
 const allBooks=()=>[...BOOKS,...mineBooks()];
 const findBook=id=>allBooks().find(b=>b.id===id);
 const sent={};let syncTimer=null;
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
-  if(SERVER){clearTimeout(syncTimer);syncTimer=setTimeout(sync,600)}}
+// 이 브라우저에 저장했으면 true. 사생활 보호 모드나 저장 공간 부족이면 false
+function save(){let ok=true;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){ok=false}
+  if(SERVER){clearTimeout(syncTimer);syncTimer=setTimeout(sync,600)}
+  return ok}
 async function sync(){
   const by={};
   for(const[k,v]of Object.entries(S.w)){const j=JSON.stringify(v);if(sent[k]===j)continue;
@@ -300,7 +302,7 @@ function home(){
   const nCloze=hasCloze?3:0,nSeo=hasSeo?3+(hasCloze?1:0):0,nAi=3+(hasCloze?1:0)+(hasSeo?1:0),nWeak=nAi+(hasAi?1:0);
   $app.innerHTML=`
   <div class="top"><h1>영단어 암기 트레이너</h1></div>
-  ${FLASH?`<div class="fb ok">${esc(FLASH)}</div>`:""}
+  ${FLASH?`<div class="fb ${FLASH_BAD?"bad":"ok"}">${esc(FLASH)}</div>`:""}
   ${bookBar()}
   ${SERVER?`<form class="imp" id="imp"><input id="impUrl" type="url" inputmode="url" placeholder="클래스카드 세트 링크 (예: https://www.classcard.net/set/31507889)" aria-label="클래스카드 세트 링크"><button class="btn" id="impBtn">단어 가져오기</button></form><p class="muted" id="impMsg" role="status"></p>`:""}
   <div class="row" id="makeRow"><button class="btn" id="mkSet">직접 만들기</button></div>
@@ -380,7 +382,7 @@ function home(){
   $app.querySelectorAll("[data-seor]").forEach(b=>b.onclick=()=>cloze(shuffle(seoIds).slice(0,+b.dataset.seor),"서술형",seoData));
   $app.querySelector("#dirSel").onchange=e=>{S.dir=e.target.value;save();home()};
   $app.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{S.mode=b.dataset.mode;save();home()});
-  FLASH="";
+  FLASH="";FLASH_BAD=false;
   const imp=$app.querySelector("#imp");
   if(imp)imp.onsubmit=async e=>{e.preventDefault();
     const url=$app.querySelector("#impUrl").value.trim(),msg=$app.querySelector("#impMsg"),btn=$app.querySelector("#impBtn");
@@ -454,7 +456,7 @@ function saveSet(id,title,rows){
   const keep=new Set(words.map(o=>wkey(nid,o.w)));
   for(const k of Object.keys(S.w))if(k.startsWith(nid+":")&&!keep.has(k))delete S.w[k];
   if(S.drill&&S.drill.book===nid)delete S.drill;
-  save();return nid}
+  return[nid,save()]}
 /* ---------- AI 연결 (접근 코드, 사진 읽기) ---------- */
 // AI 기능은 서버에 키와 접근 코드가 모두 설정돼 있을 때만 켜진다. 코드는 이 브라우저에 기억한다
 let AI={enabled:false},PHOTO_BUSY=false;
@@ -504,6 +506,7 @@ async function readPhotos(files){
   files=[...files];const over=files.length>5;files=files.slice(0,5);
   if(!files.length||PHOTO_BUSY)return;
   const ed=EDIT,got=[];PHOTO_BUSY=true;
+  const pb=document.querySelector("#photoBtn");if(pb)pb.disabled=true; // 읽는 동안 사진을 또 고르지 못하게
   const status=t=>{const m=document.querySelector("#photoMsg");if(m)m.textContent=t};
   let err="";
   try{for(let k=0;k<files.length;k++){
@@ -552,7 +555,9 @@ function editSet(id,draft,title,note){
     $app.querySelector("#add").onclick=()=>{rows.push({w:"",ko:""});note=null;draw(true)};
     $app.querySelector("#back").onclick=$app.querySelector("#cancel").onclick=back;
     $app.querySelector("#save").onclick=()=>{
-      try{const nid=saveSet(id,title,rows);EDIT=null;FLASH=`'${S.mySets[nid].title}' 세트를 저장했어요.`;openBook(nid)}
+      try{const[nid,stored]=saveSet(id,title,rows);EDIT=null;
+        FLASH=stored?`'${S.mySets[nid].title}' 세트를 저장했어요.`:"이 브라우저에 저장하지 못했어요. 사생활 보호 모드이거나 저장 공간이 가득 찼을 수 있어요. 새로고침하면 이 세트는 사라져요.";
+        FLASH_BAD=!stored;openBook(nid)}
       catch(err){$app.querySelector("#emsg").textContent=err.message}};
     if(focusLast){const ins=$app.querySelectorAll('.erow input[data-f="w"]');ins[ins.length-1].focus()}
     editExtras();
