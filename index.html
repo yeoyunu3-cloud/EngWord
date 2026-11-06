@@ -113,6 +113,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .choice:disabled{cursor:default}
 .choice.ok{border-color:var(--ok);background:var(--ok-soft)}
 .choice.bad{border-color:var(--bad);background:var(--bad-soft)}
+.field{display:flex;flex-direction:column;gap:4px}
+.field input{font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.erows{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.erow{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center}
+.erow input{min-width:0;font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.erow input[data-f="w"]{font-family:var(--f-word)}
 .imp{display:flex;gap:8px}
 .imp input{flex:1;min-width:0;font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 @media (max-width:480px){.prompt.en{font-size:1.7rem}.card{padding:22px 14px}}
@@ -157,6 +163,12 @@ function load(){let s=null;try{s=JSON.parse(localStorage.getItem(KEY))}catch(e){
 // 지금 보고 있는 책과 Day. 서버가 없으면 내 시험 범위만 쓴다
 let CUR={book:"exam",day:0,title:"내 시험 범위"};
 let BOOKS=[],BOOKWORDS={},SERVER=false,FLASH="";
+// 내 세트: 직접 만들거나 사진으로 만든 세트. 이 브라우저(S.mySets)에만 저장된다
+const MY={title:40,w:60,ko:100,words:500};
+const mineBooks=()=>Object.entries(S.mySets||{}).sort((a,b)=>a[1].created-b[1].created)
+  .map(([id,s])=>({id,title:s.title,count:s.words.length,daySize:s.words.length,days:[{day:1,count:s.words.length}],mine:true}));
+const allBooks=()=>[...BOOKS,...mineBooks()];
+const findBook=id=>allBooks().find(b=>b.id===id);
 const sent={};let syncTimer=null;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
   if(SERVER){clearTimeout(syncTimer);syncTimer=setTimeout(sync,600)}}
@@ -207,10 +219,10 @@ document.addEventListener("keydown",e=>{if(key)key(e)});
 
 /* ---------- 단어책 ---------- */
 function bookBar(){
-  if(!BOOKS.length)return"";
-  const tabs=[{id:"exam",title:"내 시험 범위",count:EXAM.length},...BOOKS].map(b=>`<button class="tab ${CUR.book===b.id?"on":""}" data-book="${b.id}">${esc(b.title)}<small>${b.count}</small></button>`).join("");
+  if(!allBooks().length)return"";
+  const tabs=[{id:"exam",title:"내 시험 범위",count:EXAM.length},...allBooks()].map(b=>`<button class="tab ${CUR.book===b.id?"on":""}" data-book="${esc(b.id)}">${esc(b.title)}<small>${b.count}</small></button>`).join("");
   let days="";
-  const bk=BOOKS.find(b=>b.id===CUR.book);
+  const bk=findBook(CUR.book);
   if(bk&&BOOKWORDS[bk.id]&&bk.days.length>1){const all=BOOKWORDS[bk.id];
     days=`<div class="days">${bk.days.map(d=>{const ws=all.slice((d.day-1)*bk.daySize,(d.day-1)*bk.daySize+d.count);
       const done=ws.filter(o=>(S.w[wkey(bk.id,o.w)]||{}).m).length;
@@ -220,12 +232,13 @@ function bindBookBar(){
   $app.querySelectorAll("[data-book]").forEach(b=>b.onclick=()=>openBook(b.dataset.book));
   $app.querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>openDay(CUR.book,+b.dataset.day));
 }
-const multiDay=()=>CUR.day>0&&((BOOKS.find(b=>b.id===CUR.book)||{}).days||[]).length>1;
+const multiDay=()=>CUR.day>0&&((findBook(CUR.book)||{}).days||[]).length>1;
 function setWords(list,cur){W=list;NSETS=Math.ceil(W.length/SET);CUR=cur;S.cur={book:cur.book,day:cur.day};save()}
 async function openBook(id){
   if(id==="exam"){setWords(EXAM,{book:"exam",day:0,title:"내 시험 범위"});return home()}
-  const bk=BOOKS.find(b=>b.id===id);if(!bk)return;
-  if(!BOOKWORDS[id]){
+  const bk=findBook(id);if(!bk)return;
+  if(bk.mine)BOOKWORDS[id]=S.mySets[id].words.map(o=>({w:o.w,ko:o.ko,pos:"",ex:""}));
+  else if(!BOOKWORDS[id]){
     try{const r=await fetch(`/api/books/${encodeURIComponent(id)}/words`);BOOKWORDS[id]=(await r.json()).words}
     catch(e){$app.insertAdjacentHTML("afterbegin",`<div class="fb bad">단어책을 불러오지 못했어요. 서버가 켜져 있는지 확인해 주세요.</div>`);return}
     await pullProgress(id)}
@@ -234,7 +247,7 @@ async function openBook(id){
   const firstOpen=bk.days.find(d=>all.slice((d.day-1)*bk.daySize,(d.day-1)*bk.daySize+d.count).some(o=>!(S.w[wkey(id,o.w)]||{}).m));
   return openDay(id,last||(firstOpen?firstOpen.day:1))}
 async function openDay(id,day){
-  const bk=BOOKS.find(b=>b.id===id);if(!bk)return;
+  const bk=findBook(id);if(!bk)return;
   if(!BOOKWORDS[id])return openBook(id);
   const ws=BOOKWORDS[id].slice((day-1)*bk.daySize,day*bk.daySize).map(o=>[o.w,o.ko,o.pos,o.ex]);
   setWords(ws,{book:id,day,title:bk.title});home();window.scrollTo(0,0)}
@@ -243,8 +256,8 @@ async function boot(){
     const r=await fetch("/api/books",{signal:ctrl.signal,cache:"no-store"});
     if(!r.ok)throw 0;BOOKS=await r.json();SERVER=true;
     await pullProgress("exam");
-    if(S.cur&&S.cur.book!=="exam"&&BOOKS.some(b=>b.id===S.cur.book))return openBook(S.cur.book);
   }catch(e){BOOKS=[];SERVER=false}
+  if(S.cur&&S.cur.book!=="exam"&&findBook(S.cur.book))return openBook(S.cur.book);
   home()}
 
 /* ---------- home ---------- */
@@ -269,6 +282,7 @@ function home(){
   ${FLASH?`<div class="fb ok">${esc(FLASH)}</div>`:""}
   ${bookBar()}
   ${SERVER?`<form class="imp" id="imp"><input id="impUrl" type="url" inputmode="url" placeholder="클래스카드 세트 링크 (예: https://www.classcard.net/set/31507889)" aria-label="클래스카드 세트 링크"><button class="btn" id="impBtn">단어 가져오기</button></form><p class="muted" id="impMsg" role="status"></p>`:""}
+  <div class="row" id="makeRow"><button class="btn" id="mkSet">직접 만들기</button></div>
   ${resumable()?`<div class="fb ok"><span><b>${esc(S.drill.label)}</b>에서 멈췄어요 · 남은 단어 ${new Set(S.drill.q.map(x=>x.i)).size}개</span><div class="row"><button class="btn primary" id="resume">이어서 하기</button><button class="btn" id="dropDrill">처음부터</button></div></div>`:""}
   <div class="here"><span class="muted">지금 공부하는 범위</span><h2>${esc(CUR.title)}${multiDay()?` · Day ${String(CUR.day).padStart(2,"0")}`:""}</h2></div>
   <div class="stat">
@@ -319,7 +333,8 @@ function home(){
       <option value="ko" ${S.dir==="ko"?"selected":""}>뜻 보고 영어 쓰기만</option>
     </select>
     <button class="link" id="reset">기록 초기화</button>
-    ${(BOOKS.find(b=>b.id===CUR.book)||{}).imported?`<button class="link" id="delBook">이 단어 세트 삭제</button>`:""}
+    ${(findBook(CUR.book)||{}).imported?`<button class="link" id="delBook">이 단어 세트 삭제</button>`:""}
+    ${(findBook(CUR.book)||{}).mine?`<button class="link" id="editMine">단어 편집</button><button class="link" id="renameMine">이름 변경</button><button class="link" id="delMine">이 세트 삭제</button>`:""}
   </div>
   <div id="confirm"></div>`;
   const rs=$app.querySelector("#resume");
@@ -357,11 +372,89 @@ function home(){
       try{BOOKS=await(await fetch("/api/books",{cache:"no-store"})).json()}catch(e){BOOKS=BOOKS.filter(b=>b.id!==id)}
       delete BOOKWORDS[id];openBook("exam")};
     $app.querySelector("#no").onclick=home};
+  $app.querySelector("#mkSet").onclick=()=>editSet(null,[],"");
+  const em=$app.querySelector("#editMine");
+  if(em){const id=CUR.book;
+    em.onclick=()=>editSet(id,S.mySets[id].words,S.mySets[id].title);
+    $app.querySelector("#renameMine").onclick=()=>{$app.querySelector("#confirm").innerHTML=`<div class="panel"><label class="field"><span class="muted">새 이름</span><input id="rn" maxlength="${MY.title}" value="${esc(S.mySets[id].title)}"></label><p class="muted" id="rnMsg" role="status"></p><div class="row"><button class="btn primary" id="yes">바꾸기</button><button class="btn" id="no">취소</button></div></div>`;
+      const rn=$app.querySelector("#rn");rn.focus();rn.select();
+      const ok=()=>{const t=rn.value.replace(/\s+/g," ").trim();
+        if(!t){$app.querySelector("#rnMsg").textContent="이름을 써 주세요.";return}
+        S.mySets[id].title=t;CUR.title=t;save();home()};
+      $app.querySelector("#yes").onclick=ok;rn.onkeydown=e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();ok()}};
+      $app.querySelector("#no").onclick=home};
+    $app.querySelector("#delMine").onclick=()=>{$app.querySelector("#confirm").innerHTML=`<div class="panel"><p>${esc(S.mySets[id].title)} 세트와 학습 기록을 지울까요? 되돌릴 수 없어요.</p><div class="row"><button class="btn primary" id="yes">지우기</button><button class="btn" id="no">취소</button></div></div>`;
+      $app.querySelector("#yes").onclick=async()=>{const pre=id+":";
+        for(const k of Object.keys(S.w))if(k.startsWith(pre)){delete S.w[k];delete sent[k]}
+        if(S.drill&&S.drill.book===id)delete S.drill;
+        delete S.mySets[id];delete BOOKWORDS[id];save();
+        if(SERVER)try{await fetch(`/api/progress/${encodeURIComponent(id)}`,{method:"DELETE"})}catch(e){}
+        openBook("exam")};
+      $app.querySelector("#no").onclick=home}}
   $app.querySelector("#reset").onclick=()=>{$app.querySelector("#confirm").innerHTML=`<div class="panel"><p>${esc(CUR.title)}의 학습 기록을 모두 지울까요?</p><div class="row"><button class="btn primary" id="yes">지우기</button><button class="btn" id="no">취소</button></div></div>`;
     $app.querySelector("#yes").onclick=async()=>{const pre=CUR.book+":";for(const k of Object.keys(S.w))if(k.startsWith(pre)){delete S.w[k];delete sent[k]}
       try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
       if(SERVER)try{await fetch(`/api/progress/${encodeURIComponent(CUR.book)}`,{method:"DELETE"})}catch(e){}
       home()};$app.querySelector("#no").onclick=home};
+}
+
+/* ---------- 내 세트 만들기·편집 ---------- */
+// rows를 정리해 저장하고 세트 id를 돌려준다. 문제가 있으면 사용자에게 보여 줄 문구로 Error를 던진다
+function saveSet(id,title,rows){
+  const sp=s=>String(s||"").replace(/\s+/g," ").trim();
+  title=sp(title);
+  if(!title)throw new Error("세트 이름을 써 주세요.");
+  if(title.length>MY.title)throw new Error(`세트 이름은 ${MY.title}자까지 쓸 수 있어요.`);
+  const seen=new Set(),words=[];
+  for(const r of rows){const w=sp(r.w),ko=sp(r.ko);
+    if(!w&&!ko)continue;
+    if(!w)throw new Error(`'${ko.slice(0,20)}'의 영어 단어를 써 주세요.`);
+    if(!ko)throw new Error(`'${w.slice(0,20)}'의 뜻을 써 주세요.`);
+    if(w.length>MY.w||ko.length>MY.ko)throw new Error(`'${w.slice(0,20)}' 줄이 너무 길어요.`);
+    if(seen.has(w.toLowerCase()))continue;
+    seen.add(w.toLowerCase());words.push({w,ko})}
+  if(!words.length)throw new Error("단어를 하나 이상 써 주세요.");
+  if(words.length>MY.words)throw new Error(`한 세트에는 ${MY.words}단어까지 넣을 수 있어요.`);
+  const nid=id||"my-"+Date.now(),sets=S.mySets||(S.mySets={});
+  sets[nid]={title,words,created:sets[nid]?sets[nid].created:Date.now()};
+  BOOKWORDS[nid]=words.map(o=>({w:o.w,ko:o.ko,pos:"",ex:""}));
+  // 지우거나 철자를 바꾼 단어의 기록은 지운다. 이어서 하던 세트도 단어 번호가 달라져서 버린다
+  const keep=new Set(words.map(o=>wkey(nid,o.w)));
+  for(const k of Object.keys(S.w))if(k.startsWith(nid+":")&&!keep.has(k))delete S.w[k];
+  if(S.drill&&S.drill.book===nid)delete S.drill;
+  save();return nid}
+// 편집 화면. id가 null이면 새 세트. EDIT.append(rows, note)로 줄을 덧붙인다(사진으로 읽은 단어)
+let EDIT=null;
+function editExtras(){} // 사진 기능이 #photoRow에 버튼을 넣는 자리
+function editSet(id,draft,title,note){
+  key=null;
+  let rows=draft.map(r=>({w:r.w,ko:r.ko}));
+  if(!rows.length)rows=[{w:"",ko:""},{w:"",ko:""},{w:"",ko:""}];
+  const back=()=>{EDIT=null;id?openBook(id):home()};
+  const draw=focusLast=>{
+    $app.innerHTML=`<div class="top"><button class="link" id="back">← 취소</button><span class="muted">${rows.filter(r=>r.w.trim()).length}단어</span></div>
+    <h1>${id?"단어 편집":"새 단어 세트"}</h1>
+    ${note?`<div class="fb ${note.ok?"ok":"bad"}">${esc(note.text)}</div>`:""}
+    <label class="field"><span class="muted">세트 이름</span><input id="ttl" maxlength="${MY.title}" value="${esc(title)}" placeholder="예: 2학기 중간고사 3과"></label>
+    <div id="photoRow"></div>
+    <ol class="erows">${rows.map((r,k)=>`<li class="erow"><input data-k="${k}" data-f="w" lang="en" autocapitalize="off" spellcheck="false" maxlength="${MY.w}" value="${esc(r.w)}" placeholder="영어" aria-label="영어 ${k+1}"><input data-k="${k}" data-f="ko" maxlength="${MY.ko}" value="${esc(r.ko)}" placeholder="뜻" aria-label="뜻 ${k+1}"><button class="speak" data-del="${k}" aria-label="${k+1}번 줄 삭제">✕</button></li>`).join("")}</ol>
+    <div class="row"><button class="btn" id="add">줄 추가</button></div>
+    <p class="muted" id="emsg" role="status"></p>
+    <div class="row"><button class="btn primary" id="save">저장</button><button class="btn" id="cancel">취소</button></div>`;
+    $app.querySelector("#ttl").oninput=e=>{title=e.target.value};
+    $app.querySelectorAll(".erow input").forEach(inp=>inp.oninput=()=>{rows[+inp.dataset.k][inp.dataset.f]=inp.value});
+    $app.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{rows.splice(+b.dataset.del,1);if(!rows.length)rows.push({w:"",ko:""});note=null;draw()});
+    $app.querySelector("#add").onclick=()=>{rows.push({w:"",ko:""});note=null;draw(true)};
+    $app.querySelector("#back").onclick=$app.querySelector("#cancel").onclick=back;
+    $app.querySelector("#save").onclick=()=>{
+      try{const nid=saveSet(id,title,rows);EDIT=null;FLASH=`'${S.mySets[nid].title}' 세트를 저장했어요.`;openBook(nid)}
+      catch(err){$app.querySelector("#emsg").textContent=err.message}};
+    if(focusLast){const ins=$app.querySelectorAll('.erow input[data-f="w"]');ins[ins.length-1].focus()}
+    editExtras();
+  };
+  EDIT={append(more,msg){rows=rows.filter(r=>r.w.trim()||r.ko.trim()).concat(more.map(r=>({w:r.w,ko:r.ko})));
+    if(!rows.length)rows.push({w:"",ko:""});note=msg||null;draw()}};
+  draw();window.scrollTo(0,0);
 }
 
 /* ---------- preview ---------- */
@@ -869,7 +962,7 @@ function list(){
   let hide=false;
   const draw=()=>{
     key=null;
-    const base=CUR.day?(CUR.day-1)*((BOOKS.find(b=>b.id===CUR.book)||{}).daySize||0):0;
+    const base=CUR.day?(CUR.day-1)*((findBook(CUR.book)||{}).daySize||0):0;
     $app.innerHTML=`<div class="top"><button class="link" id="back">← 홈</button><span class="muted">${W.length}단어</span></div>
     <header class="page-head"><span class="muted">${esc(CUR.title)}</span><h1>${multiDay()?`Day ${String(CUR.day).padStart(2,"0")}`:"전체 단어장"}</h1></header>
     <p class="muted">뜻을 가린 뒤 하나씩 떠올려 보고, 칸을 눌러 확인하세요.</p>
