@@ -142,7 +142,7 @@ def summary(book_id: str) -> dict:
 
 @app.get("/")
 def index():
-    return FileResponse(ROOT / "index.html")
+    return FileResponse(ROOT / "index.html", headers={"Cache-Control": "no-cache"})
 
 
 @app.get("/api/books")

@@ -5,7 +5,7 @@
 **직접 써 보면서 외우는 영어 단어 암기 앱**
 
 세트별 학습 · 모의고사 · 빈칸 주관식 · 서술형 · 오답 집중까지, 시험 공부에 필요한 흐름을 한 화면에 담았습니다.<br>
-클래스카드 세트 링크 하나로 단어를 가져와 바로 공부할 수 있습니다.
+클래스카드 링크나 **단어장 사진**으로 세트를 만들고, **AI가 단어 2개로 대화 예문과 영어 정의**를 써 줍니다.
 
 <a href="https://eng-word-y.vercel.app"><img src="https://img.shields.io/badge/라이브_데모-eng--word--y.vercel.app-2F5BEA?style=for-the-badge&logo=vercel&logoColor=white" alt="라이브 데모"></a>
 
@@ -13,6 +13,7 @@
 <img src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white" alt="FastAPI">
 <img src="https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white" alt="SQLite">
 <img src="https://img.shields.io/badge/Vanilla_JS-F7DF1E?logo=javascript&logoColor=black" alt="JavaScript">
+<img src="https://img.shields.io/badge/Claude_API-191919?logo=anthropic&logoColor=white" alt="Claude API">
 <img src="https://img.shields.io/badge/Made_with-Claude_Code-D97757" alt="Claude Code">
 
 </div>
@@ -25,6 +26,10 @@
 |:---:|:---:|:---:|:---:|
 | ![홈 화면](docs/home.png) | ![적기 문제](docs/written.png) | ![서술형 문제](docs/descriptive.png) | ![객관식 문제](docs/multiple-choice.png) |
 
+| 사진으로 세트 만들기 | AI 대화 만들기 |
+|:---:|:---:|
+| ![사진으로 읽은 단어 편집 화면](docs/my-set.png) | ![AI가 만든 대화와 영어 정의](docs/ai-dialogue.png) |
+
 ## ✨ 주요 기능
 
 | | 기능 | 설명 |
@@ -34,6 +39,9 @@
 | 3️⃣ | **빈칸 주관식** | 세 문장에 공통으로 들어갈 단어 쓰기 (내 시험 범위) |
 | 4️⃣ | **서술형** | 영어 문장 하나에서 빠진 단어 쓰기. 156문항을 직접 만들어 둠 |
 | 5️⃣ | **오답 집중** | 많이 틀린 단어부터 최대 15개 다시 학습 |
+| 6️⃣ | **AI 대화 만들기** | 단어 2개가 한 줄씩 들어간 A·B 4줄 대화 + 각 단어의 영어 정의 |
+| 📷 | **사진으로 세트 만들기** | 단어장 사진을 찍으면 AI가 단어와 뜻을 읽어 세트로 만듦 |
+| ✏️ | **내 세트** | 직접 만들기, 단어 편집, 이름 변경, 삭제 (이 브라우저에 저장) |
 | 🔗 | **클래스카드 가져오기** | 세트 링크만 넣으면 새 단어책으로 추가 |
 | 🔊 | **발음 듣기** | 기기에 있는 고품질 영어 음성을 골라 읽어 줌 |
 | 🌙 | **다크 모드** | 기기 설정에 맞춰 자동 전환 |
@@ -54,6 +62,8 @@
 | 프론트엔드 | HTML, CSS, JavaScript (프레임워크 없이 파일 하나), Web Speech API (발음) |
 | 백엔드 | Python 3.12, FastAPI, Uvicorn |
 | 저장 | SQLite (학습 기록), 텍스트 파일 (단어책), localStorage |
+| AI | Claude API (`claude-opus-5-5`, 구조화 출력) — 사진 읽기, 대화·정의 만들기 |
+| 테스트 | pytest (AI 호출은 가짜로 바꿔서 검사) |
 | 배포 | Vercel 무료 플랜 (서버리스 Python), GitHub push 시 자동 배포 |
 
 ## 📖 단어책
@@ -64,6 +74,7 @@
 | 영단어 시험 2학기 03 | 78개 | 클래스카드에서 가져온 세트. 서술형 문항 포함 |
 | 고교 필수 영단어 | 1,068개 | Day 01 ~ Day 43 (하루 25개). 단어마다 품사, 뜻, 예문 |
 | 클래스카드에서 가져온 세트 | 세트마다 다름 | 세트 전체가 한 범위. 단어와 뜻만 있음 |
+| 내 세트 (직접·사진) | 최대 500개 | 이 브라우저에만 저장. 다른 기기에서는 보이지 않음 |
 
 고교 필수 영단어는 수능·내신에 자주 나오는 단어와 숙어(`carry out`, `be aware of` 등)로 구성했고, 뒤쪽 Day는 수능 심화 단어입니다.
 처음 열면 아직 다 외우지 못한 첫 Day부터 보여 주고, 다음부터는 마지막으로 보던 Day를 엽니다.
@@ -79,6 +90,14 @@
 ```
 
 처음 실행하면 `.venv`를 만들고 패키지를 설치한 뒤 http://localhost:8001 을 엽니다.
+AI 기능까지 쓰려면 `.env.example`을 `.env`로 복사하고 값을 채운 뒤 다시 실행합니다(아래 **AI 설정과 보안**).
+
+테스트:
+
+```bash
+uv pip install --python .venv/bin/python -r requirements-dev.txt
+.venv/bin/python -m pytest tests -q
+```
 
 ### 파일만 열기 (내 시험 범위만)
 
@@ -95,6 +114,41 @@
 > Vercel에서는 코드 폴더가 읽기 전용이라, 화면에서 가져온 세트와 학습 기록은 서버의 임시 폴더(`/tmp`)에 저장됩니다. 임시 폴더는 서버가 바뀌면 비워지므로 언제든 사라질 수 있습니다. 학습 기록은 브라우저에도 함께 저장되고, 저장소에 커밋된 단어책은 항상 남습니다.
 
 </details>
+
+## 🔐 AI 설정과 보안
+
+사진 읽기와 AI 대화는 서버에 **API 키와 접근 코드가 둘 다** 있을 때만 켜집니다. 키만 넣으면 잠긴 상태로 남습니다.
+
+**키 넣는 곳 (Vercel)**
+
+1. https://console.anthropic.com → **API Keys → Create Key**로 키를 만듭니다. 같은 곳 **Limits**에서 **월 사용 한도를 낮게** 설정합니다. 요금이 새는 것을 막는 마지막 안전장치입니다.
+2. Vercel → 프로젝트 → **Settings → Environment Variables**에 두 값을 추가합니다.
+
+   | 이름 | 값 |
+   |---|---|
+   | `ANTHROPIC_API_KEY` | 발급받은 키 |
+   | `AI_PASSCODE` | 직접 정한 긴 코드. 예: `openssl rand -base64 18` |
+   | `AI_MODEL` (선택) | 다른 모델. 비용을 줄이려면 `claude-sonnet-5-5` |
+
+3. **Deployments → 최신 배포 → Redeploy**. 환경 변수는 다시 배포해야 적용됩니다.
+4. 사이트에서 AI 기능을 처음 쓸 때 접근 코드를 한 번 입력하면 그 브라우저에 기억됩니다. 홈 아래 **AI 코드 지우기**로 지울 수 있습니다.
+
+> [!WARNING]
+> API 키는 채팅, 코드, GitHub 어디에도 붙여 넣지 말고 Vercel 환경 변수(로컬은 `.env`)에만 넣으세요. `.env`는 git에 올라가지 않습니다.
+
+**보안 장치**
+
+| 위험 | 막는 방법 |
+|---|---|
+| 키 유출 | 키는 서버 환경 변수에만 있고 브라우저·응답·로그로 나가지 않음 |
+| 남이 AI를 써서 요금 발생 | 접근 코드가 없으면 AI 기능이 꺼짐. 코드는 `hmac.compare_digest`로 비교 |
+| 코드 맞히기 / 과다 호출 | IP마다 10분에 코드 실패 10번, AI 호출 30번까지만 (넘으면 429) |
+| 요금 폭주 | Anthropic Console 월 한도 + 요청마다 출력 토큰 상한과 60초 제한 |
+| 이상한 파일 업로드 | 한 번에 사진 1장, 약 3MB 이하. 확장자가 아니라 파일 앞부분 바이트로 JPEG·PNG·WebP만 허용. 서버에 저장하지 않음 |
+| 사진 속 글자에 숨긴 "지시" | AI 출력은 JSON 형식으로만 받고 서버에서 개수·길이·규칙을 다시 검사 |
+| 화면에 코드 삽입(XSS) | 모든 글자를 이스케이프하고 CSP, `X-Frame-Options` 등 보안 헤더를 붙임 |
+
+사진은 단어를 읽기 위해 Anthropic으로 보내집니다. 화면의 사진 버튼 옆에도 이 안내가 나옵니다.
 
 ## 📝 공부 순서
 
@@ -134,7 +188,14 @@
 > [!TIP]
 > 빈칸 주관식과 서술형 모두 **뜻 힌트**와 **첫 글자 힌트**가 있습니다. 힌트를 보고 맞히면 점수에는 들어가지 않습니다.
 
-### 5. 오답 집중
+### 5. AI 대화 만들기
+- 지금 범위에서 단어 2개를 **무작위로** 뽑거나 **직접 골라** 만듭니다.
+- AI가 A, B가 번갈아 말하는 4줄 대화를 씁니다. 단어 1이 한 줄, 단어 2가 다른 한 줄에 들어가고 나머지 두 줄에는 두 단어가 없습니다. 들어간 단어는 형광펜으로 표시되고, 줄마다 ▶로 들을 수 있습니다.
+- 아래에 각 단어의 **영어 정의**가 나옵니다.
+- 서버가 규칙(4줄, A·B 순서, 단어 위치, 정의가 영어인지)을 직접 검사하고, 어기면 한 번 더 만들게 합니다.
+- **다시 만들기**는 같은 단어로, **다른 단어**는 새 단어 2개로 만듭니다.
+
+### 6. 오답 집중
 - 지금까지 많이 틀린 단어부터 최대 15개를 골라 다시 학습합니다. 시험 직전 마무리용입니다.
 
 ### 단어장
@@ -195,11 +256,15 @@
 ```
 EngWord/
 ├── index.html          # 화면 전체 (내 시험 범위 78개, 빈칸·서술형 문항 내장)
-├── server.py           # FastAPI 백엔드
+├── server.py           # FastAPI 백엔드 (보안 헤더, AI 접근 코드·호출 제한)
+├── ai.py               # Claude 호출, AI 출력 검사, 대화 규칙 검사
+├── tests/              # pytest
 ├── classcard.py        # 클래스카드 세트 페이지에서 단어·뜻 읽기
 ├── run.sh              # 설치 + 실행
 ├── docs/               # README 스크린샷
 ├── requirements.txt
+├── requirements-dev.txt # 테스트용 (pytest, httpx)
+├── .env.example        # 로컬 AI 설정 예시 (.env로 복사)
 ├── data/
 │   ├── basic/          # 고교 필수 영단어 (01.txt ~ 05.txt)
 │   └── cc-<세트 번호>/  # 클래스카드에서 가져온 세트 (words.txt, title.txt)
@@ -219,10 +284,21 @@ EngWord/
 | `DELETE /api/progress/{book}` | 그 책의 학습 기록 삭제 |
 | `POST /api/import` | 클래스카드 세트 가져오기 `{ "url": "https://www.classcard.net/set/31507889" }` |
 | `DELETE /api/books/{book}` | 가져온 세트(`cc-*`) 삭제 |
+| `GET /api/ai-status` | AI 기능이 켜져 있는지 `{ "enabled": true }` |
+| `POST /api/photo-words` | 사진 1장에서 단어·뜻 읽기 `{ "image": "<base64>", "mediaType": "image/jpeg" }` (헤더 `X-AI-Passcode`) |
+| `POST /api/dialogue` | 단어 2개로 대화·정의 만들기 `{ "words": [{ "w": "drought", "ko": "가뭄" }, ...] }` (헤더 `X-AI-Passcode`) |
 
 </details>
 
 ## ➕ 단어 추가하기
+
+### 사진으로 만들기 / 직접 만들기
+
+- 홈의 **사진으로 만들기**를 누르고 단어장 사진을 고릅니다(한 번에 5장까지, 폰에서는 바로 촬영 가능). 사진은 브라우저에서 줄인 뒤 한 장씩 읽습니다.
+- 읽은 단어가 편집 화면에 나옵니다. 세트 이름을 쓰고, 틀린 단어·뜻을 고치거나 줄을 지우고 추가한 뒤 **저장**합니다. **사진 더 추가**로 단어를 덧붙일 수 있습니다.
+- **직접 만들기**는 빈 편집 화면에서 단어를 손으로 입력합니다(AI 설정 없이도 됨).
+- 내 세트를 연 홈 아래에서 **단어 편집 / 이름 변경 / 이 세트 삭제**를 할 수 있습니다. 단어를 지우거나 철자를 바꾸면 그 단어의 학습 기록은 새로 시작합니다.
+- 내 세트는 이 브라우저에만 저장됩니다. 브라우저 데이터를 지우면 사라집니다.
 
 ### 클래스카드 세트 가져오기
 

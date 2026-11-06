@@ -24,3 +24,8 @@ def test_load_dotenv_does_not_override(server_mod, tmp_path, monkeypatch):
     server_mod.load_dotenv(f)
     assert os.environ["A_X"] == "keep"
     assert os.environ["A_Y"] == "2"
+
+
+def test_index_is_revalidated(client):
+    # 배포 직후 옛 화면이 캐시에서 뜨지 않게, 화면은 매번 서버에 확인한다
+    assert client.get("/").headers["cache-control"] == "no-cache"
