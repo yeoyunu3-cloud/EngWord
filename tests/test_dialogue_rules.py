@@ -107,3 +107,44 @@ def test_regex_finds_every_seo_answer():
         if not term_regex(word).search(filled):
             missed.append((word, filled))
     assert missed == []
+
+
+# ---- 최종 리뷰 수정: 가운데 자리 표시, 불규칙 동사, 축약형 ----
+import pytest
+
+
+@pytest.mark.parametrize("word,sentence", [
+    ("remind A of B", "It reminds me of home."),
+    ("prefer A to B", "I prefer tea to coffee."),
+    ("look forward to ~ing", "I look forward to seeing you."),
+    ("look forward to -ing", "We look forward to meeting them."),
+    ("(be) aware of", "Are you aware of the risk?"),
+    ("(be) aware of", "Stay aware of the risk."),
+    ("enjoy oneself", "We enjoyed ourselves at the party."),
+    ("help sb with sth", "Can you help me with my homework?"),
+    ("take action", "They took action right away."),
+    ("come to 동사원형", "I came to love this city."),
+    ("stop", "The rain stopped suddenly."),
+    ("plan", "We planned a trip."),
+    ("cannot help but 동사원형", "I can't help but laugh."),
+    ("cannot help but 동사원형", "I can’t help but laugh."),
+    ("break out of ~", "The prisoners broke out of the jail."),
+])
+def test_regex_accepts_natural_forms(word, sentence):
+    # 단어가 든 줄 하나 + 다른 단어가 든 줄 하나인 정상 대화는 통과해야 한다 (’ 같은 굽은 따옴표 포함)
+    lines = [{"speaker": "A", "text": sentence}, {"speaker": "B", "text": "Really? I love zzzz."},
+             {"speaker": "A", "text": "Okay."}, {"speaker": "B", "text": "Fine."}]
+    assert check_dialogue(lines, [word, "zzzz"]) == []
+
+
+def test_clean_term_middle_placeholders():
+    assert clean_term("remind A of B") == "remind ... of"
+    assert clean_term("look forward to ~ing") == "look forward to ...ing"
+    assert clean_term("(be) aware of") == "(be) aware of"
+
+
+def test_term_without_english_has_no_regex():
+    from ai import term_ok
+    assert not term_ok("A")
+    assert not term_ok("주어 동사")
+    assert term_ok("drought")

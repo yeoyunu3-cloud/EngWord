@@ -344,6 +344,8 @@ def photo_words(req: PhotoReq, request: Request):
 @app.post("/api/dialogue")
 def dialogue(req: DialogueReq, request: Request):
     ai_guard(request)
+    if not all(ai.term_ok(w.w) for w in req.words):
+        raise HTTPException(400, "영어 단어가 없는 항목은 대화에 쓸 수 없어요")
     return _ai_call(ai.make_dialogue, [w.model_dump() for w in req.words])
 
 

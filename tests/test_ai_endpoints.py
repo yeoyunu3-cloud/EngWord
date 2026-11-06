@@ -134,3 +134,10 @@ def test_dialogue_ok(client, ai_on, fake_ai):
     r = client.post("/api/dialogue", json={"words": PAIR}, headers=H)
     assert r.status_code == 200
     assert fake_ai["dialogue"] == [PAIR]
+
+
+def test_dialogue_word_without_english_400(client, ai_on, fake_ai):
+    r = client.post("/api/dialogue", json={"words": [{"w": "A", "ko": "가"}, PAIR[1]]}, headers=H)
+    assert r.status_code == 400
+    assert r.json()["detail"] == "영어 단어가 없는 항목은 대화에 쓸 수 없어요"
+    assert fake_ai["dialogue"] == []

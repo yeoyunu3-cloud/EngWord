@@ -140,7 +140,8 @@ def make_dialogue(words: list) -> dict:
         "Write a dialogue of exactly 4 lines with speakers A, B, A, B in that order.\n"
         "- Exactly one line uses Word 1 and a different line uses Word 2.\n"
         "- The other two lines use neither word.\n"
-        "- Use each word in the form given (\"...\" marks where other words go).\n"
+        "- Use each word in the form given (\"...\" marks where other words go). "
+        "Keep its spelling: do not change it to the past tense and do not use a contraction.\n"
         "- Keep each line under 150 characters, natural and easy for high school students.\n"
         "Then give a one-sentence English definition for each word, Word 1 first."
     )
@@ -161,56 +162,119 @@ BE_FORMS = r"(?:be|am|is|are|was|were|been|being)"
 POSSESSIVE = r"(?:my|your|his|her|its|our|their|one's|\w+'s)"
 
 
+REFLEXIVE = r"(?:myself|yourself|himself|herself|itself|ourselves|yourselves|themselves|oneself)"
+ING = object()  # ~ing / -ing 자리: ing로 끝나는 아무 단어
+# 단어장에서 "아무 말이나 들어가는 자리"로 쓰는 표기 (대문자 A/B는 따로 처리)
+PLACEHOLDERS = {"sb", "sb.", "sth", "sth.", "someone", "somebody", "something"}
+GAP_SEP = r"\s+(?:\S+\s+){1,4}?"
+# 자주 쓰는 불규칙 동사. 대화가 과거형으로 나와도 단어를 찾도록
+IRREGULAR = {
+    "take": "took|taken", "make": "made", "come": "came", "go": "went|gone|goes", "get": "got|gotten",
+    "give": "gave|given", "keep": "kept", "bring": "brought", "think": "thought", "find": "found",
+    "run": "ran", "break": "broke|broken", "leave": "left", "hold": "held", "fall": "fell|fallen",
+    "strike": "struck|stricken", "lead": "led", "feel": "felt", "tell": "told", "say": "said",
+    "see": "saw|seen", "begin": "began|begun", "grow": "grew|grown", "know": "knew|known",
+    "drive": "drove|driven", "write": "wrote|written", "speak": "spoke|spoken", "choose": "chose|chosen",
+    "rise": "rose|risen", "catch": "caught", "teach": "taught", "buy": "bought", "fight": "fought",
+    "seek": "sought", "lose": "lost", "meet": "met", "pay": "paid", "send": "sent", "spend": "spent",
+    "build": "built", "stand": "stood", "understand": "understood", "win": "won", "sit": "sat",
+    "become": "became", "forget": "forgot|forgotten", "hide": "hid|hidden", "eat": "ate|eaten",
+    "do": "did|done|does", "have": "had|has", "throw": "threw|thrown", "wear": "wore|worn",
+    "draw": "drew|drawn", "fly": "flew|flown|flies", "bear": "bore|born|borne", "deal": "dealt",
+    "mean": "meant", "set": "set", "put": "put", "cut": "cut", "let": "let", "shut": "shut",
+}
+
+
 def _tokens(w: str) -> list:
-    """단어를 토큰으로 나눈다. 한글 자리 표시와 ~ 는 GAP, 양끝의 GAP과 단독 대문자 A/B는 버린다."""
-    toks = [GAP if (HANGUL.search(t) or t == "~") else t for t in w.replace("~", " ~ ").split()]
-    while toks and (toks[0] is GAP or toks[0] in ("A", "B")):
+    """단어를 토큰으로 나눈다.
+
+    한글 자리 표시, ~, 단독 대문자 A/B, sb/sth 같은 표기는 GAP(아무 말 1~4단어).
+    ~ing/-ing는 ING, (be) 같은 괄호 단어는 ("opt", 단어). 양끝의 GAP은 버리고 연속된 GAP은 하나로 합친다.
+    """
+    w = re.sub(r"(?<!\w)[~\-…]ing\b", " @ing@ ", w).replace("~", " ~ ")
+    toks = []
+    for t in w.split():
+        if t == "@ing@":
+            toks.append(ING)
+        elif HANGUL.search(t) or t == "~" or t in ("A", "B") or t.lower() in PLACEHOLDERS:
+            toks.append(GAP)
+        elif re.fullmatch(r"\([A-Za-z'-]+\)", t):
+            toks.append(("opt", t[1:-1]))
+        else:
+            toks.append(t)
+    while toks and toks[0] is GAP:
         toks.pop(0)
-    while toks and (toks[-1] is GAP or toks[-1] in ("A", "B")):
+    while toks and toks[-1] is GAP:
         toks.pop()
     out = []
-    for t in toks:  # 연속된 GAP은 하나로
+    for t in toks:
         if t is GAP and out and out[-1] is GAP:
             continue
         out.append(t)
     return out
 
 
+def term_ok(w: str) -> bool:
+    """자리 표시를 빼고 영어 단어가 하나라도 남는지. 없으면 대화에서 찾을 수 없다."""
+    return any(isinstance(t, str) for t in _tokens(w))
+
+
 def clean_term(w: str) -> str:
-    """AI에게 보여 줄 단어. 가운데 자리 표시는 ... 로 남긴다 (so ... that)."""
-    return " ".join("..." if t is GAP else t for t in _tokens(w))
+    """AI에게 보여 줄 단어. 가운데 자리 표시는 ... 로 남긴다 (so ... that, look forward to ...ing)."""
+    shown = {GAP: "...", ING: "...ing"}
+    return " ".join(f"({t[1]})" if isinstance(t, tuple) else shown.get(t, t) for t in _tokens(w))
 
 
 def _word_pattern(tok: str) -> str:
     low = tok.lower()
     if low == "one's":
         return POSSESSIVE
+    if low == "oneself":
+        return REFLEXIVE
+    if low == "cannot":
+        return r"(?:cannot|can't|can\s+not)"
     forms = [re.escape(tok) + r"(?:s|es|d|ed|ing)?"]
     if low.endswith("e") and len(low) > 2:
         forms.append(re.escape(tok[:-1]) + "ing")
     if low.endswith("y") and len(low) > 2:
         forms.append(re.escape(tok[:-1]) + r"(?:ies|ied)")
+    if len(low) >= 3 and re.fullmatch(r"[a-z]*[^aeiou][aeiou][bdgklmnprt]", low):
+        forms.append(re.escape(tok) + re.escape(tok[-1]) + r"(?:ed|ing)")  # stop → stopped
+    if low in IRREGULAR:
+        forms.append(IRREGULAR[low])
     return "(?:" + "|".join(forms) + ")"
 
 
 def term_regex(w: str) -> re.Pattern:
-    """문장에서 단어(숙어)를 찾는 정규식. 동사 변화, be 동사 변화·생략, one's, 가운데 자리 표시를 허용한다."""
+    """문장에서 단어(숙어)를 찾는 정규식.
+
+    동사 변화(규칙·자주 쓰는 불규칙), be 동사 변화·생략, one's/oneself, (괄호) 생략, ~ing, 가운데 자리 표시를 허용한다.
+    """
     toks = _tokens(w)
-    lead_be = bool(toks) and toks[0].lower() == "be" and len(toks) > 1
-    if lead_be:
-        toks = toks[1:]
-    parts, sep = [], r"\s+"
+    if len(toks) > 1 and isinstance(toks[0], str) and toks[0].lower() == "be":
+        toks = [("opt", "be")] + toks[1:]
+    pieces, gap = [], False  # (선택인지, 패턴, 앞에 GAP이 있었는지)
     for t in toks:
         if t is GAP:
-            sep = r"\s+(?:\S+\s+){1,4}?"
+            gap = True
             continue
-        if parts:
-            parts.append(sep)
-        parts.append(_word_pattern(t))
-        sep = r"\s+"
-    body = "".join(parts)
-    if lead_be:
-        body = rf"(?:{BE_FORMS}\s+)?" + body
+        if isinstance(t, tuple):
+            pat = BE_FORMS if t[1].lower() == "be" else _word_pattern(t[1])
+            pieces.append((True, pat, gap))
+        else:
+            pieces.append((False, r"\w+ing" if t is ING else _word_pattern(t), gap))
+        gap = False
+    body = ""
+    for k, (optional, pat, gap_before) in enumerate(pieces):
+        sep = "" if k == 0 else (GAP_SEP if gap_before else r"\s+")
+        if k > 0 and pieces[k - 1][0]:
+            sep = sep.replace(r"\s+", "", 1)  # 앞의 선택 단어가 뒤 공백까지 품고 있다
+        if optional and k < len(pieces) - 1:
+            body += sep + rf"(?:{pat}\s+)?"
+        elif optional:
+            body += rf"(?:{sep or ''}{pat})?" if k else rf"(?:{pat})?"
+        else:
+            body += sep + pat
     return re.compile(rf"(?<!\w){body}(?!\w)", re.IGNORECASE)
 
 
@@ -232,7 +296,7 @@ def check_dialogue(lines: list, words: list) -> list:
         if not isinstance(text, str) or not text.strip():
             problems.append(f"{k + 1}번째 줄이 비어 있음")
             text = ""
-        texts.append(text)
+        texts.append(text.replace("’", "'").replace("‘", "'"))
     hits = []
     for w in words:
         rx = term_regex(w)

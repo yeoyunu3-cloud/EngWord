@@ -160,3 +160,10 @@ def test_api_error_hides_details(fake):
         ai.extract_words(B64, "image/jpeg")
     assert e.value.status == 502
     assert "anthropic" not in e.value.message.lower()
+
+
+def test_dialogue_prompt_asks_for_exact_spelling(fake):
+    fake.reply(GOOD_DIALOGUE)
+    ai.make_dialogue(PAIR)
+    prompt = fake.calls[0]["messages"][0]["content"][0]["text"]
+    assert "past tense" in prompt and "contraction" in prompt
