@@ -10,10 +10,10 @@ import ai
 B64 = "aGVsbG8="
 GOOD_DIALOGUE = {
     "lines": [
-        {"speaker": "A", "text": "Did you hear the news?"},
-        {"speaker": "B", "text": "Yes, the virus can infect people quickly."},
-        {"speaker": "A", "text": "That sounds scary."},
-        {"speaker": "B", "text": "We must take action now."},
+        {"speaker": "A", "text": "Did you hear the news?", "ko": "너 뉴스 들었어?"},
+        {"speaker": "B", "text": "Yes, the virus can infect people quickly.", "ko": "응, 그 바이러스는 사람들을 빠르게 감염시킬 수 있대."},
+        {"speaker": "A", "text": "That sounds scary.", "ko": "무섭다."},
+        {"speaker": "B", "text": "We must take action now.", "ko": "우리는 지금 조치를 취해야 해."},
     ],
     "definitions": [
         {"word": "infect", "definition": "To pass a disease to a person or animal."},
@@ -167,3 +167,35 @@ def test_dialogue_prompt_asks_for_exact_spelling(fake):
     ai.make_dialogue(PAIR)
     prompt = fake.calls[0]["messages"][0]["content"][0]["text"]
     assert "past tense" in prompt and "contraction" in prompt
+
+
+def test_dialogue_schema_and_prompt_ask_for_korean(fake):
+    fake.reply(GOOD_DIALOGUE)
+    ai.make_dialogue(PAIR)
+    kw = fake.calls[0]
+    item = kw["output_config"]["format"]["schema"]["properties"]["lines"]["items"]
+    assert "ko" in item["required"]
+    assert "Korean translation" in kw["messages"][0]["content"][0]["text"]
+
+
+def _with_line_ko(value):
+    lines = [dict(l) for l in GOOD_DIALOGUE["lines"]]
+    lines[1]["ko"] = value
+    return {**GOOD_DIALOGUE, "lines": lines}
+
+
+@pytest.mark.parametrize("bad", ["", "   ", "Yes, the virus spreads fast.", "가" * 201])
+def test_dialogue_bad_translation_fails_twice(fake, bad):
+    fake.reply(_with_line_ko(bad))
+    fake.reply(_with_line_ko(bad))
+    with pytest.raises(ai.AIError) as e:
+        ai.make_dialogue(PAIR)
+    assert e.value.status == 502
+    assert len(fake.calls) == 2
+
+
+def test_dialogue_missing_translation_retries_then_ok(fake):
+    missing = {**GOOD_DIALOGUE, "lines": [{k: v for k, v in l.items() if k != "ko"} for l in GOOD_DIALOGUE["lines"]]}
+    fake.reply(missing)
+    fake.reply(GOOD_DIALOGUE)
+    assert ai.make_dialogue(PAIR)["lines"][1]["ko"] == "응, 그 바이러스는 사람들을 빠르게 감염시킬 수 있대."

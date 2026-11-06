@@ -122,6 +122,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .dlg li{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 .dlg .who{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-size:.85rem}
 .dlg .say{font-family:var(--f-word);font-size:1.08rem;line-height:1.55;overflow-wrap:anywhere;padding-top:2px}
+.dlg .line{display:flex;flex-direction:column;gap:4px;min-width:0}
+.dlg .tr{color:var(--muted);font-size:.92rem;line-height:1.5;overflow-wrap:anywhere}
+.dlg.hide-tr .tr{visibility:hidden;height:0;overflow:hidden}
 .defs{margin:0;display:grid;gap:10px}
 .defs div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 .defs dt{font-family:var(--f-word);font-weight:700}
@@ -607,10 +610,15 @@ async function dialogueShow(pair){
   if(req!==DLG_REQ)return;
   const lines=Array.isArray(j.lines)?j.lines:[],defs=Array.isArray(j.definitions)?j.definitions:[];
   $app.querySelector("#dlgBody").innerHTML=`
-  <ol class="dlg">${lines.map((ln,k)=>`<li><b class="who">${ln.speaker==="B"?"B":"A"}</b><span class="say">${markWords(String(ln.text||""),words.map(x=>x.w))}</span><button class="speak" data-line="${k}" aria-label="${k+1}번째 줄 듣기">▶</button></li>`).join("")}</ol>
+  <div class="row"><button class="btn" id="trTog" aria-pressed="${S.hideTr?"true":"false"}">${S.hideTr?"해석 보기":"해석 가리기"}</button></div>
+  <ol class="dlg ${S.hideTr?"hide-tr":""}" id="dlgList">${lines.map((ln,k)=>`<li><b class="who">${ln.speaker==="B"?"B":"A"}</b><div class="line"><span class="say">${markWords(String(ln.text||""),words.map(x=>x.w))}</span>${ln.ko?`<span class="tr">${esc(ln.ko)}</span>`:""}</div><button class="speak" data-line="${k}" aria-label="${k+1}번째 줄 듣기">▶</button></li>`).join("")}</ol>
   <h2>영어 정의</h2>
   <dl class="defs">${defs.map(d=>`<div><dt>${esc(d.word||"")}</dt><dd>${esc(d.definition||"")}</dd></div>`).join("")}</dl>`;
   $app.querySelectorAll("[data-line]").forEach(b=>b.onclick=()=>sayNow(String(lines[+b.dataset.line].text||"")));
+  // 해석 가리기: 먼저 뜻을 떠올려 본 뒤 확인하도록. 선택은 브라우저에 기억한다
+  const tog=$app.querySelector("#trTog");
+  tog.onclick=()=>{S.hideTr=!S.hideTr;save();$app.querySelector("#dlgList").classList.toggle("hide-tr",!!S.hideTr);
+    tog.textContent=S.hideTr?"해석 보기":"해석 가리기";tog.setAttribute("aria-pressed",S.hideTr?"true":"false")};
   enable()}
 
 /* ---------- preview ---------- */
