@@ -113,6 +113,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .choice:disabled{cursor:default}
 .choice.ok{border-color:var(--ok);background:var(--ok-soft)}
 .choice.bad{border-color:var(--bad);background:var(--bad-soft)}
+.overlay{position:fixed;inset:0;background:rgba(10,15,25,.45);display:grid;place-items:center;padding:16px;z-index:10}
+.modal{width:100%;max-width:380px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.code{font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 .field{display:flex;flex-direction:column;gap:4px}
 .field input{font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 .erows{list-style:none;margin:0;padding:0;display:grid;gap:8px}
@@ -256,6 +259,7 @@ async function boot(){
     const r=await fetch("/api/books",{signal:ctrl.signal,cache:"no-store"});
     if(!r.ok)throw 0;BOOKS=await r.json();SERVER=true;
     await pullProgress("exam");
+    try{const a=await(await fetch("/api/ai-status",{cache:"no-store"})).json();AI={enabled:a.enabled===true}}catch(e){}
   }catch(e){BOOKS=[];SERVER=false}
   if(S.cur&&S.cur.book!=="exam"&&findBook(S.cur.book))return openBook(S.cur.book);
   home()}
@@ -283,6 +287,7 @@ function home(){
   ${bookBar()}
   ${SERVER?`<form class="imp" id="imp"><input id="impUrl" type="url" inputmode="url" placeholder="클래스카드 세트 링크 (예: https://www.classcard.net/set/31507889)" aria-label="클래스카드 세트 링크"><button class="btn" id="impBtn">단어 가져오기</button></form><p class="muted" id="impMsg" role="status"></p>`:""}
   <div class="row" id="makeRow"><button class="btn" id="mkSet">직접 만들기</button></div>
+  ${SERVER?photoPicker("사진으로 만들기"):""}
   ${resumable()?`<div class="fb ok"><span><b>${esc(S.drill.label)}</b>에서 멈췄어요 · 남은 단어 ${new Set(S.drill.q.map(x=>x.i)).size}개</span><div class="row"><button class="btn primary" id="resume">이어서 하기</button><button class="btn" id="dropDrill">처음부터</button></div></div>`:""}
   <div class="here"><span class="muted">지금 공부하는 범위</span><h2>${esc(CUR.title)}${multiDay()?` · Day ${String(CUR.day).padStart(2,"0")}`:""}</h2></div>
   <div class="stat">
@@ -335,6 +340,7 @@ function home(){
     <button class="link" id="reset">기록 초기화</button>
     ${(findBook(CUR.book)||{}).imported?`<button class="link" id="delBook">이 단어 세트 삭제</button>`:""}
     ${(findBook(CUR.book)||{}).mine?`<button class="link" id="editMine">단어 편집</button><button class="link" id="renameMine">이름 변경</button><button class="link" id="delMine">이 세트 삭제</button>`:""}
+    ${aiCode()?`<button class="link" id="clearCode">AI 코드 지우기</button>`:""}
   </div>
   <div id="confirm"></div>`;
   const rs=$app.querySelector("#resume");
@@ -373,6 +379,8 @@ function home(){
       delete BOOKWORDS[id];openBook("exam")};
     $app.querySelector("#no").onclick=home};
   $app.querySelector("#mkSet").onclick=()=>editSet(null,[],"");
+  bindPhotoPicker(fs=>{editSet(null,[],"");readPhotos(fs)});
+  const cc=$app.querySelector("#clearCode");if(cc)cc.onclick=()=>{clearAiCode();home()};
   const em=$app.querySelector("#editMine");
   if(em){const id=CUR.book;
     em.onclick=()=>editSet(id,S.mySets[id].words,S.mySets[id].title);
@@ -423,9 +431,82 @@ function saveSet(id,title,rows){
   for(const k of Object.keys(S.w))if(k.startsWith(nid+":")&&!keep.has(k))delete S.w[k];
   if(S.drill&&S.drill.book===nid)delete S.drill;
   save();return nid}
+/* ---------- AI 연결 (접근 코드, 사진 읽기) ---------- */
+// AI 기능은 서버에 키와 접근 코드가 모두 설정돼 있을 때만 켜진다. 코드는 이 브라우저에 기억한다
+let AI={enabled:false},PHOTO_BUSY=false;
+const AI_KEY="engword-ai-code";
+const aiCode=()=>{try{return localStorage.getItem(AI_KEY)||""}catch(e){return""}};
+const setAiCode=v=>{try{localStorage.setItem(AI_KEY,v)}catch(e){}};
+const clearAiCode=()=>{try{localStorage.removeItem(AI_KEY)}catch(e){}};
+const PHOTO_NOTE="사진은 단어를 읽기 위해 Anthropic AI로 보내지고, 이 서버에는 저장되지 않아요.";
+const AI_OFF="AI 기능이 아직 설정되지 않았어요";
+// 접근 코드 입력 창. 브라우저 prompt() 대신 화면 위에 띄운다. 취소하면 ""로 끝난다
+function askAiCode(msg){return new Promise(res=>{
+  const box=document.createElement("div");box.className="overlay";
+  box.innerHTML=`<form class="panel modal" role="dialog" aria-modal="true" aria-labelledby="acT"><h2 id="acT">AI 접근 코드</h2><p class="muted">${esc(msg||"AI 기능은 접근 코드를 아는 사람만 쓸 수 있어요. 한 번 입력하면 이 브라우저에 기억돼요.")}</p><input id="acIn" class="code" type="password" autocomplete="off" aria-label="접근 코드"><div class="row"><button class="btn primary">확인</button><button class="btn" type="button" id="acNo">취소</button></div></form>`;
+  document.body.appendChild(box);const inp=box.querySelector("#acIn");inp.focus();
+  const prevKey=key;key=null;
+  const done=v=>{box.remove();key=prevKey;res(v)};
+  box.querySelector("form").onsubmit=e=>{e.preventDefault();const v=inp.value.trim();if(v){setAiCode(v);done(v)}};
+  box.querySelector("#acNo").onclick=()=>done("");
+  box.onkeydown=e=>{if(e.key==="Escape")done("")};
+})}
+// AI 엔드포인트 호출. 코드가 없거나 틀리면 다시 묻는다. 실패하면 사용자에게 보여 줄 문구로 Error를 던진다
+async function aiFetch(path,body){
+  let msg="";
+  for(let tries=0;tries<3;tries++){
+    let code=aiCode();
+    if(!code){code=await askAiCode(msg);if(!code)throw new Error("접근 코드를 입력해야 AI 기능을 쓸 수 있어요.")}
+    let r,j={};
+    try{r=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json","X-AI-Passcode":code},body:JSON.stringify(body)})}
+    catch(e){throw new Error("서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요.")}
+    try{j=await r.json()}catch(e){}
+    if(r.status===401){clearAiCode();msg="접근 코드가 맞지 않아요. 다시 입력해 주세요.";continue}
+    if(!r.ok)throw new Error(typeof j.detail==="string"?j.detail:"만들지 못했어요. 다시 시도해 주세요");
+    return j}
+  throw new Error("접근 코드가 맞지 않아요.")}
+// 사진을 긴 변 1600px JPEG로 줄인다. 1MB가 넘으면 1280px, 품질 0.7로 다시 줄인다
+async function shrinkImage(file){
+  let img;
+  try{img=await createImageBitmap(file)}catch(e){throw new Error("이 사진은 열 수 없어요. JPG나 PNG 사진으로 다시 골라 주세요.")}
+  const enc=(max,q)=>{const s=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement("canvas");
+    c.width=Math.max(1,Math.round(img.width*s));c.height=Math.max(1,Math.round(img.height*s));
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);return c.toDataURL("image/jpeg",q)};
+  let url=enc(1600,.85);
+  if(url.length*.75>1e6)url=enc(1280,.7);
+  return{image:url.slice(url.indexOf(",")+1),mediaType:"image/jpeg"}}
+// 사진을 한 장씩 차례로 읽어 지금 편집 화면에 덧붙인다(Vercel 요청 크기 한도 때문에 한 장씩)
+async function readPhotos(files){
+  files=[...files];const over=files.length>5;files=files.slice(0,5);
+  if(!files.length||PHOTO_BUSY)return;
+  const ed=EDIT,got=[];PHOTO_BUSY=true;
+  const status=t=>{const m=document.querySelector("#photoMsg");if(m)m.textContent=t};
+  let err="";
+  try{for(let k=0;k<files.length;k++){
+      status(`사진 ${k+1}/${files.length} 읽는 중…`);
+      const j=await aiFetch("/api/photo-words",await shrinkImage(files[k]));
+      got.push(...(Array.isArray(j.words)?j.words:[]))}}
+  catch(e){err=e.message}
+  PHOTO_BUSY=false;
+  if(EDIT!==ed)return; // 그사이 편집 화면을 떠났다
+  const seen=new Set(),words=got.filter(r=>r&&typeof r.w==="string"&&typeof r.ko==="string"&&!seen.has(r.w.toLowerCase())&&seen.add(r.w.toLowerCase()));
+  const text=err?(words.length?`${words.length}단어까지 읽고 멈췄어요. ${err}`:err)
+    :words.length?`${words.length}단어를 읽었어요. 틀린 곳을 고친 뒤 저장하세요.${over?" 사진은 한 번에 5장까지 읽어서 앞의 5장만 읽었어요.":""}`
+    :"단어를 찾지 못했어요. 더 밝고 가깝게 찍어 보세요. 직접 입력해도 돼요.";
+  ed.append(words,{ok:!err&&words.length>0,text})}
+function photoPicker(label){
+  return`<div class="row"><button class="btn" id="photoBtn" ${AI.enabled&&!PHOTO_BUSY?"":"disabled"}>${label}</button><input type="file" id="photoIn" accept="image/*" multiple hidden></div>
+  <p class="muted" id="photoMsg" role="status">${PHOTO_BUSY?"사진 읽는 중…":AI.enabled?PHOTO_NOTE:AI_OFF}</p>`}
+function bindPhotoPicker(onFiles){
+  const b=$app.querySelector("#photoBtn"),inp=$app.querySelector("#photoIn");if(!b)return;
+  b.onclick=()=>inp.click();
+  inp.onchange=()=>{const fs=[...inp.files];inp.value="";if(fs.length)onFiles(fs)}}
+
 // 편집 화면. id가 null이면 새 세트. EDIT.append(rows, note)로 줄을 덧붙인다(사진으로 읽은 단어)
 let EDIT=null;
-function editExtras(){} // 사진 기능이 #photoRow에 버튼을 넣는 자리
+function editExtras(){ // 편집 화면의 사진 더 추가 버튼
+  const box=$app.querySelector("#photoRow");if(!box||!SERVER)return;
+  box.innerHTML=photoPicker("사진 더 추가");bindPhotoPicker(readPhotos)}
 function editSet(id,draft,title,note){
   key=null;
   let rows=draft.map(r=>({w:r.w,ko:r.ko}));
